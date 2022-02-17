@@ -1,0 +1,3 @@
+GET                 PATCH   DELETE
+/:id_offerees       *       /:id_offerees    
+Query(username)     

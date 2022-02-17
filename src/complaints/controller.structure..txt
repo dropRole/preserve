@@ -1,0 +1,6 @@
+/complaints
+
+POST        GET                     PATCH           DELETE  
+*           /:id_reservations       *               /:id_complaints
+            /counter/:countered_to          
+            
