@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Body, Get, Param, Patch } from '@nestjs/common';
+import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 import { OffereesService } from './offerees.service';
 
@@ -13,5 +14,10 @@ export class OffereesController {
   getOffereeByUsername(@Param('username') username: string): Promise<Offeree> {
     return this.offereesService.getOffereeByUsername(username);
   }
-  @Patch('/:')
+  @Patch('/:id_offerees/username')
+  updateOffereeUsername(
+    @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
+  ): Promise<void> {
+    return this.offereesService.updateOffereeUsername(updateOffereeUsernameDTO);
+  }
 }
