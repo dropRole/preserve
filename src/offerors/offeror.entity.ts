@@ -12,6 +12,12 @@ export class Offeror {
   surname: string;
 
   @Column()
+  address: string;
+
+  @Column()
+  email: string;
+
+  @Column()
   telephone: string;
 
   @Column()
@@ -25,4 +31,7 @@ export class Offeror {
 
   @Column()
   timeliness: number;
+
+  @Column()
+  username: string;
 }
