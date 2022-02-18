@@ -1,3 +1,6 @@
-GET                 PATCH   DELETE
-/:id_offerees       *       /:id_offerees    
-Query(username)     
+/offerees
+
+GET             PATCH                   DELETE
+/:id_offerees   /:id_offerees/username     /:id_offerees    
+/:username      /:id_offerees/password
+                /:id_offerees/email     

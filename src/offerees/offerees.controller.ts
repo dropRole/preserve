@@ -9,8 +9,9 @@ export class OffereesController {
   getOfferee(@Param() id_offerees: string): Promise<Offeree> {
     return this.offereesService.getOfferee(id_offerees);
   }
-  @Get()
-  getOffereeByUsername(@Query('username') username: string): Promise<Offeree> {
+  @Get(':/username')
+  getOffereeByUsername(@Param('username') username: string): Promise<Offeree> {
     return this.offereesService.getOffereeByUsername(username);
   }
+  @Patch('/:')
 }
