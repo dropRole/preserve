@@ -1,5 +1,6 @@
 import { OffereeAuthCredentialsDTO } from 'src/auth/dto/offeree-auth-credentials.dto';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
+import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 
 @EntityRepository(Offeree)
@@ -30,6 +31,23 @@ export class OffereesRepository extends Repository<Offeree> {
       return await query.getOne();
     } catch (error) {
       throw new QueryFailedError(query.getSql(), [username], 'postgres');
+    }
+  }
+  async updateOffereeUsername(
+    updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
+  ): Promise<void> {
+    const { username } = updateOffereeUsernameDTO;
+    const offeree = await this.findOne({ username });
+    offeree.username = username;
+    try {
+      // if update query failed to execute
+      await this.save(offeree);
+    } catch (error) {
+      throw new QueryFailedError(
+        `UPDATE offerees SET username = ${username} WHERE id_offerees = ${offeree.id_offerees}`,
+        [username],
+        'postgres',
+      );
     }
   }
 }
