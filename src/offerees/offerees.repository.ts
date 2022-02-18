@@ -17,7 +17,7 @@ export class OffereesRepository extends Repository<Offeree> {
     query.where({ id_offerees });
     try {
       // if select query failed to execute
-      return query.getOne();
+      return await query.getOne();
     } catch (error) {
       throw new QueryFailedError(query.getSql(), [id_offerees], 'postgres');
     }
@@ -27,7 +27,7 @@ export class OffereesRepository extends Repository<Offeree> {
     query.where({ username });
     try {
       // if select query failed to execute
-      return query.getOne();
+      return await query.getOne();
     } catch (error) {
       throw new QueryFailedError(query.getSql(), [username], 'postgres');
     }
