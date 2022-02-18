@@ -1,5 +1,5 @@
 /offerees
 
-GET             PATCH                   DELETE
-/:id_offerees   /:id_offerees/username     /:id_offerees    
+GET             PATCH                  
+/:id_offerees   /:id_offerees/username
 /:username      /:id_offerees/email     
