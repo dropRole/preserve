@@ -1,4 +1,3 @@
-import { InternalServerErrorException, Query } from '@nestjs/common';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
 import { ComplainDTO } from './dto/complain.dto';
@@ -6,12 +5,11 @@ import { ComplainDTO } from './dto/complain.dto';
 @EntityRepository(Complaint)
 export class ComplaintsRepository extends Repository<Complaint> {
   async insertComplaint(complainDTO: ComplainDTO): Promise<void> {
-    const { id_requests, username, countered_to, content, written } =
-      complainDTO;
+    const { idRequests, username, counteredTo, content, written } = complainDTO;
     const complaint = this.create({
-      id_requests,
+      idRequests,
       username,
-      countered_to,
+      counteredTo,
       content,
       written,
     });
@@ -20,46 +18,45 @@ export class ComplaintsRepository extends Repository<Complaint> {
       await this.insert(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO complaints VALUES(${id_requests}, ${username}, ${countered_to}, ${content}, ${written})`,
+        `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
         undefined,
         'postgres',
       );
     }
   }
 
-  async selectComplaints(id_reservations: string): Promise<Complaint[]> {
+  async selectComplaints(idReservations: string): Promise<Complaint[]> {
     const query = this.createQueryBuilder('complaints');
-    query.where({ id_requests: id_reservations });
+    query.where({ idRequests: idReservations });
     try {
       return await query.getMany();
     } catch (error) {
       // if select query failed to execute
       throw new QueryFailedError(
         query.getSql(),
-        [id_reservations],
+        [idReservations],
         'postgresql',
       );
     }
   }
 
-  async selectCounterComplaints(countered_to: string): Promise<Complaint[]> {
+  async selectCounterComplaints(counteredTo: string): Promise<Complaint[]> {
     const query = this.createQueryBuilder('complaints');
-    query.where({ id_complaints: countered_to });
+    query.where({ idComplaints: counteredTo });
     try {
       return await query.getMany();
     } catch (error) {
       // if select query failed to execute
-      throw new QueryFailedError(query.getSql(), [countered_to], 'postgresql');
+      throw new QueryFailedError(query.getSql(), [counteredTo], 'postgresql');
     }
   }
 
   async updateComplaint(complainDTO: ComplainDTO): Promise<void> {
-    const { id_requests, username, countered_to, content, written } =
-      complainDTO;
+    const { idRequests, username, counteredTo, content, written } = complainDTO;
     const complaint = this.create({
-      id_requests,
+      idRequests,
       username,
-      countered_to,
+      counteredTo,
       content,
       written,
     });
@@ -68,21 +65,21 @@ export class ComplaintsRepository extends Repository<Complaint> {
       await this.save(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO complaints VALUES(${id_requests}, ${username}, ${countered_to}, ${content}, ${written})`,
+        `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
         undefined,
         'postgres',
       );
     }
   }
 
-  async deleteComplaint(id_complaints: string): Promise<void> {
+  async deleteComplaint(idComplaints: string): Promise<void> {
     try {
       // if delete query failed to execute
-      this.delete({ id_complaints });
+      this.delete({ idComplaints });
     } catch (error) {
       throw new QueryFailedError(
-        `DELETE FROM complaints WHERE id_complaints = ${id_complaints}`,
-        [id_complaints],
+        `DELETE FROM complaints WHERE idComplaints = ${idComplaints}`,
+        [idComplaints],
         'postgres',
       );
     }

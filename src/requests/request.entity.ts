@@ -3,16 +3,16 @@ import { Column, Entity, PrimaryColumn, Timestamp } from 'typeorm';
 @Entity('requests')
 export class Request {
   @PrimaryColumn()
-  id_requests: string;
+  idRequests: string;
 
   @Column()
-  requested_by: string;
+  requestedBy: string;
 
   @Column()
-  submitted_at: Timestamp;
+  requestedAt: Timestamp;
 
   @Column()
-  requested_for: Timestamp;
+  requestedFor: Timestamp;
 
   @Column()
   seats: number;

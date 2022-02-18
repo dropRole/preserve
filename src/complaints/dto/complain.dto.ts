@@ -2,13 +2,13 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class ComplainDTO {
   @IsNotEmpty()
-  id_requests: string;
+  idRequests: string;
 
   @IsNotEmpty()
   username: string;
 
   @IsOptional()
-  countered_to: string;
+  counteredTo: string;
 
   @IsNotEmpty()
   content: string;

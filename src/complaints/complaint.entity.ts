@@ -3,16 +3,16 @@ import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('complaints')
 export class Complaint {
   @PrimaryGeneratedColumn('uuid')
-  id_complaints: string;
+  idComplaints: string;
 
   @Column()
-  id_requests: string;
+  idRequests: string;
   
   @Column()
   username: string;
   
   @Column()
-  countered_to: string;
+  counteredTo: string;
 
   @Column()
   content: string;

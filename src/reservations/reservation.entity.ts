@@ -3,11 +3,11 @@ import { Column, Entity, PrimaryColumn, Timestamp } from 'typeorm';
 @Entity('reservations')
 export class Reservation {
   @PrimaryColumn()
-  id_requests: string;
+  idReservations: string;
 
   @Column()
   code: string;
 
   @Column()
-  confirmed_at: Timestamp;
+  confirmedAt: Timestamp;
 }

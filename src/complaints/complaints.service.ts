@@ -14,19 +14,19 @@ export class ComplaintsService {
     return this.complaintsRepository.insertComplaint(complainDTO);
   }
 
-  getComplaints(id_reservations: string): Promise<Complaint[]> {
-    return this.complaintsRepository.selectComplaints(id_reservations);
+  getComplaints(idReservations: string): Promise<Complaint[]> {
+    return this.complaintsRepository.selectComplaints(idReservations);
   }
 
-  getCounterComplaints(countered_to: string): Promise<Complaint[]> {
-    return this.complaintsRepository.selectCounterComplaints(countered_to);
+  getCounterComplaints(counteredTo: string): Promise<Complaint[]> {
+    return this.complaintsRepository.selectCounterComplaints(counteredTo);
   }
 
   reComplain(complainDTO: ComplainDTO): Promise<void> {
     return this.complaintsRepository.updateComplaint(complainDTO);
   }
 
-  withDrawComplaint(id_complaints: string): Promise<void> {
-    return this.complaintsRepository.deleteComplaint(id_complaints);
+  withDrawComplaint(idComplaints: string): Promise<void> {
+    return this.complaintsRepository.deleteComplaint(idComplaints);
   }
 }

@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { Account } from 'src/auth/account.entity';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
 import { ComplainDTO } from './dto/complain.dto';
@@ -20,16 +19,16 @@ export class ComplaintsController {
     return this.complaintsService.complain(complainDTO);
   }
 
-  @Get('/:id_reservations')
-  getComplaints(@Param() id_reservation: string): Promise<Complaint[]> {
-    return this.complaintsService.getComplaints(id_reservation);
+  @Get('/:idReservations')
+  getComplaints(@Param() idReservations: string): Promise<Complaint[]> {
+    return this.complaintsService.getComplaints(idReservations);
   }
 
-  @Get('/counter/:countered_to')
+  @Get('/counter/:counteredTo')
   getCounterComplaints(
-    @Param('countered_to') countered_to: string,
+    @Param('counteredTo') counteredTo: string,
   ): Promise<Complaint[]> {
-    return this.complaintsService.getCounterComplaints(countered_to);
+    return this.complaintsService.getCounterComplaints(counteredTo);
   }
 
   @Patch()
@@ -38,7 +37,7 @@ export class ComplaintsController {
   }
 
   @Delete()
-  withDrawComplaint(@Param() id_complaints: string): Promise<void> {
-    return this.complaintsService.withDrawComplaint(id_complaints);
+  withDrawComplaint(@Param() idComplaints: string): Promise<void> {
+    return this.complaintsService.withDrawComplaint(idComplaints);
   }
 }

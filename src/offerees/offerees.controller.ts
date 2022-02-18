@@ -7,27 +7,27 @@ import { OffereesService } from './offerees.service';
 @Controller('offerees')
 export class OffereesController {
   constructor(private offereesService: OffereesService) {}
-  @Get('/:id_offerees')
-  getOfferee(@Param() id_offerees: string): Promise<Offeree> {
-    return this.offereesService.getOfferee(id_offerees);
+  @Get('/:idOfferees')
+  getOfferee(@Param() idOfferees: string): Promise<Offeree> {
+    return this.offereesService.getOfferee(idOfferees);
   }
   @Get(':/username')
   getOffereeByUsername(@Param('username') username: string): Promise<Offeree> {
     return this.offereesService.getOffereeByUsername(username);
   }
-  @Patch('/:id_offerees/username')
+  @Patch('/:idOfferees/username')
   updateOffereeUsername(
     @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
     return this.offereesService.updateOffereeUsername(updateOffereeUsernameDTO);
   }
-  @Patch('/:id_offerees/email')
+  @Patch('/:idOfferees/email')
   updateOffereeEmail(
-    @Param('id_offerees') id_offerees: string,
+    @Param('idOfferees') idOfferees: string,
     @Body('email') updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     return this.offereesService.updateOffereeEmail(
-      id_offerees,
+      idOfferees,
       updateOffereeEmailDTO,
     );
   }

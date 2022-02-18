@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 @Entity('offerors')
 export class Offeror {
   @PrimaryColumn()
-  id_offerors: string;
+  idOfferors: string;
 
   @Column()
   name: string;
@@ -15,7 +15,7 @@ export class Offeror {
   telephone: string;
 
   @Column()
-  business_hours: string;
+  businessHours: string;
 
   @Column()
   responsiveness: number;

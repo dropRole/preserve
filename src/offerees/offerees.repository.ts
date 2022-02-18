@@ -3,7 +3,6 @@ import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
-import * as bcrypt from 'bcrypt';
 
 @EntityRepository(Offeree)
 export class OffereesRepository extends Repository<Offeree> {
@@ -15,14 +14,14 @@ export class OffereesRepository extends Repository<Offeree> {
     await this.save(offeree);
     return offeree;
   }
-  async selectOfferee(id_offerees: string): Promise<Offeree> {
+  async selectOfferee(idOfferees: string): Promise<Offeree> {
     const query = this.createQueryBuilder('offerees');
-    query.where({ id_offerees });
+    query.where({ idOfferees });
     try {
       // if select query failed to execute
       return await query.getOne();
     } catch (error) {
-      throw new QueryFailedError(query.getSql(), [id_offerees], 'postgres');
+      throw new QueryFailedError(query.getSql(), [idOfferees], 'postgres');
     }
   }
   async selectOffereeByUsername(username: string): Promise<Offeree> {
@@ -46,26 +45,26 @@ export class OffereesRepository extends Repository<Offeree> {
       await this.save(offeree);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE offerees SET username = ${username} WHERE id_offerees = ${offeree.id_offerees}`,
+        `UPDATE offerees SET username = ${username} WHERE id_offerees = ${offeree.idOfferees}`,
         [username],
         'postgres',
       );
     }
   }
   async updateOffereeEmail(
-    id_offerees: string,
+    idOfferees: string,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     const { email } = updateOffereeEmailDTO;
-    const offeree = await this.findOne({ id_offerees });
+    const offeree = await this.findOne({ idOfferees });
     offeree.email = email;
     try {
       // if update query failed to execute
       await this.save(offeree);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE offerees SET email = ${email} WHERE id_offerees = ${offeree.id_offerees}`,
-        [id_offerees, email],
+        `UPDATE offerees SET email = ${email} WHERE id_offerees = ${offeree.idOfferees}`,
+        [idOfferees, email],
         'postgres',
       );
     }

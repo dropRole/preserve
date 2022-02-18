@@ -17,8 +17,8 @@ export class OffereesService {
   ): Promise<Offeree> {
     return this.offereesRepository.insertOfferee(offereeAuthCredentialsDTO);
   }
-  getOfferee(id_offerees: string): Promise<Offeree> {
-    return this.offereesRepository.selectOfferee(id_offerees);
+  getOfferee(idOfferees: string): Promise<Offeree> {
+    return this.offereesRepository.selectOfferee(idOfferees);
   }
   getOffereeByUsername(username: string): Promise<Offeree> {
     return this.offereesRepository.selectOfferee(username);
@@ -31,11 +31,11 @@ export class OffereesService {
     );
   }
   updateOffereeEmail(
-    id_offerees: string,
+    idOfferees: string,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     return this.offereesRepository.updateOffereeEmail(
-      id_offerees,
+      idOfferees,
       updateOffereeEmailDTO,
     );
   }
