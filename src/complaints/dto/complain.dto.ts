@@ -9,8 +9,8 @@ export class ComplainDTO {
   @IsNotEmpty()
   username: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   counteredTo: string;
 
   @IsString()
