@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
@@ -22,6 +22,13 @@ export class OfferorsService {
     idOfferors: string,
     updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
   ): Promise<void> {
+    const { username } = updateOfferorUsernameDTO;
+    // if handed username already exists
+    if (
+      this.offerorsRepository.selectOfferorByUsername(username) instanceof
+      Offeror
+    )
+      throw new ConflictException('Username already exists.');
     return this.offerorsRepository.updateOfferorUsername(
       idOfferors,
       updateOfferorUsernameDTO,
