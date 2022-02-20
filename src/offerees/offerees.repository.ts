@@ -1,3 +1,4 @@
+import { isRFC3339 } from 'class-validator';
 import { OffereeAuthCredentialsDTO } from 'src/auth/dto/offeree-auth-credentials.dto';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
@@ -35,10 +36,11 @@ export class OffereesRepository extends Repository<Offeree> {
     }
   }
   async updateOffereeUsername(
+    idOfferees: string,
     updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
     const { username } = updateOffereeUsernameDTO;
-    const offeree = await this.findOne({ username });
+    const offeree = await this.findOne({ idOfferees });
     offeree.username = username;
     try {
       // if update query failed to execute

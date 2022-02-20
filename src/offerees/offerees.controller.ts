@@ -17,9 +17,13 @@ export class OffereesController {
   }
   @Patch('/:idOfferees/username')
   updateOffereeUsername(
+    @Param('idOfferees') idOfferees: string,
     @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
-    return this.offereesService.updateOffereeUsername(updateOffereeUsernameDTO);
+    return this.offereesService.updateOffereeUsername(
+      idOfferees,
+      updateOffereeUsernameDTO,
+    );
   }
   @Patch('/:idOfferees/email')
   updateOffereeEmail(
