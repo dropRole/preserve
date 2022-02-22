@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, Timestamp } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('requests')
 export class Request {
@@ -6,13 +6,16 @@ export class Request {
   idRequests: string;
 
   @Column()
-  requestedBy: string;
+  idOfferors: string;
 
   @Column()
-  requestedAt: Timestamp;
+  idOfferees: string;
 
   @Column()
-  requestedFor: Timestamp;
+  requestedAt: string;
+
+  @Column()
+  requestedFor: string;
 
   @Column()
   seats: number;
