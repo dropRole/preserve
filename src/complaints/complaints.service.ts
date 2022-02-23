@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Complaint } from './complaint.entity';
 import { ComplaintsRepository } from './complaints.repository';
-import { ComplainDTO } from './dto/complain.dto';
+import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @Injectable()
 export class ComplaintsService {
@@ -10,8 +10,8 @@ export class ComplaintsService {
     @InjectRepository(ComplaintsRepository)
     private complaintsRepository: ComplaintsRepository,
   ) {}
-  complain(complainDTO: ComplainDTO): Promise<void> {
-    return this.complaintsRepository.insertComplaint(complainDTO);
+  complain(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    return this.complaintsRepository.insertComplaint(submitComplaintDTO);
   }
 
   getComplaints(idReservations: string): Promise<Complaint[]> {
@@ -22,8 +22,8 @@ export class ComplaintsService {
     return this.complaintsRepository.selectCounterComplaints(counteredTo);
   }
 
-  reComplain(complainDTO: ComplainDTO): Promise<void> {
-    return this.complaintsRepository.updateComplaint(complainDTO);
+  reComplain(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    return this.complaintsRepository.updateComplaint(submitComplaintDTO);
   }
 
   withDrawComplaint(idComplaints: string): Promise<void> {

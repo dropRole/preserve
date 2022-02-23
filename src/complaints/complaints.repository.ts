@@ -1,11 +1,12 @@
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
-import { ComplainDTO } from './dto/complain.dto';
+import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @EntityRepository(Complaint)
 export class ComplaintsRepository extends Repository<Complaint> {
-  async insertComplaint(complainDTO: ComplainDTO): Promise<void> {
-    const { idRequests, username, counteredTo, content, written } = complainDTO;
+  async insertComplaint(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    const { idRequests, username, counteredTo, content, written } =
+      submitComplaintDTO;
     const complaint = this.create({
       idRequests,
       username,
@@ -51,8 +52,9 @@ export class ComplaintsRepository extends Repository<Complaint> {
     }
   }
 
-  async updateComplaint(complainDTO: ComplainDTO): Promise<void> {
-    const { idRequests, username, counteredTo, content, written } = complainDTO;
+  async updateComplaint(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    const { idRequests, username, counteredTo, content, written } =
+      submitComplaintDTO;
     const complaint = this.create({
       idRequests,
       username,

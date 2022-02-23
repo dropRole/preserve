@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class ComplainDTO {
+export class SubmitComplaintDTO {
   @IsString()
   @IsNotEmpty()
   idRequests: string;

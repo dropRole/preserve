@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
-import { ComplainDTO } from './dto/complain.dto';
+import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @Controller('complaint')
 export class ComplaintsController {
   constructor(private complaintsService: ComplaintsService) {}
   @Post()
-  complain(@Body() complainDTO: ComplainDTO): Promise<void> {
-    return this.complaintsService.complain(complainDTO);
+  complain(@Body() submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    return this.complaintsService.complain(submitComplaintDTO);
   }
 
   @Get('/:idReservations')
@@ -32,8 +32,8 @@ export class ComplaintsController {
   }
 
   @Patch()
-  reComplain(@Body() complainDTO: ComplainDTO): Promise<void> {
-    return this.complaintsService.reComplain(complainDTO);
+  reComplain(@Body() submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
+    return this.complaintsService.reComplain(submitComplaintDTO);
   }
 
   @Delete()
