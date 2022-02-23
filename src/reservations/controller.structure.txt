@@ -1,0 +1,5 @@
+/reservations
+
+POST    GET                                                 DELETE         
+*       /idOfferors=:idOfferors&todaysDate=:todaysDate     /:idRequests
+        /:idRequests
