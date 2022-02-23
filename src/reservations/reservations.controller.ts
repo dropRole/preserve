@@ -35,7 +35,7 @@ export class ReservationsController {
   }
 
   @Delete()
-  deleteReservation(idRequests: string): Promise<void> {
+  deleteReservation(@Param('idRequests') idRequests: string): Promise<void> {
     return this.reservationsService.deleteReservation(idRequests);
   }
 }

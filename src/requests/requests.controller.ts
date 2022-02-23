@@ -28,7 +28,7 @@ export class RequestsController {
   }
 
   @Delete()
-  retreatRequest(idRequest: string): Promise<void> {
+  retreatRequest(@Param('idRequests') idRequest: string): Promise<void> {
     return this.requestsService.retreatRequest(idRequest);
   }
 }
