@@ -1,13 +1,13 @@
-import { Column, Entity, PrimaryColumn, Timestamp } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('reservations')
 export class Reservation {
-  @PrimaryColumn()
-  idReservations: string;
+  @PrimaryGeneratedColumn('uuid')
+  idRequests: string;
 
   @Column()
   code: string;
 
   @Column()
-  confirmedAt: Timestamp;
+  confirmedAt: string;
 }
