@@ -1,4 +1,3 @@
-import { isRFC3339 } from 'class-validator';
 import { OffereeAuthCredentialsDTO } from 'src/auth/dto/offeree-auth-credentials.dto';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
