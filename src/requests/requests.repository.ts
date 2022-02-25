@@ -33,7 +33,7 @@ export class RequestsRepository extends Repository<Request> {
       throw new QueryFailedError(
         `INSERT INTO requests VALUES(${idOfferors}, ${idOfferees}, ${requestedAt}, ${requestedFor}, ${seats}, ${cause}, ${note})`,
         [idOfferors, idOfferees, requestedAt, requestedFor, seats, cause, note],
-        'postres',
+        error.message,
       );
     }
     return request;
@@ -53,7 +53,7 @@ export class RequestsRepository extends Repository<Request> {
       throw new QueryFailedError(
         query.getSql(),
         [idOfferors, todaysDate],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -66,7 +66,7 @@ export class RequestsRepository extends Repository<Request> {
       throw new QueryFailedError(
         `SELECT * FROM requests WHERE idRequest = ${idRequests}`,
         [idRequests],
-        'postgres',
+        error.message,
       );
     }
   }

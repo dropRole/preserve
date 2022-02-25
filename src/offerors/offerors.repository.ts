@@ -14,7 +14,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       throw new QueryFailedError(
         `SELECT * FROM offerors WHERE idOfferors = ${idOfferors}`,
         [idOfferors],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -26,7 +26,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       throw new QueryFailedError(
         `SELECT * FROM offerors WHERE username = ${username}`,
         [username],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -44,7 +44,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       throw new QueryFailedError(
         `UPDATE offerors SET username = ${username} WHERE idOfferors = ${idOfferors}`,
         [idOfferors, username],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -62,7 +62,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       throw new QueryFailedError(
         `UPDATE offerors SET email = ${email} WHERE idOfferors = ${idOfferors}`,
         [idOfferors, email],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -82,7 +82,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       throw new QueryFailedError(
         `UPDATE offerors SET address = ${address}, telephone = ${telephone}, businessHours = ${businessHours}  WHERE idOfferors = ${idOfferors}`,
         [address, telephone, businessHours],
-        'postgres',
+        error.message,
       );
     }
   }

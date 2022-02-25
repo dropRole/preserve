@@ -22,7 +22,7 @@ export class OffereesRepository extends Repository<Offeree> {
       // if select query failed to execute
       return await query.getOne();
     } catch (error) {
-      throw new QueryFailedError(query.getSql(), [idOfferees], 'postgres');
+      throw new QueryFailedError(query.getSql(), [idOfferees], error.message);
     }
   }
   async selectOffereeByUsername(username: string): Promise<Offeree> {
@@ -32,7 +32,7 @@ export class OffereesRepository extends Repository<Offeree> {
       // if select query failed to execute
       return await query.getOne();
     } catch (error) {
-      throw new QueryFailedError(query.getSql(), [username], 'postgres');
+      throw new QueryFailedError(query.getSql(), [username], error.message);
     }
   }
   async updateOffereeUsername(
@@ -49,7 +49,7 @@ export class OffereesRepository extends Repository<Offeree> {
       throw new QueryFailedError(
         `UPDATE offerees SET username = ${username} WHERE id_offerees = ${offeree.idOfferees}`,
         [username],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -67,7 +67,7 @@ export class OffereesRepository extends Repository<Offeree> {
       throw new QueryFailedError(
         `UPDATE offerees SET email = ${email} WHERE id_offerees = ${offeree.idOfferees}`,
         [idOfferees, email],
-        'postgres',
+        error.message,
       );
     }
   }

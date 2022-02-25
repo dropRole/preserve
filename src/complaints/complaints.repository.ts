@@ -21,7 +21,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       throw new QueryFailedError(
         `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
         undefined,
-        'postgres',
+        error.message,
       );
     }
   }
@@ -36,7 +36,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       throw new QueryFailedError(
         query.getSql(),
         [idReservations],
-        'postgresql',
+        error.message,
       );
     }
   }
@@ -48,7 +48,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       return await query.getMany();
     } catch (error) {
       // if select query failed to execute
-      throw new QueryFailedError(query.getSql(), [counteredTo], 'postgresql');
+      throw new QueryFailedError(query.getSql(), [counteredTo], error.message);
     }
   }
 
@@ -69,7 +69,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       throw new QueryFailedError(
         `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
         undefined,
-        'postgres',
+        error.message,
       );
     }
   }
@@ -82,7 +82,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       throw new QueryFailedError(
         `DELETE FROM complaints WHERE idComplaints = ${idComplaints}`,
         [idComplaints],
-        'postgres',
+        error.message,
       );
     }
   }

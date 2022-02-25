@@ -17,7 +17,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       throw new QueryFailedError(
         `INSERT INTO reservations VALUES(${idRequests}, ${code}, ${confirmedAt})`,
         [idRequests, code, confirmedAt],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -36,7 +36,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       throw new QueryFailedError(
         `SELECT * FROM reservations WHERE idRequests = ${idRequests}`,
         [idRequests],
-        'postgres',
+        error.message,
       );
     }
   }
@@ -49,7 +49,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       throw new QueryFailedError(
         `DELETE FROM reservations WHERE idRequests = ${idRequests}`,
         [idRequests],
-        'postgres',
+        error.message,
       );
     }
   }
