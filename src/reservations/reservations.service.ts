@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsRepository } from './reservations.repository';
@@ -23,7 +23,10 @@ export class ReservationsService {
     return this.reservationsRepository.selectReservation(idRequests);
   }
 
-  deleteReservation(idRequests: string): Promise<void> {
+  async deleteReservation(idRequests: string): Promise<void> {
+    // if reservation was not found
+    if (!(await this.reservationsRepository.findOne(idRequests)))
+      throw new NotFoundException('Reservation was not found.');
     return this.reservationsRepository.deleteReservation(idRequests);
   }
 }
