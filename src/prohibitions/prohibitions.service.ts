@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
@@ -24,17 +24,23 @@ export class ProhibitionsService {
     return this.prohibitionsRepository.selectProhibition(idProhibitions);
   }
 
-  updateProhibitionTimeframe(
+  async updateProhibitionTimeframe(
     idProhibitions: string,
     updateProhibitonTimeframeDTO: UpdateProhibitionTimeframeDTO,
   ): Promise<void> {
+    // if reservation prohibition was not found
+    if (!(await this.prohibitionsRepository.findOne(idProhibitions)))
+      throw new NotFoundException('Reservation prohibition was not found.');
     return this.prohibitionsRepository.updateProhibition(
       idProhibitions,
       updateProhibitonTimeframeDTO,
     );
   }
 
-  deleteProhibition(idProhibitions: string): Promise<void> {
+  async deleteProhibition(idProhibitions: string): Promise<void> {
+    // if reservation prohibition was not found
+    if (!(await this.prohibitionsRepository.findOne(idProhibitions)))
+      throw new NotFoundException('Reservation prohibition was not found.');
     return this.prohibitionsRepository.deleteProhibition(idProhibitions);
   }
 }
