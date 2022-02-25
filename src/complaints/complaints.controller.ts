@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
+import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @Controller('complaint')
@@ -32,8 +33,10 @@ export class ComplaintsController {
   }
 
   @Patch()
-  reComplain(@Body() submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
-    return this.complaintsService.reComplain(submitComplaintDTO);
+  reComplain(
+    @Body() reSubmitComplaintDTO: ReSubmitComplaintDTO,
+  ): Promise<void> {
+    return this.complaintsService.reComplain(reSubmitComplaintDTO);
   }
 
   @Delete()
