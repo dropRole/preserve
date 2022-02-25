@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
@@ -18,11 +22,14 @@ export class OfferorsService {
   getOfferorByUsername(username: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorByUsername(username);
   }
-  updateOfferorUsername(
+  async updateOfferorUsername(
     idOfferors: string,
     updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
   ): Promise<void> {
     const { username } = updateOfferorUsernameDTO;
+    // if offeror was not found
+    if (!(await this.offerorsRepository.findOne(idOfferors)))
+      throw new NotFoundException('Offeror was not found.');
     // if handed username already exists
     if (
       this.offerorsRepository.selectOfferorByUsername(username) instanceof
@@ -34,19 +41,25 @@ export class OfferorsService {
       updateOfferorUsernameDTO,
     );
   }
-  updateOfferorEmail(
+  async updateOfferorEmail(
     idOfferors: string,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,
   ): Promise<void> {
+    // if offeror was not found
+    if (!(await this.offerorsRepository.findOne(idOfferors)))
+      throw new NotFoundException('Offeror was not found.');
     return this.offerorsRepository.updateOfferorEmail(
       idOfferors,
       updateOfferorEmailDTO,
     );
   }
-  updateOfferorBusinessInfo(
+  async updateOfferorBusinessInfo(
     idOfferors: string,
     updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
   ): Promise<void> {
+    // if offeror was not found
+    if (!(await this.offerorsRepository.findOne(idOfferors)))
+      throw new NotFoundException('Offeror was not found.');
     return this.offerorsRepository.updateOfferorBusinessInfo(
       idOfferors,
       updateOfferorBusinessInfoDTO,
