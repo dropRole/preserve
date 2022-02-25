@@ -1,5 +1,6 @@
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
+import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @EntityRepository(Complaint)
@@ -52,23 +53,19 @@ export class ComplaintsRepository extends Repository<Complaint> {
     }
   }
 
-  async updateComplaint(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
-    const { idRequests, username, counteredTo, content, written } =
-      submitComplaintDTO;
-    const complaint = this.create({
-      idRequests,
-      username,
-      counteredTo,
-      content,
-      written,
-    });
+  async updateComplaint(
+    reSubmitComplaintDTO: ReSubmitComplaintDTO,
+  ): Promise<void> {
+    const { idComplaints, content } = reSubmitComplaintDTO;
+    const complaint = await this.findOne(idComplaints);
+    complaint.content = content;
     try {
       // if update query failed to execute
       await this.save(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
-        undefined,
+        `UPDATE complaints SET content = ${content} WHERE idComplaints = ${idComplaints}`,
+        [content, idComplaints],
         error.message,
       );
     }
