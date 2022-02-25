@@ -1,0 +1,5 @@
+/prohibitions
+
+POST    GET                 PATCH                           DELETE
+*       /:idOfferors        /:idProhibitons/timeframe       /:idProhibitions
+        /:idProhibitons                                     
