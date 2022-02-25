@@ -12,7 +12,7 @@ import { ComplaintsService } from './complaints.service';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 import { SubmitComplaintDTO } from './dto/submit-complaint';
 
-@Controller('complaint')
+@Controller('complaints')
 export class ComplaintsController {
   constructor(private complaintsService: ComplaintsService) {}
   @Post()
