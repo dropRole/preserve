@@ -19,12 +19,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JWTPayload) {
-    const { username, role } = payload;
+    const { username } = payload;
     const account: Account = await this.accountsRepository.findOne({
       username,
     });
     // if account doesn't exist
     if (!account) throw new UnauthorizedException('Account does not exist');
-    return { username, role };
+    return payload;
   }
 }
