@@ -1,9 +1,6 @@
 import { IsString, MinLength, MaxLength, Matches } from 'class-validator';
 
-export class OffereeAuthCredentialsDTO {
-  @IsString()
-  email: string;
-
+export class AuthCredentialsDTO {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
