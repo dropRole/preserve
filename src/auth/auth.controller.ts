@@ -5,6 +5,7 @@ import { OffereeAuthCredentialsDTO } from './dto/offeree-auth-credentials.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+  
   @Post('/signup')
   async offereeSignUp(
     @Body() offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,

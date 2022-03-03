@@ -1,12 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Role } from 'src/auth/enum/role.enum';
+import { Roles } from 'src/auth/roles.decorator';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsService } from './reservations.service';
@@ -16,6 +10,7 @@ export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
   @Post()
+  @Roles(Role.Offeror)
   reserve(@Body() makeReservationDTO: MakeReservationDTO): Promise<void> {
     return this.reservationsService.reserve(makeReservationDTO);
   }
@@ -28,6 +23,7 @@ export class ReservationsController {
   } */
 
   @Get('/:idRequests')
+  @Roles(Role.Admin, Role.Offeror, Role.Offeree)
   getReservation(
     @Param('idRequests') idRequests: string,
   ): Promise<Reservation> {
@@ -35,6 +31,7 @@ export class ReservationsController {
   }
 
   @Delete()
+  @Roles(Role.Offeror)
   deleteReservation(@Param('idRequests') idRequests: string): Promise<void> {
     return this.reservationsService.deleteReservation(idRequests);
   }
