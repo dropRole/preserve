@@ -19,4 +19,7 @@ export class Complaint {
 
   @Column()
   written: string;
+
+  @Column()
+  updated: string;
 }
