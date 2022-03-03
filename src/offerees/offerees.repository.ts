@@ -9,8 +9,8 @@ export class OffereesRepository extends Repository<Offeree> {
   async insertOfferee(
     authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<Offeree> {
-    const { username, email } = authCredentialsDTO;
-    const offeree = this.create({ username, email });
+    const { username } = authCredentialsDTO;
+    const offeree = this.create({ username });
     await this.save(offeree);
     return offeree;
   }
