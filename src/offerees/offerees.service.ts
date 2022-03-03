@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OffereeAuthCredentialsDTO } from 'src/auth/dto/offeree-auth-credentials.dto';
+import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
@@ -16,10 +16,8 @@ export class OffereesService {
     @InjectRepository(OffereesRepository)
     private offereesRepository: OffereesRepository,
   ) {}
-  offereeSignUp(
-    offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,
-  ): Promise<Offeree> {
-    return this.offereesRepository.insertOfferee(offereeAuthCredentialsDTO);
+  offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<Offeree> {
+    return this.offereesRepository.insertOfferee(authCredentialsDTO);
   }
   getOfferee(idOfferees: string): Promise<Offeree> {
     return this.offereesRepository.selectOfferee(idOfferees);

@@ -1,4 +1,4 @@
-import { OffereeAuthCredentialsDTO } from 'src/auth/dto/offeree-auth-credentials.dto';
+import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
@@ -7,9 +7,9 @@ import { Offeree } from './offeree.entity';
 @EntityRepository(Offeree)
 export class OffereesRepository extends Repository<Offeree> {
   async insertOfferee(
-    offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,
+    authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<Offeree> {
-    const { username, email } = offereeAuthCredentialsDTO;
+    const { username, email } = authCredentialsDTO;
     const offeree = this.create({ username, email });
     await this.save(offeree);
     return offeree;

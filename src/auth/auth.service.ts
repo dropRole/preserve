@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { OffereesService } from 'src/offerees/offerees.service';
 import { AccountsRepository } from './accounts.repository';
-import { OffereeAuthCredentialsDTO } from './dto/offeree-auth-credentials.dto';
+import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from './jwt-payload.interface';
@@ -16,23 +16,17 @@ export class AuthService {
     private offereesService: OffereesService,
     private jwtService: JwtService,
   ) {}
-  async offereeSignUp(
-    offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,
-  ): Promise<void> {
+  async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
     // if offeree successfully signed up
-    if (
-      await this.accountsRepository.insertOffereeAccount(
-        offereeAuthCredentialsDTO,
-      )
-    )
-      this.offereesService.offereeSignUp(offereeAuthCredentialsDTO);
+    if (await this.accountsRepository.insertOffereeAccount(authCredentialsDTO))
+      this.offereesService.offereeSignUp(authCredentialsDTO);
     else throw new ConflictException('Username already exists.');
   }
 
   async offereeSignIn(
-    offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,
+    authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
-    const { username, password } = offereeAuthCredentialsDTO;
+    const { username, password } = authCredentialsDTO;
     const account = await this.accountsRepository.findOne({
       username,
     });

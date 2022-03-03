@@ -1,14 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Account } from './account.entity';
-import { OffereeAuthCredentialsDTO } from './dto/offeree-auth-credentials.dto';
+import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 
 @EntityRepository(Account)
 export class AccountsRepository extends Repository<Account> {
   async insertOffereeAccount(
-    offereeAuthCredentialsDTO: OffereeAuthCredentialsDTO,
+    authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<boolean> {
-    const { username, password } = offereeAuthCredentialsDTO;
+    const { username, password } = authCredentialsDTO;
     // generate bcrypt hash substrated from password and salt
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(password, salt);
