@@ -1,4 +1,5 @@
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
+import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -6,6 +7,51 @@ import { Offeror } from './offeror.entity';
 
 @EntityRepository(Offeror)
 export class OfferorsRepository extends Repository<Offeror> {
+  async insertOfferor(
+    recordOfferorDTO: RecordOfferorDTO,
+    username: string,
+  ): Promise<void> {
+    const {
+      name,
+      address,
+      email,
+      telephone,
+      businessHours,
+      responsiveness,
+      compliance,
+      timeliness,
+    } = recordOfferorDTO;
+    const offeror = this.create({
+      name,
+      address,
+      email,
+      telephone,
+      businessHours,
+      responsiveness,
+      compliance,
+      timeliness,
+      username,
+    });
+    try {
+      // if insert query failed to execute
+      await this.insert(offeror);
+    } catch (error) {
+      throw new QueryFailedError(
+        `INSERT INTO offerors VALUES(${name}, ${address}, ${email}, ${telephone}, ${responsiveness}, ${compliance}, ${timeliness})`,
+        [
+          name,
+          address,
+          email,
+          telephone,
+          responsiveness,
+          compliance,
+          timeliness,
+        ],
+        error.message,
+      );
+    }
+  }
+
   async selectOfferorById(idOfferors: string): Promise<Offeror> {
     try {
       // if select query failed to execute
@@ -18,6 +64,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       );
     }
   }
+
   async selectOfferorByUsername(username: string): Promise<Offeror> {
     try {
       // if select query failed to execute
@@ -30,6 +77,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       );
     }
   }
+
   async updateOfferorUsername(
     idOfferors: string,
     updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
