@@ -16,11 +16,13 @@ export class AuthService {
     private offereesService: OffereesService,
     private jwtService: JwtService,
   ) {}
+
   async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    // if offeree successfully signed up
-    if (await this.accountsRepository.insertOffereeAccount(authCredentialsDTO))
-      this.offereesService.offereeSignUp(authCredentialsDTO);
-    else throw new ConflictException('Username already exists.');
+    // if offeree haven't successfully signed up
+    if (
+      !(await this.accountsRepository.insertOffereeAccount(authCredentialsDTO))
+    )
+      throw new ConflictException('Username already exists.');
   }
 
   async offereeSignIn(
