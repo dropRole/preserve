@@ -6,5 +6,6 @@ import { OfferorsService } from './offerors.service';
 @Module({
   controllers: [OfferorsController],
   providers: [OfferorsService, OfferorsRepository],
+  exports: [OfferorsService, OfferorsRepository],
 })
 export class OfferorsModule {}
