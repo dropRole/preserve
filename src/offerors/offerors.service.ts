@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
+import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -16,9 +18,18 @@ export class OfferorsService {
     @InjectRepository(OfferorsRepository)
     private offerorsRepository: OfferorsRepository,
   ) {}
+
+  recordAnOfferor(
+    recordOfferorDTO: RecordOfferorDTO,
+    username: string,
+  ): Promise<void> {
+    return this.offerorsRepository.insertOfferor(recordOfferorDTO, username);
+  }
+
   getOfferorById(idOfferors: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorById(idOfferors);
   }
+
   getOfferorByUsername(username: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorByUsername(username);
   }
@@ -41,6 +52,7 @@ export class OfferorsService {
       updateOfferorUsernameDTO,
     );
   }
+
   async updateOfferorEmail(
     idOfferors: string,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,
@@ -53,6 +65,7 @@ export class OfferorsService {
       updateOfferorEmailDTO,
     );
   }
+
   async updateOfferorBusinessInfo(
     idOfferors: string,
     updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
