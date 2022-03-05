@@ -9,6 +9,9 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { OfferorsModule } from 'src/offerors/offerors.module';
+import { OfferorsRepository } from 'src/offerors/offerors.repository';
+import { OfferorsService } from 'src/offerors/offerors.service';
 
 @Module({
   imports: [
@@ -20,10 +23,18 @@ import { JwtStrategy } from './jwt.strategy';
         expiresIn: 3600,
       },
     }),
+    OfferorsModule,
     OffereesModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, OffereesService, OffereesRepository],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    OfferorsService,
+    OfferorsRepository,
+    OffereesService,
+    OffereesRepository,
+  ],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
