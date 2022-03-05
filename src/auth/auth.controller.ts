@@ -5,12 +5,15 @@ import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-  
-  @Post('/signup')
-  async offereeSignUp(
-    @Body() authCredentialsDTO: AuthCredentialsDTO,
-  ): Promise<void> {
-    this.authService.offereeSignUp(authCredentialsDTO);
+
+  @Post('/offeree/signup')
+  offereeSignUp(@Body() authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+    return this.authService.offereeSignUp(authCredentialsDTO);
+  }
+
+  @Post('/offeror/signup')
+  offerorSignUp(@Body() authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+    return this.authService.offerorSignUp(authCredentialsDTO);
   }
 
   @Post('/signin')
@@ -19,12 +22,4 @@ export class AuthController {
   ): Promise<{ accessToken: string }> {
     return this.authService.offereeSignIn(authCredentialsDTO);
   }
-
-  /* @Post('/offeror/signup')
-  @Roles(Role.Admin)
-  async offerorSignUp(
-    @Body() offerorAuthCredentialsDTO: OfferorAuthCredentialsDTO)
-  ): Promise<void>{
-
-  } */
 }

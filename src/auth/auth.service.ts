@@ -25,6 +25,10 @@ export class AuthService {
       throw new ConflictException('Username already exists.');
   }
 
+  offerorSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+    return this.accountsRepository.insertOfferorAccount(authCredentialsDTO);
+  }
+
   async offereeSignIn(
     authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
