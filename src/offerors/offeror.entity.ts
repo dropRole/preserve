@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('offerors')
 export class Offeror {
@@ -7,9 +7,6 @@ export class Offeror {
 
   @Column()
   name: string;
-
-  @Column()
-  surname: string;
 
   @Column()
   address: string;
