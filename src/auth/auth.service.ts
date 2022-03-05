@@ -6,7 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from './jwt-payload.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConflictException } from '@nestjs/common';
+import { OfferorsService } from 'src/offerors/offerors.service';
+import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,19 +15,28 @@ export class AuthService {
     @InjectRepository(AccountsRepository)
     private accountsRepository: AccountsRepository,
     private offereesService: OffereesService,
+    private offerorsService: OfferorsService,
     private jwtService: JwtService,
   ) {}
 
   async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    // if offeree haven't successfully signed up
-    if (
-      !(await this.accountsRepository.insertOffereeAccount(authCredentialsDTO))
-    )
-      throw new ConflictException('Username already exists.');
+    try {
+      // if username unique violation appeared
+      this.accountsRepository.insertAccount(authCredentialsDTO);
+    } catch (error) {}
+    this.offereesService.offereeSignUp(authCredentialsDTO);
   }
 
-  offerorSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    return this.accountsRepository.insertOfferorAccount(authCredentialsDTO);
+  offerorSignUp(
+    authCredentialsDTO: AuthCredentialsDTO,
+    recordOfferorDTO: RecordOfferorDTO,
+  ): Promise<void> {
+    try {
+      // if username unique violation appeared
+      this.accountsRepository.insertAccount(authCredentialsDTO);
+    } catch (error) {}
+    const { username } = authCredentialsDTO;
+    return this.offerorsService.recordAnOfferor(recordOfferorDTO, username);
   }
 
   async offereeSignIn(
