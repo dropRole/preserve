@@ -19,12 +19,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+  offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
     try {
       // if username unique violation appeared
       this.accountsRepository.insertAccount(authCredentialsDTO);
     } catch (error) {}
-    this.offereesService.recordAnOfferee(authCredentialsDTO);
+    return this.offereesService.recordAnOfferee(authCredentialsDTO);
   }
 
   offerorSignUp(
@@ -39,7 +39,7 @@ export class AuthService {
     return this.offerorsService.recordAnOfferor(recordOfferorDTO, username);
   }
 
-  async offereeSignIn(
+  async signIn(
     authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialsDTO;
