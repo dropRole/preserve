@@ -8,6 +8,7 @@ import { JWTPayload } from './jwt-payload.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
+import { Role } from './enum/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -46,10 +47,20 @@ export class AuthService {
     const account = await this.accountsRepository.findOne({
       username,
     });
+    let accessToken: string, payload: JWTPayload;
     // if account with the given credentails is registered
     if (account && (await bcrypt.compare(password, account.password))) {
-      const payload: JWTPayload = { username, role: 'offeree' };
-      const accessToken: string = await this.jwtService.sign(payload);
+      // check if offerees account credentials
+      if (this.offereesService.getOffereeByUsername(username)) {
+        payload = { username, role: Role.Offeree };
+        accessToken = await this.jwtService.sign(payload);
+      }
+
+      // check if offerors account credentials
+      if (this.offerorsService.getOfferorByUsername(username)) {
+        payload = { username, role: Role.Offeror };
+        accessToken = await this.jwtService.sign(payload);
+      }
       return { accessToken };
     } else throw new UnauthorizedException('Check your login credentials.');
   }
