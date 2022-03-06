@@ -6,13 +6,10 @@ import { Offeree } from './offeree.entity';
 
 @EntityRepository(Offeree)
 export class OffereesRepository extends Repository<Offeree> {
-  async insertOfferee(
-    authCredentialsDTO: AuthCredentialsDTO,
-  ): Promise<Offeree> {
+  async insertOfferee(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
     const { username } = authCredentialsDTO;
     const offeree = this.create({ username });
     await this.save(offeree);
-    return offeree;
   }
   async selectOfferee(idOfferees: string): Promise<Offeree> {
     const query = this.createQueryBuilder('offerees');
