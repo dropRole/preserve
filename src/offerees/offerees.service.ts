@@ -16,7 +16,7 @@ export class OffereesService {
     @InjectRepository(OffereesRepository)
     private offereesRepository: OffereesRepository,
   ) {}
-  offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<Offeree> {
+  recordAnOfferee(authCredentialsDTO: AuthCredentialsDTO): Promise<Offeree> {
     return this.offereesRepository.insertOfferee(authCredentialsDTO);
   }
   getOfferee(idOfferees: string): Promise<Offeree> {

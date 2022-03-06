@@ -24,7 +24,7 @@ export class AuthService {
       // if username unique violation appeared
       this.accountsRepository.insertAccount(authCredentialsDTO);
     } catch (error) {}
-    this.offereesService.offereeSignUp(authCredentialsDTO);
+    this.offereesService.recordAnOfferee(authCredentialsDTO);
   }
 
   offerorSignUp(
