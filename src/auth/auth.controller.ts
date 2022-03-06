@@ -21,9 +21,9 @@ export class AuthController {
   }
 
   @Post('/signin')
-  offereeSignIn(
+  signIn(
     @Body() authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
-    return this.authService.offereeSignIn(authCredentialsDTO);
+    return this.authService.signIn(authCredentialsDTO);
   }
 }
