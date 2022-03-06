@@ -5,6 +5,6 @@ import { ProhibitionsRepository } from './prohibitons.repository';
 
 @Module({
   controllers: [ProhibitionsController],
-  providers: [ProhibitionsService, ProhibitionsRepository]
+  providers: [ProhibitionsService, ProhibitionsRepository],
 })
 export class ProhibitionsModule {}
