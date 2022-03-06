@@ -15,9 +15,9 @@ export class AuthController {
   @Post('/offeror/signup')
   offerorSignUp(
     @Body('authCredentialsDTO') authCredentialsDTO: AuthCredentialsDTO,
-    @Body('recordOfferorDTO') RecordOfferorDTO: RecordOfferorDTO,
+    @Body('recordOfferorDTO') recordOfferorDTO: RecordOfferorDTO,
   ): Promise<void> {
-    return this.authService.offerorSignUp(authCredentialsDTO, RecordOfferorDTO);
+    return this.authService.offerorSignUp(authCredentialsDTO, recordOfferorDTO);
   }
 
   @Post('/signin')
