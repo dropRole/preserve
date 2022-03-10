@@ -30,14 +30,6 @@ export class ComplaintsController {
     return this.complaintsService.getComplaints(idReservations);
   }
 
-  @Get('/counter/:counteredTo')
-  @Roles(Role.Admin, Role.Offeror, Role.Offeree)
-  getCounterComplaints(
-    @Param('counteredTo') counteredTo: string,
-  ): Promise<Complaint[]> {
-    return this.complaintsService.getCounterComplaints(counteredTo);
-  }
-
   @Patch()
   @Roles(Role.Offeror, Role.Offeree)
   reComplain(

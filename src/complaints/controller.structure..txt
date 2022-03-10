@@ -1,6 +1,5 @@
 /complaints
 
 POST        GET                     PATCH               DELETE  
-*           /:idReservations        /:idComplaints      /:idComplaints
-            /counter/:counteredTo          
+*           /:idReservations        /:idComplaints      /:idComplaints          
             

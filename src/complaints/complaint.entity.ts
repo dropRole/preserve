@@ -1,18 +1,32 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Account } from 'src/auth/account.entity';
+import { Request } from 'src/requests/request.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('complaints')
 export class Complaint {
   @PrimaryGeneratedColumn('uuid')
   idComplaints: string;
 
-  @Column()
-  idRequests: string;
-  
-  @Column()
-  username: string;
-  
-  @Column()
-  counteredTo: string;
+  @ManyToOne((_type) => Request, (request) => request.complaints, {
+    eager: false,
+  })
+  request: Request;
+
+  @OneToOne((_type) => Account, (account) => account.complaints, {
+    eager: true,
+  })
+  account: Account;
+
+  @OneToOne((_type) => Complaint, (complaint) => complaint.counteredComplaint, {
+    eager: true,
+  })
+  counteredComplaint: Complaint;
 
   @Column()
   content: string;

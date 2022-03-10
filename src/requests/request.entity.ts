@@ -1,15 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Offeree } from 'src/offerees/offeree.entity';
+import { Offeror } from 'src/offerors/offeror.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('requests')
 export class Request {
   @PrimaryGeneratedColumn('uuid')
   idRequests: string;
 
-  @Column()
-  idOfferors: string;
+  @ManyToOne((_type) => Offeror, (offeror) => offeror.request, { eager: false })
+  offeror: Offeror;
 
-  @Column()
-  idOfferees: string;
+  @ManyToOne((_type) => Offeree, (offeree) => offeree.requests, { eager: true })
+  offeree: Offeree;
 
   @Column()
   requestedAt: string;

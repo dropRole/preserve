@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Complaint } from 'src/complaints/complaint.entity';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity('accounts')
 export class Account {
@@ -7,4 +8,9 @@ export class Account {
 
   @Column()
   password: string;
+
+  @OneToMany((_type) => Complaint, (complaint) => complaint.account, {
+    eager: false,
+  })
+  complaints: Complaint[];
 }

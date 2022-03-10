@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Account } from 'src/auth/account.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('offerors')
 export class Offeror {
@@ -29,6 +30,6 @@ export class Offeror {
   @Column()
   timeliness: number;
 
-  @Column()
-  username: string;
+  @OneToOne((_type) => Account, (account) => account.offeror, { eager: true })
+  account: Account;
 }
