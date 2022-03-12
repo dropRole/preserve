@@ -1,6 +1,6 @@
 import { Complaint } from 'src/complaints/complaint.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { Role } from './enum/role.enum';
+import { Privilege } from './enum/privilege.enum';
 
 @Entity('accounts')
 export class Account {
@@ -11,7 +11,7 @@ export class Account {
   password: string;
 
   @Column()
-  privilege: Role;
+  privilege: Privilege;
 
   @OneToMany((_type) => Complaint, (complaint) => complaint.account, {
     eager: false,
