@@ -3,7 +3,7 @@ import { Account } from './account.entity';
 
 export const GetAccount = createParamDecorator(
   (_data, context: ExecutionContext): Account => {
-    const account = context.switchToHttp().getRequest();
+    const { account } = context.switchToHttp().getRequest();
     return account;
   },
 );
