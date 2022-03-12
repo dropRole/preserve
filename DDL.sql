@@ -1,6 +1,6 @@
 ﻿/*
 Created: 15/12/2021
-Modified: 13/02/2022
+Modified: 12/03/2022
 Project: pReserve
 Model: Global
 Author: dropRole
@@ -15,7 +15,9 @@ Database: PostgreSQL 10
 
 CREATE TABLE "accounts"(
  "username" Character varying(20) NOT NULL,
- "password" Character varying(64) NOT NULL
+ "password" Character varying(64) NOT NULL,
+ "privilege" Character varying(7) NOT NULL
+        CONSTRAINT "user_privilege" CHECK (privilege IN('Offeree', 'Offeror'))
 )
 WITH (
  autovacuum_enabled=true)
@@ -31,7 +33,7 @@ ALTER TABLE "accounts" ADD CONSTRAINT "PK_accounts" PRIMARY KEY ("username")
 CREATE TABLE "offerees"(
  "id_offerees" UUID NOT NULL,
  "username" Character varying(20) NOT NULL,
- "email" Character varying(60) NOT NULL
+ "email" Character varying(60)
 )
 WITH (
  autovacuum_enabled=true)
@@ -142,7 +144,8 @@ CREATE TABLE "complaints"(
  "username" Character varying(20) NOT NULL,
  "countered_to" UUID,
  "content" Text NOT NULL,
- "written" Timestamp NOT NULL
+ "written" Timestamp NOT NULL,
+ "updated" Timestamp
 )
 WITH (
  autovacuum_enabled=true)
@@ -207,7 +210,7 @@ ALTER TABLE "complaints" ADD CONSTRAINT "reservations_complaints" FOREIGN KEY ("
 ALTER TABLE "complaints" ADD CONSTRAINT "accounts_complaints" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "offerees" ADD CONSTRAINT "users_offerees" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "offerees" ADD CONSTRAINT "accounts_offerees" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "offerors" ADD CONSTRAINT "accounts_offerors" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
