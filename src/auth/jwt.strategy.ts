@@ -25,6 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
     // if account doesn't exist
     if (!account) throw new UnauthorizedException('Account does not exist');
-    return payload;
+    return account;
   }
 }
