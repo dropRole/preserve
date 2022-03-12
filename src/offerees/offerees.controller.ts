@@ -1,6 +1,6 @@
 import { Controller, Body, Get, Param, Patch } from '@nestjs/common';
-import { Role } from 'src/auth/enum/role.enum';
-import { Roles } from 'src/auth/roles.decorator';
+import { Privilege } from 'src/auth/enum/privilege.enum';
+import { Roles } from 'src/auth/privilege.decorator';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
@@ -11,19 +11,19 @@ export class OffereesController {
   constructor(private offereesService: OffereesService) {}
 
   @Get('/:idOfferees')
-  @Roles(Role.Admin, Role.Offeror)
+  @Roles(Privilege.Admin, Privilege.Offeror)
   getOfferee(@Param() idOfferees: string): Promise<Offeree> {
     return this.offereesService.getOfferee(idOfferees);
   }
 
   @Get(':/username')
-  @Roles(Role.Admin)
+  @Roles(Privilege.Admin)
   getOffereeByUsername(@Param('username') username: string): Promise<Offeree> {
     return this.offereesService.getOffereeByUsername(username);
   }
 
   @Patch('/:idOfferees/username')
-  @Roles(Role.Offeree)
+  @Roles(Privilege.Offeree)
   updateOffereeUsername(
     @Param('idOfferees') idOfferees: string,
     @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
@@ -35,7 +35,7 @@ export class OffereesController {
   }
 
   @Patch('/:idOfferees/email')
-  @Roles(Role.Offeree)
+  @Roles(Privilege.Offeree)
   updateOffereeEmail(
     @Param('idOfferees') idOfferees: string,
     @Body('email') updateOffereeEmailDTO: UpdateOffereeEmailDTO,

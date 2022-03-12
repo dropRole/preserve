@@ -7,8 +7,8 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { Role } from 'src/auth/enum/role.enum';
-import { Roles } from 'src/auth/roles.decorator';
+import { Privilege } from 'src/auth/enum/privilege.enum';
+import { Roles } from 'src/auth/privilege.decorator';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
 import { Prohibition } from './prohibitions.entity';
@@ -19,13 +19,13 @@ export class ProhibitionsController {
   constructor(private prohibitonsService: ProhibitionsService) {}
 
   @Post()
-  @Roles(Role.Admin)
+  @Roles(Privilege.Admin)
   prohibitAnOfferee(prohibitOffereeDTO: ProhibitOffereeDTO): Promise<void> {
     return this.prohibitonsService.prohibitAnOfferee(prohibitOffereeDTO);
   }
 
   @Get('/:idOfferors')
-  @Roles(Role.Admin, Role.Offeror)
+  @Roles(Privilege.Admin, Privilege.Offeror)
   getProhibitions(
     @Param('idOfferors') idOfferors: string,
   ): Promise<Prohibition[]> {
@@ -33,7 +33,7 @@ export class ProhibitionsController {
   }
 
   @Get('/:idProhibitions')
-  @Roles(Role.Admin, Role.Offeror)
+  @Roles(Privilege.Admin, Privilege.Offeror)
   getProhibition(
     @Param('idProhibitions') idProhibitions: string,
   ): Promise<Prohibition> {
@@ -41,7 +41,7 @@ export class ProhibitionsController {
   }
 
   @Patch('/:idProhibitons')
-  @Roles(Role.Admin)
+  @Roles(Privilege.Admin)
   updateProhibitionTimeframe(
     @Param('idProhibitons') idProhibitons: string,
     @Body() updateProhibitonTimeframeDTO: UpdateProhibitionTimeframeDTO,
@@ -53,7 +53,7 @@ export class ProhibitionsController {
   }
 
   @Delete(':idProhibitions')
-  @Roles(Role.Admin)
+  @Roles(Privilege.Admin)
   deleteProhibition(idProhibitions: string): Promise<void> {
     return this.prohibitonsService.deleteProhibition(idProhibitions);
   }
