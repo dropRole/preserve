@@ -1,6 +1,13 @@
+import { Complaint } from 'src/complaints/complaint.entity';
 import { Offeree } from 'src/offerees/offeree.entity';
 import { Offeror } from 'src/offerors/offeror.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('requests')
 export class Request {
@@ -27,4 +34,9 @@ export class Request {
 
   @Column()
   note: string = null;
+
+  @OneToMany((_type) => Complaint, (complaint) => complaint.request, {
+    eager: false,
+  })
+  complaints: Complaint[];
 }
