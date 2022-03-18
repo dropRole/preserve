@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { Request } from '../../requests/request.entity';
+import { Complaint } from '../complaint.entity';
 
 export class SubmitComplaintDTO {
-  @IsString()
-  @IsNotEmpty()
-  idRequests: string;
+  request: Request;
 
-  @IsOptional()
-  @IsString()
-  counteredTo: string;
+  counteredComplaint: Complaint | undefined;
 
   @IsString()
   @IsNotEmpty()
