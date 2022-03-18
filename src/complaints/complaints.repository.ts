@@ -1,3 +1,4 @@
+import { Account } from 'src/auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
@@ -5,13 +6,16 @@ import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @EntityRepository(Complaint)
 export class ComplaintsRepository extends Repository<Complaint> {
-  async insertComplaint(submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
-    const { idRequests, username, counteredTo, content, written } =
+  async insertComplaint(
+    submitComplaintDTO: SubmitComplaintDTO,
+    account: Account,
+  ): Promise<void> {
+    const { request, counteredComplaint, content, written } =
       submitComplaintDTO;
     const complaint = this.create({
-      idRequests,
-      username,
-      counteredTo,
+      request,
+      account,
+      counteredComplaint,
       content,
       written,
     });
@@ -20,16 +24,26 @@ export class ComplaintsRepository extends Repository<Complaint> {
       await this.insert(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO complaints VALUES(${idRequests}, ${username}, ${counteredTo}, ${content}, ${written})`,
+        `INSERT INTO complaints VALUES(${request.idRequests}, ${account.username}, ${counteredComplaint.idComplaints}, ${content}, ${written})`,
         undefined,
         error.message,
       );
     }
   }
 
-  async selectComplaints(idReservations: string): Promise<Complaint[]> {
+  async selectComplaints(
+    idReservations: string,
+    account: Account,
+  ): Promise<Complaint[]> {
     const query = this.createQueryBuilder('complaints');
     query.where({ idRequests: idReservations });
+    query.andWhere('complaint.username = :username', {
+      username: account.username,
+    });
+    query.orWhere(
+      'complaint.counteredTo IN (SELECT idComplaints FROM complaints WHERE username = :username)',
+      { username: account.username },
+    );
     try {
       return await query.getMany();
     } catch (error) {

@@ -7,7 +7,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
+import { GetAccount } from 'src/auth/get-account.decorator';
 import { Roles } from 'src/auth/privilege.decorator';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
@@ -20,22 +22,29 @@ export class ComplaintsController {
 
   @Post()
   @Roles(Privilege.Offeror, Privilege.Offeree)
-  complain(@Body() submitComplaintDTO: SubmitComplaintDTO): Promise<void> {
-    return this.complaintsService.complain(submitComplaintDTO);
+  complain(
+    @Body() submitComplaintDTO: SubmitComplaintDTO,
+    @GetAccount() account: Account,
+  ): Promise<void> {
+    return this.complaintsService.complain(submitComplaintDTO, account);
   }
 
   @Get('/:idReservations')
-  @Roles(Privilege.Admin, Privilege.Offeror)
-  getComplaints(@Param() idReservations: string): Promise<Complaint[]> {
-    return this.complaintsService.getComplaints(idReservations);
+  @Roles(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
+  getComplaints(
+    @Param() idReservations: string,
+    @GetAccount() account: Account,
+  ): Promise<Complaint[]> {
+    return this.complaintsService.getComplaints(idReservations, account);
   }
 
   @Patch()
   @Roles(Privilege.Offeror, Privilege.Offeree)
   reComplain(
     @Body() reSubmitComplaintDTO: ReSubmitComplaintDTO,
+    @GetAccount() account: Account,
   ): Promise<void> {
-    return this.complaintsService.reComplain(reSubmitComplaintDTO);
+    return this.complaintsService.reComplain(reSubmitComplaintDTO, account);
   }
 
   @Delete()
