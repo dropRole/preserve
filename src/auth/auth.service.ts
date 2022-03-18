@@ -8,7 +8,7 @@ import { JWTPayload } from './jwt-payload.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
-import { Role } from './enum/role.enum';
+import { Privilege } from './enum/privilege.enum';
 
 @Injectable()
 export class AuthService {
@@ -58,7 +58,7 @@ export class AuthService {
 
       // check if offerors account credentials
       if (this.offerorsService.getOfferorByUsername(username)) {
-        payload = { username, role: Role.Offeror };
+        payload = { username, role: Privilege.Offeror };
         accessToken = await this.jwtService.sign(payload);
       }
       return { accessToken };
