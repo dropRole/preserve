@@ -5,10 +5,6 @@ export class SubmitComplaintDTO {
   @IsNotEmpty()
   idRequests: string;
 
-  @IsString()
-  @IsNotEmpty()
-  username: string;
-
   @IsOptional()
   @IsString()
   counteredTo: string;
