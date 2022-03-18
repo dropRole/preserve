@@ -25,6 +25,7 @@ export class Complaint {
 
   @OneToOne((_type) => Complaint, (complaint) => complaint.counteredComplaint, {
     eager: true,
+    nullable: true,
   })
   counteredComplaint: Complaint;
 
@@ -34,6 +35,6 @@ export class Complaint {
   @Column()
   written: string;
 
-  @Column()
+  @Column({ nullable: true })
   updated: string;
 }
