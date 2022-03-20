@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
+import { GetAccount } from 'src/auth/get-account.decorator';
 import { Roles } from 'src/auth/privilege.decorator';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
@@ -26,11 +28,11 @@ export class OfferorsController {
   @Patch('/:idOfferors/username')
   @Roles(Privilege.Offeror)
   updateOfferorUsername(
-    @Param() idOfferors: string,
+    @GetAccount() account: Account,
     @Body('username') updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
   ): Promise<void> {
     return this.offerorsService.updateOfferorUsername(
-      idOfferors,
+      account,
       updateOfferorUsernameDTO,
     );
   }
@@ -38,11 +40,11 @@ export class OfferorsController {
   @Patch('/:idOfferors/email')
   @Roles(Privilege.Offeror)
   updateOfferorEmail(
-    @Param() idOfferors: string,
+    @GetAccount() account: Account,
     @Body('username') updateOfferorEmailDTO: UpdateOfferorEmailDTO,
   ): Promise<void> {
     return this.offerorsService.updateOfferorEmail(
-      idOfferors,
+      account,
       updateOfferorEmailDTO,
     );
   }
@@ -50,12 +52,12 @@ export class OfferorsController {
   @Patch('/:idOfferors/businessInformation')
   @Roles(Privilege.Offeror)
   updateOfferorBussinessInfo(
-    @Param() idOfferors: string,
+    @GetAccount() account: Account,
     @Body('username')
     updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
   ): Promise<void> {
     return this.offerorsService.updateOfferorBusinessInfo(
-      idOfferors,
+      account,
       updateOfferorBusinessInfoDTO,
     );
   }

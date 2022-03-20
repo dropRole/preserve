@@ -1,3 +1,4 @@
+import { Account } from 'src/auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
@@ -79,47 +80,48 @@ export class OfferorsRepository extends Repository<Offeror> {
   }
 
   async updateOfferorUsername(
-    idOfferors: string,
+    account: Account,
     updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
   ): Promise<void> {
     const { username } = updateOfferorUsernameDTO;
-    const offeror = await this.findOne({ idOfferors });
-    offeror.username = username;
+    const offeror = await this.findOne({ account });
+    account.username = username;
+    offeror.account = account;
     try {
       // if select query failed to execute
       await this.save(offeror);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE offerors SET username = ${username} WHERE idOfferors = ${idOfferors}`,
-        [idOfferors, username],
+        `UPDATE offerors SET username = ${username} WHERE idOfferors = ${offeror.idOfferors}`,
+        [offeror.idOfferors, username],
         error.message,
       );
     }
   }
   async updateOfferorEmail(
-    idOfferors: string,
+    account: Account,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,
   ): Promise<void> {
     const { email } = updateOfferorEmailDTO;
-    const offeror = await this.findOne({ idOfferors });
+    const offeror = await this.findOne({ account });
     offeror.email = email;
     try {
       // if select query failed to execute
       await this.save(offeror);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE offerors SET email = ${email} WHERE idOfferors = ${idOfferors}`,
-        [idOfferors, email],
+        `UPDATE offerors SET email = ${email} WHERE idOfferors = ${offeror.idOfferors}`,
+        [offeror.idOfferors, email],
         error.message,
       );
     }
   }
   async updateOfferorBusinessInfo(
-    idOfferors: string,
+    account: Account,
     updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
   ): Promise<void> {
     const { address, telephone, businessHours } = updateOfferorBusinessInfoDTO;
-    const offeror = await this.findOne({ idOfferors });
+    const offeror = await this.findOne({ account });
     offeror.address = address;
     offeror.telephone = telephone;
     offeror.businessHours = businessHours;
@@ -128,7 +130,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       await this.save(offeror);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE offerors SET address = ${address}, telephone = ${telephone}, businessHours = ${businessHours}  WHERE idOfferors = ${idOfferors}`,
+        `UPDATE offerors SET address = ${address}, telephone = ${telephone}, businessHours = ${businessHours}  WHERE idOfferors = ${offeror.idOfferors}`,
         [address, telephone, businessHours],
         error.message,
       );

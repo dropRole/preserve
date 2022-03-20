@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Account } from 'src/auth/account.entity';
 import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
@@ -34,12 +35,12 @@ export class OfferorsService {
     return this.offerorsRepository.selectOfferorByUsername(username);
   }
   async updateOfferorUsername(
-    idOfferors: string,
+    account: Account,
     updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
   ): Promise<void> {
     const { username } = updateOfferorUsernameDTO;
     // if offeror was not found
-    if (!(await this.offerorsRepository.findOne(idOfferors)))
+    if (!(await this.offerorsRepository.findOne({ account })))
       throw new NotFoundException('Offeror was not found.');
     // if handed username already exists
     if (
@@ -48,33 +49,33 @@ export class OfferorsService {
     )
       throw new ConflictException('Username already exists.');
     return this.offerorsRepository.updateOfferorUsername(
-      idOfferors,
+      account,
       updateOfferorUsernameDTO,
     );
   }
 
   async updateOfferorEmail(
-    idOfferors: string,
+    account: Account,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,
   ): Promise<void> {
     // if offeror was not found
-    if (!(await this.offerorsRepository.findOne(idOfferors)))
+    if (!(await this.offerorsRepository.findOne({ account })))
       throw new NotFoundException('Offeror was not found.');
     return this.offerorsRepository.updateOfferorEmail(
-      idOfferors,
+      account,
       updateOfferorEmailDTO,
     );
   }
 
   async updateOfferorBusinessInfo(
-    idOfferors: string,
+    account: Account,
     updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
   ): Promise<void> {
     // if offeror was not found
-    if (!(await this.offerorsRepository.findOne(idOfferors)))
+    if (!(await this.offerorsRepository.findOne({ account })))
       throw new NotFoundException('Offeror was not found.');
     return this.offerorsRepository.updateOfferorBusinessInfo(
-      idOfferors,
+      account,
       updateOfferorBusinessInfoDTO,
     );
   }
