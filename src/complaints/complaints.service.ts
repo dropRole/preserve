@@ -54,7 +54,7 @@ export class ComplaintsService {
     return this.complaintsRepository.updateComplaint(reSubmitComplaintDTO);
   }
 
-  async withDrawComplaint(idComplaints: string): Promise<void> {
+  async withdrawComplaint(idComplaints: string): Promise<void> {
     // if complaint doesn't exist
     if (!(await this.complaintsRepository.findOne(idComplaints)))
       throw new NotFoundException('Subject complant was not found');

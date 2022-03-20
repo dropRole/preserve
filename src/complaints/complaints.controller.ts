@@ -49,7 +49,7 @@ export class ComplaintsController {
 
   @Delete()
   @Roles(Privilege.Offeror, Privilege.Offeree)
-  withDrawComplaint(@Param() idComplaints: string): Promise<void> {
+  withdrawComplaint(@Param() idComplaints: string): Promise<void> {
     return this.complaintsService.withDrawComplaint(idComplaints);
   }
 }
