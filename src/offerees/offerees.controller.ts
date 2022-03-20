@@ -1,5 +1,7 @@
 import { Controller, Body, Get, Param, Patch } from '@nestjs/common';
+import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
+import { GetAccount } from 'src/auth/get-account.decorator';
 import { Roles } from 'src/auth/privilege.decorator';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
@@ -25,11 +27,11 @@ export class OffereesController {
   @Patch('/:idOfferees/username')
   @Roles(Privilege.Offeree)
   updateOffereeUsername(
-    @Param('idOfferees') idOfferees: string,
+    @GetAccount() account: Account,
     @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
     return this.offereesService.updateOffereeUsername(
-      idOfferees,
+      account,
       updateOffereeUsernameDTO,
     );
   }
@@ -37,11 +39,11 @@ export class OffereesController {
   @Patch('/:idOfferees/email')
   @Roles(Privilege.Offeree)
   updateOffereeEmail(
-    @Param('idOfferees') idOfferees: string,
+    @GetAccount() account: Account,
     @Body('email') updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     return this.offereesService.updateOffereeEmail(
-      idOfferees,
+      account,
       updateOffereeEmailDTO,
     );
   }

@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Account } from 'src/auth/account.entity';
 import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
@@ -26,12 +27,12 @@ export class OffereesService {
     return this.offereesRepository.selectOfferee(username);
   }
   async updateOffereeUsername(
-    idOfferees: string,
+    account: Account,
     updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
     const { username } = updateOffereeUsernameDTO;
     // if offeree was not found
-    if (!(await this.offereesRepository.findOne(idOfferees)))
+    if (!(await this.offereesRepository.findOne({ account })))
       throw new NotFoundException('Offeree was not found.');
     // if provided username doesn't already exist
     if (
@@ -40,19 +41,19 @@ export class OffereesService {
     )
       throw new ConflictException('Username already exists.');
     return this.offereesRepository.updateOffereeUsername(
-      idOfferees,
+      account,
       updateOffereeUsernameDTO,
     );
   }
   async updateOffereeEmail(
-    idOfferees: string,
+    account: Account,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     // if offeree was not found
-    if (!(await this.offereesRepository.findOne(idOfferees)))
+    if (!(await this.offereesRepository.findOne({ account })))
       throw new NotFoundException('Offeree was not found.');
     return this.offereesRepository.updateOffereeEmail(
-      idOfferees,
+      account,
       updateOffereeEmailDTO,
     );
   }

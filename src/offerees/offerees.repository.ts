@@ -1,3 +1,4 @@
+import { Account } from 'src/auth/account.entity';
 import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
@@ -32,12 +33,13 @@ export class OffereesRepository extends Repository<Offeree> {
     }
   }
   async updateOffereeUsername(
-    idOfferees: string,
+    account: Account,
     updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
   ): Promise<void> {
     const { username } = updateOffereeUsernameDTO;
-    const offeree = await this.findOne({ idOfferees });
-    offeree.username = username;
+    const offeree = await this.findOne({ account });
+    account.username = username;
+    offeree.account = account;
     try {
       // if update query failed to execute
       await this.save(offeree);
@@ -50,11 +52,11 @@ export class OffereesRepository extends Repository<Offeree> {
     }
   }
   async updateOffereeEmail(
-    idOfferees: string,
+    account: Account,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     const { email } = updateOffereeEmailDTO;
-    const offeree = await this.findOne({ idOfferees });
+    const offeree = await this.findOne({ account });
     offeree.email = email;
     try {
       // if update query failed to execute
@@ -62,7 +64,7 @@ export class OffereesRepository extends Repository<Offeree> {
     } catch (error) {
       throw new QueryFailedError(
         `UPDATE offerees SET email = ${email} WHERE id_offerees = ${offeree.idOfferees}`,
-        [idOfferees, email],
+        [offeree.idOfferees, email],
         error.message,
       );
     }
