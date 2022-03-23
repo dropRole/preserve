@@ -14,7 +14,9 @@ export class Request {
   @PrimaryGeneratedColumn('uuid')
   idRequests: string;
 
-  @ManyToOne((_type) => Offeror, (offeror) => offeror.request, { eager: false })
+  @ManyToOne((_type) => Offeror, (offeror) => offeror.requests, {
+    eager: false,
+  })
   offeror: Offeror;
 
   @ManyToOne((_type) => Offeree, (offeree) => offeree.requests, { eager: true })
