@@ -1,5 +1,6 @@
 import { Account } from 'src/auth/account.entity';
 import { Prohibition } from 'src/prohibitions/prohibitions.entity';
+import { Request } from 'src/requests/request.entity';
 import {
   Column,
   Entity,
@@ -39,6 +40,9 @@ export class Offeror {
 
   @OneToOne((_type) => Account, { eager: true })
   account: Account;
+
+  @OneToMany((_type) => Request, (request) => request.offeror, { eager: false })
+  requests: Request[];
 
   @OneToMany((_type) => Prohibition, (prohibition) => prohibition.offeror, {
     eager: true,

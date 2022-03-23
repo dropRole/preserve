@@ -1,5 +1,6 @@
 import { Account } from 'src/auth/account.entity';
 import { Prohibition } from 'src/prohibitions/prohibitions.entity';
+import { Request } from 'src/requests/request.entity';
 import {
   Column,
   Entity,
@@ -18,6 +19,9 @@ export class Offeree {
 
   @Column()
   email: string;
+
+  @OneToMany((_type) => Request, (request) => request.offeree, { eager: false })
+  requests: Request[];
 
   @OneToMany((_type) => Prohibition, (prohibition) => prohibition.offeree, {
     eager: false,
