@@ -1,3 +1,5 @@
+import { UnauthorizedException } from '@nestjs/common';
+import { Account } from 'src/auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
 import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
@@ -40,11 +42,12 @@ export class RequestsRepository extends Repository<Request> {
   }
 
   async selectRequests(
+    account: Account,
     getRequestsFilterDTO: GetRequestsFilterDTO,
   ): Promise<Request[]> {
-    const { idOfferors, todaysDate } = getRequestsFilterDTO;
+    const { todaysDate } = getRequestsFilterDTO;
     const query = this.createQueryBuilder('requests');
-    query.where({ idOfferors });
+    query.where({ account });
     query.andWhere('requestedAt::DATE = :todaysDate', { todaysDate });
     try {
       // if select query failed to execute
@@ -52,16 +55,17 @@ export class RequestsRepository extends Repository<Request> {
     } catch (error) {
       throw new QueryFailedError(
         query.getSql(),
-        [idOfferors, todaysDate],
+        [account, todaysDate],
         error.message,
       );
     }
   }
 
-  async selectRequest(idRequests: string): Promise<Request> {
+  async selectRequest(account: Account, idRequests: string): Promise<Request> {
+    let request: Request;
     try {
       // if select query failed to execute
-      return await this.findOne({ idRequests });
+      request = await this.findOne({ idRequests });
     } catch (error) {
       throw new QueryFailedError(
         `SELECT * FROM requests WHERE idRequest = ${idRequests}`,
@@ -69,9 +73,26 @@ export class RequestsRepository extends Repository<Request> {
         error.message,
       );
     }
+    // if request wasn't sent by nor an account owner received it
+    if (
+      request.offeree.account !== account ||
+      request.offeror.account !== account
+    )
+      throw new UnauthorizedException(
+        "Request wasn't sent nor received by your account.",
+      );
+    return request;
   }
 
   async deleteRequest(idRequests: string): Promise<void> {
-    
+    try {
+      await this.delete({ idRequests });
+    } catch (error) {
+      throw new QueryFailedError(
+        `DELETE FROM requests WHERE idRequests = ${idRequests}`,
+        [idRequests],
+        error.message,
+      );
+    }
   }
 }
