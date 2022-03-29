@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
+import { Request } from 'src/requests/request.entity';
 
 @Entity('reservations')
 export class Reservation {
-  @PrimaryGeneratedColumn('uuid')
-  idRequests: string;
+  @OneToOne((_type) => Request, { eager: true })
+  request: Request;
 
   @Column()
   code: string;
