@@ -1,6 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
 import { Privilege } from './enum/privilege.enum';
 
-export const PRIVILEGES = 'roles';
-export const Roles = (...privileges: Privilege[]) =>
+export const PRIVILEGES = 'privileges';
+export const Privileges = (...privileges: Privilege[]) =>
   SetMetadata(PRIVILEGES, privileges);
