@@ -12,15 +12,15 @@ export class ReservationsRepository extends Repository<Reservation> {
   async insertReservation(
     makeReservationDTO: MakeReservationDTO,
   ): Promise<void> {
-    const { idRequests, code, confirmedAt } = makeReservationDTO;
-    const reservation = this.create({ idRequests, code, confirmedAt });
+    const { request, code, confirmedAt } = makeReservationDTO;
+    const reservation = this.create({ request, code, confirmedAt });
     try {
       // if insert query failed
       await this.save(reservation);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO reservations VALUES(${idRequests}, ${code}, ${confirmedAt})`,
-        [idRequests, code, confirmedAt],
+        `INSERT INTO reservations VALUES(${request.idRequests}, ${code}, ${confirmedAt})`,
+        [request.idRequests, code, confirmedAt],
         error.message,
       );
     }
