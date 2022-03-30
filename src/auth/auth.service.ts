@@ -52,13 +52,13 @@ export class AuthService {
     if (account && (await bcrypt.compare(password, account.password))) {
       // check if offerees account credentials
       if (this.offereesService.getOffereeByUsername(username)) {
-        payload = { username, role: Role.Offeree };
+        payload = { username };
         accessToken = await this.jwtService.sign(payload);
       }
 
       // check if offerors account credentials
       if (this.offerorsService.getOfferorByUsername(username)) {
-        payload = { username, role: Privilege.Offeror };
+        payload = { username };
         accessToken = await this.jwtService.sign(payload);
       }
       return { accessToken };
