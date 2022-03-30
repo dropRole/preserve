@@ -10,7 +10,7 @@ import { Offeror } from './offeror.entity';
 export class OfferorsRepository extends Repository<Offeror> {
   async insertOfferor(
     recordOfferorDTO: RecordOfferorDTO,
-    username: string,
+    account: Account,
   ): Promise<void> {
     const {
       name,
@@ -31,7 +31,7 @@ export class OfferorsRepository extends Repository<Offeror> {
       responsiveness,
       compliance,
       timeliness,
-      username,
+      account,
     });
     try {
       // if insert query failed to execute
