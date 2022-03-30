@@ -1,9 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Request } from '../../requests/request.entity';
 
 export class MakeReservationDTO {
-  @IsString()
-  @IsNotEmpty()
-  idRequests: string;
+  request: Request;
 
   @IsString()
   @IsNotEmpty()
