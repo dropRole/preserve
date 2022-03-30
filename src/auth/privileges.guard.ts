@@ -11,9 +11,9 @@ export class PrivilegesGuard implements CanActivate {
     );
     // if no roles are required
     if (!privileges) return true;
-    const { payload } = context.switchToHttp().getRequest();
+    const { account } = context.switchToHttp().getRequest();
     return privileges.some((privilege) => {
-      if (privilege === payload.role) return true;
+      if (privilege === account.privilege) return true;
     });
   }
 }
