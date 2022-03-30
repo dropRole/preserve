@@ -1,6 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
+import { Request } from 'src/requests/request.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
@@ -26,12 +27,15 @@ export class ReservationsRepository extends Repository<Reservation> {
   }
 
   async selectReservations(
-    account: Account,
     getReservationFilterDTO: GetReservationsFilterDTO,
     requests: Request[],
   ): Promise<Reservation[]> {
     const query = this.createQueryBuilder('reservations');
-    query.where('reservation.request IN(:requests)', { requests });
+    const { todaysDate } = getReservationFilterDTO;
+    query.where('reservations.confirmedAt::DATE === :todaysDate', {
+      todaysDate,
+    });
+    query.andWhere('reservation.request IN(:requests)', { requests });
     try {
       // if select query failed
       return await query.getMany();
