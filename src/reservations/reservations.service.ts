@@ -9,10 +9,7 @@ import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsRepository } from './reservations.repository';
 import { RequestsService } from '../requests/requests.service';
-import {
-  GetRequestsFilterDTO,
-  GetRequestsFilterDTO,
-} from 'src/requests/dto/get-requests-filter.dto';
+import { GetRequestsFilterDTO } from 'src/requests/dto/get-requests-filter.dto';
 
 @Injectable()
 export class ReservationsService {
@@ -25,21 +22,20 @@ export class ReservationsService {
     return this.reservationsRepository.insertReservation(makeReservationDTO);
   }
 
-  getReservations(
+  async getReservations(
     account: Account,
     getReservationFilterDTO: GetReservationsFilterDTO,
   ): Promise<Reservation[]> {
     const { todaysDate } = getReservationFilterDTO;
     const getRequestsFilterDTO = new GetRequestsFilterDTO();
     getRequestsFilterDTO.todaysDate = todaysDate;
-    const requests = this.requestService.getRequests(
+    const requests = await this.requestService.getRequests(
       account,
       getReservationFilterDTO,
     );
     return this.reservationsRepository.selectReservations(
-      account,
-      requests,
       getReservationFilterDTO,
+      requests,
     );
   }
 
