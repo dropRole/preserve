@@ -1,32 +1,61 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Account } from 'src/auth/account.entity';
+import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsRepository } from './reservations.repository';
+import { RequestsService } from '../requests/requests.service';
+import {
+  GetRequestsFilterDTO,
+  GetRequestsFilterDTO,
+} from 'src/requests/dto/get-requests-filter.dto';
 
 @Injectable()
 export class ReservationsService {
-  constructor(private reservationsRepository: ReservationsRepository) {}
+  constructor(
+    private reservationsRepository: ReservationsRepository,
+    private requestService: RequestsService,
+  ) {}
 
   reserve(makeReservationDTO: MakeReservationDTO): Promise<void> {
     return this.reservationsRepository.insertReservation(makeReservationDTO);
   }
 
-  /* getReservations(
+  getReservations(
+    account: Account,
     getReservationFilterDTO: GetReservationsFilterDTO,
   ): Promise<Reservation[]> {
-    return this.reservationsRepository.selectReservations(
+    const { todaysDate } = getReservationFilterDTO;
+    const getRequestsFilterDTO = new GetRequestsFilterDTO();
+    getRequestsFilterDTO.todaysDate = todaysDate;
+    const requests = this.requestService.getRequests(
+      account,
       getReservationFilterDTO,
     );
-  } */
-
-  getReservation(idRequests: string): Promise<Reservation> {
-    return this.reservationsRepository.selectReservation(idRequests);
+    return this.reservationsRepository.selectReservations(
+      account,
+      requests,
+      getReservationFilterDTO,
+    );
   }
 
-  async deleteReservation(idRequests: string): Promise<void> {
+  getReservation(account: Account, idRequests: string): Promise<Reservation> {
+    return this.reservationsRepository.selectReservation(account, idRequests);
+  }
+
+  async deleteReservation(account: Account, idRequests: string): Promise<void> {
+    const reservation = await this.reservationsRepository.findOne(idRequests);
     // if reservation was not found
-    if (!(await this.reservationsRepository.findOne(idRequests)))
-      throw new NotFoundException('Reservation was not found.');
+    if (!reservation) throw new NotFoundException('Reservation was not found.');
+    // if reservation wasn't confirmed by the account
+    if (reservation.request.offeror.account !== account)
+      throw new UnauthorizedException(
+        "You're not the confirmator of the reservation.",
+      );
     return this.reservationsRepository.deleteReservation(idRequests);
   }
 }
