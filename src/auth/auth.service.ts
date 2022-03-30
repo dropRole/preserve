@@ -20,12 +20,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    try {
-      // if username unique violation appeared
-      this.accountsRepository.insertAccount(authCredentialsDTO);
-    } catch (error) {}
-    return this.offereesService.recordAnOfferee(authCredentialsDTO);
+  async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+    const account = await this.accountsRepository.insertAccount(
+      authCredentialsDTO,
+    );
+    return this.offereesService.recordAnOfferee(account);
   }
 
   async offerorSignUp(
