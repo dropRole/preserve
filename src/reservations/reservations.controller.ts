@@ -10,7 +10,7 @@ import {
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
-import { Roles } from 'src/auth/privilege.decorator';
+import { Privileges } from 'src/auth/privilege.decorator';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
@@ -21,13 +21,13 @@ export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
   @Post()
-  @Roles(Privilege.Offeror)
+  @Privileges(Privilege.Offeror)
   reserve(@Body() makeReservationDTO: MakeReservationDTO): Promise<void> {
     return this.reservationsService.reserve(makeReservationDTO);
   }
 
   @Get()
-  @Roles(Privilege.Offeror)
+  @Privileges(Privilege.Offeror)
   getReservations(
     @GetAccount() account: Account,
     @Query() getReservationsFilterDTO: GetReservationsFilterDTO,
@@ -39,7 +39,7 @@ export class ReservationsController {
   }
 
   @Get('/:idRequests')
-  @Roles(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
   getReservation(
     @GetAccount() account: Account,
     @Param('idRequests') idRequests: string,
@@ -48,7 +48,7 @@ export class ReservationsController {
   }
 
   @Delete()
-  @Roles(Privilege.Offeror)
+  @Privileges(Privilege.Offeror)
   deleteReservation(
     @GetAccount() account: Account,
     @Param('idRequests') idRequests: string,

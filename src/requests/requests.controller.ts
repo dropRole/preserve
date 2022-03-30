@@ -3,7 +3,7 @@ import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
 import { RequestsService } from './requests.service';
 import { Request } from './request.entity';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
-import { Roles } from 'src/auth/privilege.decorator';
+import { Privileges } from 'src/auth/privilege.decorator';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Account } from 'src/auth/account.entity';
@@ -13,7 +13,7 @@ export class RequestsController {
   constructor(private requestsService: RequestsService) {}
 
   @Post(':idRequests')
-  @Roles(Privilege.Offeree)
+  @Privileges(Privilege.Offeree)
   requestForReservation(
     requestForReservationDTO: RequestForReservationDTO,
   ): Promise<Request> {
@@ -21,7 +21,7 @@ export class RequestsController {
   }
 
   @Get()
-  @Roles(Privilege.Offeror)
+  @Privileges(Privilege.Offeror)
   getRequests(
     @GetAccount() account: Account,
     @Query() getRequestsFilterDTO: GetRequestsFilterDTO,
@@ -30,7 +30,7 @@ export class RequestsController {
   }
 
   @Get('/:idRequests')
-  @Roles(Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
   getRequestById(
     @GetAccount() account: Account,
     @Param() idRequests: string,
@@ -39,7 +39,7 @@ export class RequestsController {
   }
 
   @Delete()
-  @Roles(Privilege.Offeree)
+  @Privileges(Privilege.Offeree)
   retreatRequest(
     @GetAccount() account: Account,
     @Param('idRequests') idRequest: string,

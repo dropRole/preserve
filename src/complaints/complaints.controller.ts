@@ -10,7 +10,7 @@ import {
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
-import { Roles } from 'src/auth/privilege.decorator';
+import { Privileges } from 'src/auth/privilege.decorator';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
@@ -21,7 +21,7 @@ export class ComplaintsController {
   constructor(private complaintsService: ComplaintsService) {}
 
   @Post()
-  @Roles(Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
   complain(
     @Body() submitComplaintDTO: SubmitComplaintDTO,
     @GetAccount() account: Account,
@@ -30,7 +30,7 @@ export class ComplaintsController {
   }
 
   @Get('/:idReservations')
-  @Roles(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
   getComplaints(
     @Param() idReservations: string,
     @GetAccount() account: Account,
@@ -39,7 +39,7 @@ export class ComplaintsController {
   }
 
   @Patch()
-  @Roles(Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
   reComplain(
     @Body() reSubmitComplaintDTO: ReSubmitComplaintDTO,
     @GetAccount() account: Account,
@@ -48,7 +48,7 @@ export class ComplaintsController {
   }
 
   @Delete()
-  @Roles(Privilege.Offeror, Privilege.Offeree)
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
   withdrawComplaint(@Param() idComplaints: string): Promise<void> {
     return this.complaintsService.withDrawComplaint(idComplaints);
   }
