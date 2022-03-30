@@ -7,7 +7,9 @@ import { ConflictException } from '@nestjs/common';
 
 @EntityRepository(Account)
 export class AccountsRepository extends Repository<Account> {
-  async insertAccount(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
+  async insertAccount(
+    authCredentialsDTO: AuthCredentialsDTO,
+  ): Promise<Account> {
     const { username, password } = authCredentialsDTO;
     // generate bcrypt hash substrated from password and salt
     const salt = await bcrypt.genSalt();
@@ -20,5 +22,6 @@ export class AccountsRepository extends Repository<Account> {
       if (error.code === ErrorCode.UniqueViolation)
         throw new ConflictException('Username already exists.');
     }
+    return account;
   }
 }
