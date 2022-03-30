@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from 'src/auth/account.entity';
-import { AuthCredentialsDTO } from 'src/auth/dto/auth-credentials.dto';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
@@ -17,8 +16,8 @@ export class OffereesService {
     @InjectRepository(OffereesRepository)
     private offereesRepository: OffereesRepository,
   ) {}
-  recordAnOfferee(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    return this.offereesRepository.insertOfferee(authCredentialsDTO);
+  recordAnOfferee(account: Account): Promise<void> {
+    return this.offereesRepository.insertOfferee(account);
   }
   getOfferee(idOfferees: string): Promise<Offeree> {
     return this.offereesRepository.selectOfferee(idOfferees);
