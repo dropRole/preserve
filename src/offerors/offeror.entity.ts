@@ -4,6 +4,7 @@ import { Request } from 'src/requests/request.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -39,6 +40,7 @@ export class Offeror {
   timeliness: number;
 
   @OneToOne((_type) => Account, { eager: true })
+  @JoinColumn()
   account: Account;
 
   @OneToMany((_type) => Request, (request) => request.offeror, { eager: false })
