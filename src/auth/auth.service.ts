@@ -28,16 +28,14 @@ export class AuthService {
     return this.offereesService.recordAnOfferee(authCredentialsDTO);
   }
 
-  offerorSignUp(
+  async offerorSignUp(
     authCredentialsDTO: AuthCredentialsDTO,
     recordOfferorDTO: RecordOfferorDTO,
   ): Promise<void> {
-    try {
-      // if username unique violation appeared
-      this.accountsRepository.insertAccount(authCredentialsDTO);
-    } catch (error) {}
-    const { username } = authCredentialsDTO;
-    return this.offerorsService.recordAnOfferor(recordOfferorDTO, username);
+    const account = await this.accountsRepository.insertAccount(
+      authCredentialsDTO,
+    );
+    return this.offerorsService.recordAnOfferor(recordOfferorDTO, account);
   }
 
   async signIn(
