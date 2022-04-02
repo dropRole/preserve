@@ -51,7 +51,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     let reservation: Reservation;
     try {
       // if select query failed
-      reservation = await this.findOne(idRequests);
+      reservation = await this.findOne({ idReservations: idRequests });
     } catch (error) {
       throw new QueryFailedError(
         `SELECT * FROM reservations WHERE idRequests = ${idRequests}`,

@@ -29,7 +29,7 @@ export class ProhibitionsService {
     updateProhibitonTimeframeDTO: UpdateProhibitionTimeframeDTO,
   ): Promise<void> {
     // if reservation prohibition was not found
-    if (!(await this.prohibitionsRepository.findOne(idProhibitions)))
+    if (!(await this.prohibitionsRepository.findOne({ idProhibitions })))
       throw new NotFoundException('Reservation prohibition was not found.');
     return this.prohibitionsRepository.updateProhibition(
       idProhibitions,

@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('prohibitions')
 export class Prohibition {
   @PrimaryGeneratedColumn('uuid')
-  idProhibitons: string;
+  idProhibitions: string;
 
   @ManyToOne((_type) => Offeror, (offeree) => offeree.prohibitions, {
     eager: false,

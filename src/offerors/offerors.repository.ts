@@ -69,7 +69,7 @@ export class OfferorsRepository extends Repository<Offeror> {
   async selectOfferorByUsername(username: string): Promise<Offeror> {
     try {
       // if select query failed to execute
-      return await this.findOne({ username });
+      return await this.findOne({ where: { account: { username } } });
     } catch (error) {
       throw new QueryFailedError(
         `SELECT * FROM offerors WHERE username = ${username}`,

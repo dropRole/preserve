@@ -71,7 +71,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
     reSubmitComplaintDTO: ReSubmitComplaintDTO,
   ): Promise<void> {
     const { idComplaints, content } = reSubmitComplaintDTO;
-    const complaint = await this.findOne(idComplaints);
+    const complaint = await this.findOne({ idComplaints });
     const updated = (+new Date()).toString();
     complaint.content = content;
     complaint.updated = updated;

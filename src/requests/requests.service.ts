@@ -45,7 +45,7 @@ export class RequestsService {
   async retreatRequest(account: Account, idRequests: string): Promise<void> {
     const request = await this.requestsRepository.findOne({ idRequests });
     // if request was not found
-    if (!(await this.requestsRepository.findOne(idRequests)))
+    if (!(await this.requestsRepository.findOne({ idRequests })))
       throw new NotFoundException('Request was not found.');
     // if request hasn't been confirmed as reservation
     if (this.reservationsService.getReservation(account, idRequests))

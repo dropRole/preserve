@@ -49,7 +49,9 @@ export class ReservationsService {
   }
 
   async deleteReservation(account: Account, idRequests: string): Promise<void> {
-    const reservation = await this.reservationsRepository.findOne(idRequests);
+    const reservation = await this.reservationsRepository.findOne({
+      idReservations: idRequests,
+    });
     // if reservation was not found
     if (!reservation) throw new NotFoundException('Reservation was not found.');
     // if reservation wasn't confirmed by the account
