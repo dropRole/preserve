@@ -1,13 +1,11 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Offeree } from 'src/offerees/offeree.entity';
+import { Offeror } from 'src/offerors/offeror.entity';
 
 export class RequestForReservationDTO {
-  @IsString()
-  @IsNotEmpty()
-  idOfferors: string;
+  offeror: Offeror;
 
-  @IsString()
-  @IsNotEmpty()
-  idOfferees: string;
+  offeree: Offeree;
 
   @IsString()
   @IsNotEmpty()
