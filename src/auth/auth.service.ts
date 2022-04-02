@@ -23,6 +23,7 @@ export class AuthService {
   async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
     const account = await this.accountsRepository.insertAccount(
       authCredentialsDTO,
+      Privilege.Offeree,
     );
     return this.offereesService.recordAnOfferee(account);
   }
@@ -33,6 +34,7 @@ export class AuthService {
   ): Promise<void> {
     const account = await this.accountsRepository.insertAccount(
       authCredentialsDTO,
+      Privilege.Offeree,
     );
     return this.offerorsService.recordAnOfferor(recordOfferorDTO, account);
   }
@@ -44,20 +46,10 @@ export class AuthService {
     const account = await this.accountsRepository.findOne({
       username,
     });
-    let accessToken: string, payload: JWTPayload;
-    // if account with the given credentails is registered
+    // if account with the given credentials is registered
     if (account && (await bcrypt.compare(password, account.password))) {
-      // check if offerees account credentials
-      if (this.offereesService.getOffereeByUsername(username)) {
-        payload = { username };
-        accessToken = await this.jwtService.sign(payload);
-      }
-
-      // check if offerors account credentials
-      if (this.offerorsService.getOfferorByUsername(username)) {
-        payload = { username };
-        accessToken = await this.jwtService.sign(payload);
-      }
+      const payload: JWTPayload = { username };
+      const accessToken = await this.jwtService.sign(payload);
       return { accessToken };
     } else throw new UnauthorizedException('Check your login credentials.');
   }
