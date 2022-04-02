@@ -50,6 +50,6 @@ export class ComplaintsController {
   @Delete()
   @Privileges(Privilege.Offeror, Privilege.Offeree)
   withdrawComplaint(@Param() idComplaints: string): Promise<void> {
-    return this.complaintsService.withDrawComplaint(idComplaints);
+    return this.complaintsService.withdrawComplaint(idComplaints);
   }
 }
