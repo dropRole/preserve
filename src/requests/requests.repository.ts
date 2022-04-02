@@ -10,18 +10,11 @@ export class RequestsRepository extends Repository<Request> {
   async insertRequest(
     requestForReservationDTO: RequestForReservationDTO,
   ): Promise<Request> {
-    const {
-      idOfferors,
-      idOfferees,
-      requestedAt,
-      requestedFor,
-      seats,
-      cause,
-      note,
-    } = requestForReservationDTO;
+    const { offeree, offeror, requestedAt, requestedFor, seats, cause, note } =
+      requestForReservationDTO;
     const request = this.create({
-      idOfferors,
-      idOfferees,
+      offeree,
+      offeror,
       requestedAt,
       requestedFor,
       seats,
@@ -33,8 +26,16 @@ export class RequestsRepository extends Repository<Request> {
       await this.insert(request);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO requests VALUES(${idOfferors}, ${idOfferees}, ${requestedAt}, ${requestedFor}, ${seats}, ${cause}, ${note})`,
-        [idOfferors, idOfferees, requestedAt, requestedFor, seats, cause, note],
+        `INSERT INTO requests VALUES(${offeror.idOfferors}, ${offeree.idOfferees}, ${requestedAt}, ${requestedFor}, ${seats}, ${cause}, ${note})`,
+        [
+          offeror.idOfferors,
+          offeree.idOfferees,
+          requestedAt,
+          requestedFor,
+          seats,
+          cause,
+          note,
+        ],
         error.message,
       );
     }
