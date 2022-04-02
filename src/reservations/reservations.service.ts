@@ -1,4 +1,6 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,12 +12,15 @@ import { Reservation } from './reservation.entity';
 import { ReservationsRepository } from './reservations.repository';
 import { RequestsService } from '../requests/requests.service';
 import { GetRequestsFilterDTO } from 'src/requests/dto/get-requests-filter.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ReservationsService {
   constructor(
-    private reservationsRepository: ReservationsRepository,
+    @Inject(forwardRef(() => RequestsService))
     private requestService: RequestsService,
+    @InjectRepository(ReservationsRepository)
+    private reservationsRepository: ReservationsRepository,
   ) {}
 
   reserve(makeReservationDTO: MakeReservationDTO): Promise<void> {

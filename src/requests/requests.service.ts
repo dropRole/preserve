@@ -1,8 +1,9 @@
 import {
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
@@ -15,6 +16,7 @@ import { Account } from 'src/auth/account.entity';
 @Injectable()
 export class RequestsService {
   constructor(
+    @Inject(forwardRef(() => RequestsService))
     private reservationsService: ReservationsService,
     @InjectRepository(RequestsRepository)
     private requestsRepository: RequestsRepository,
@@ -46,7 +48,7 @@ export class RequestsService {
     if (!(await this.requestsRepository.findOne(idRequests)))
       throw new NotFoundException('Request was not found.');
     // if request hasn't been confirmed as reservation
-    if (this.reservationsService.getReservation(idRequests))
+    if (this.reservationsService.getReservation(account, idRequests))
       throw new ConflictException('Request is already confirmed.');
     // if request is owned by an account
     if (request.offeree.account == account)
