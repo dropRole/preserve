@@ -3,6 +3,7 @@ import { Request } from 'src/requests/request.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -24,9 +25,10 @@ export class Complaint {
   account: Account;
 
   @OneToOne((_type) => Complaint, (complaint) => complaint.counteredComplaint, {
-    eager: true,
+    eager: false,
     nullable: true,
   })
+  @JoinColumn()
   counteredComplaint: Complaint;
 
   @Column()
