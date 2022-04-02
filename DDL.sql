@@ -1,6 +1,6 @@
 ﻿/*
 Created: 15/12/2021
-Modified: 12/03/2022
+Modified: 02/04/2022
 Project: pReserve
 Model: Global
 Author: dropRole
@@ -17,7 +17,7 @@ CREATE TABLE "accounts"(
  "username" Character varying(20) NOT NULL,
  "password" Character varying(64) NOT NULL,
  "privilege" Character varying(7) NOT NULL
-        CONSTRAINT "user_privilege" CHECK (privilege IN('Offeree', 'Offeror'))
+        CONSTRAINT "user_privilege" CHECK (privilege IN('Admin', 'Offeree', 'Offeror'))
 )
 WITH (
  autovacuum_enabled=true)
@@ -32,7 +32,7 @@ ALTER TABLE "accounts" ADD CONSTRAINT "PK_accounts" PRIMARY KEY ("username")
 
 CREATE TABLE "offerees"(
  "id_offerees" UUID NOT NULL,
- "username" Character varying(20) NOT NULL,
+ "accounts" Character varying(20) NOT NULL,
  "email" Character varying(60)
 )
 WITH (
@@ -41,7 +41,7 @@ WITH (
 
 -- Create indexes for table offerees
 
-CREATE INDEX "IX_accounts_offerees" ON "offerees" ("username")
+CREATE INDEX "IX_accounts_offerees" ON "offerees" ("accounts")
 ;
 
 -- Add keys for table offerees
@@ -64,7 +64,7 @@ CREATE TABLE "offerors"(
         CONSTRAINT "mark" CHECK (VALUE IN(5, 6, 7, 8, 9, 10)),
  "timeliness" Smallint DEFAULT 5 NOT NULL
         CONSTRAINT "mark" CHECK (VALUE IN(5, 6, 7, 8, 9, 10)),
- "username" Character varying(20) NOT NULL
+ "accounts" Character varying(20) NOT NULL
 )
 WITH (
  autovacuum_enabled=true)
@@ -78,7 +78,7 @@ ALTER TABLE "offerors" ALTER COLUMN "timeliness" SET STORAGE PLAIN
 
 -- Create indexes for table offerors
 
-CREATE INDEX "IX_accounts_offerors" ON "offerors" ("username")
+CREATE INDEX "IX_accounts_offerors" ON "offerors" ("accounts")
 ;
 
 -- Add keys for table offerors
@@ -210,10 +210,10 @@ ALTER TABLE "complaints" ADD CONSTRAINT "reservations_complaints" FOREIGN KEY ("
 ALTER TABLE "complaints" ADD CONSTRAINT "accounts_complaints" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "offerees" ADD CONSTRAINT "accounts_offerees" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "offerees" ADD CONSTRAINT "accounts_offerees" FOREIGN KEY ("accounts") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "offerors" ADD CONSTRAINT "accounts_offerors" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "offerors" ADD CONSTRAINT "accounts_offerors" FOREIGN KEY ("accounts") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "requests" ADD CONSTRAINT "offerees_requests" FOREIGN KEY ("id_offerees") REFERENCES "offerees" ("id_offerees") ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -228,3 +228,14 @@ ALTER TABLE "prohibitions" ADD CONSTRAINT "offerees_prohibitions" FOREIGN KEY ("
 
 
 
+
+CREATE EXTENSION 
+    pg_crypto;
+
+INSERT INTO 
+    public.accounts
+VALUES(
+    'admin',
+    crypt('pRserve@Admin', gen_salt('bf', 64),
+    'Admin'
+);
