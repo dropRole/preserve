@@ -9,25 +9,25 @@ export class ProhibitionsRepository extends Repository<Prohibition> {
   async insertProhibition(
     prohibitOffereeDTO: ProhibitOffereeDTO,
   ): Promise<void> {
-    const { idOfferors, idOfferees, beginning, conclusion, cause } =
+    const { offeror, offeree, beginning, conclusion, cause } =
       prohibitOffereeDTO;
     const prohibition = this.create({
-      idOfferors,
-      idOfferees,
+      offeror,
+      offeree,
       beginning,
       conclusion,
       cause,
     });
     // if offeree is already prohibited
-    if (await this.findOne({ idOfferors, idOfferees }))
+    if (await this.findOne({ where: { offeror, offeree } }))
       throw new ConflictException('The offeree has already been prohibited.');
     try {
       // if insert query failed to execute
       await this.insert(prohibition);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO prohibitions VALUES(${idOfferors}, ${idOfferees}, ${beginning}, ${conclusion}, ${cause})`,
-        [idOfferors, idOfferees],
+        `INSERT INTO prohibitions VALUES(${offeror.idOfferors}, ${offeree.idOfferees}, ${beginning}, ${conclusion}, ${cause})`,
+        [offeror.idOfferors, offeree.idOfferees],
         error.message,
       );
     }
