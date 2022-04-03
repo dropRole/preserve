@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { RequestsModule } from './requests/requests.module';
 import { ReservationsModule } from './reservations/reservations.module';
@@ -9,8 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OfferorsModule } from './offerors/offerors.module';
 import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
-import { PrivilegesGuard } from './auth/privileges.guard';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -31,14 +27,6 @@ import { APP_GUARD } from '@nestjs/core';
     OfferorsModule,
     OffereesModule,
     ProhibitionsModule,
-  ],
-  controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: PrivilegesGuard,
-    },
   ],
 })
 export class AppModule {}
