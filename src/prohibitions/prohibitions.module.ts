@@ -7,6 +7,6 @@ import { ProhibitionsRepository } from './prohibitons.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([ProhibitionsRepository])],
   controllers: [ProhibitionsController],
-  providers: [ProhibitionsService, ProhibitionsRepository],
+  providers: [ProhibitionsService],
 })
 export class ProhibitionsModule {}

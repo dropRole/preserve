@@ -15,7 +15,11 @@ import { OfferorsService } from 'src/offerors/offerors.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AccountsRepository]),
+    TypeOrmModule.forFeature([
+      AccountsRepository,
+      OfferorsRepository,
+      OffereesRepository,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: 'preserveapp',
@@ -27,14 +31,7 @@ import { OfferorsService } from 'src/offerors/offerors.service';
     OffereesModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    OfferorsService,
-    OfferorsRepository,
-    OffereesService,
-    OffereesRepository,
-  ],
+  providers: [AuthService, JwtStrategy, OfferorsService, OffereesService],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

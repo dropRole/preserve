@@ -9,16 +9,11 @@ import { RequestsService } from './requests.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RequestsRepository]),
+    TypeOrmModule.forFeature([RequestsRepository, ReservationsRepository]),
     forwardRef(() => ReservationsModule),
   ],
   controllers: [RequestsController],
-  providers: [
-    RequestsService,
-    RequestsRepository,
-    ReservationsService,
-    ReservationsRepository,
-  ],
-  exports: [RequestsService, RequestsRepository],
+  providers: [RequestsService, ReservationsService],
+  exports: [RequestsService],
 })
 export class RequestsModule {}
