@@ -8,7 +8,7 @@ import { Offeree } from './offeree.entity';
 export class OffereesRepository extends Repository<Offeree> {
   async insertOfferee(account: Account): Promise<void> {
     const offeree = this.create({ account });
-    await this.save(offeree);
+    await this.insert(offeree);
   }
   async selectOfferee(idOfferees: string): Promise<Offeree> {
     const query = this.createQueryBuilder('offerees');
