@@ -39,8 +39,8 @@ export class Offeror {
   @Column()
   timeliness: number;
 
+  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   @OneToOne((_type) => Account, { eager: true })
-  @JoinColumn()
   account: Account;
 
   @OneToMany((_type) => Request, (request) => request.offeror, { eager: false })
