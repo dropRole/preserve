@@ -17,7 +17,7 @@ export class Offeree {
   @OneToOne((_type) => Account, { eager: true })
   account: Account;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @OneToMany((_type) => Request, (request) => request.offeree, { eager: false })
