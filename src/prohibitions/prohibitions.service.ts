@@ -29,18 +29,16 @@ export class ProhibitionsService {
     updateProhibitonTimeframeDTO: UpdateProhibitionTimeframeDTO,
   ): Promise<void> {
     // if reservation prohibition was not found
-    if (!(await this.prohibitionsRepository.findOne({ idProhibitions })))
-      throw new NotFoundException('Reservation prohibition was not found.');
-    return this.prohibitionsRepository.updateProhibition(
-      idProhibitions,
-      updateProhibitonTimeframeDTO,
-    );
+    if (!this.getProhibition(idProhibitions))
+      return this.prohibitionsRepository.updateProhibition(
+        idProhibitions,
+        updateProhibitonTimeframeDTO,
+      );
   }
 
   async deleteProhibition(idProhibitions: string): Promise<void> {
     // if reservation prohibition was not found
-    if (!(await this.prohibitionsRepository.findOne(idProhibitions)))
-      throw new NotFoundException('Reservation prohibition was not found.');
-    return this.prohibitionsRepository.deleteProhibition(idProhibitions);
+    if (!this.getProhibition(idProhibitions))
+      return this.prohibitionsRepository.deleteProhibition(idProhibitions);
   }
 }
