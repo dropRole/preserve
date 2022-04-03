@@ -3,7 +3,6 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
@@ -38,15 +37,12 @@ export class RequestsService {
     );
   }
 
-  async getRequestById(account: Account, idRequests: string): Promise<Request> {
+  getRequestById(account: Account, idRequests: string): Promise<Request> {
     return this.requestsRepository.selectRequest(account, idRequests);
   }
 
   async retreatRequest(account: Account, idRequests: string): Promise<void> {
-    const request = await this.requestsRepository.findOne({ idRequests });
-    // if request was not found
-    if (!(await this.requestsRepository.findOne({ idRequests })))
-      throw new NotFoundException('Request was not found.');
+    const request = await this.getRequestById(account, idRequests);
     // if request hasn't been confirmed as reservation
     if (this.reservationsService.getReservation(account, idRequests))
       throw new ConflictException('Request is already confirmed.');
