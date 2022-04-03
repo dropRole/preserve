@@ -4,6 +4,7 @@ import { Request } from 'src/requests/request.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ export class Offeree {
   @PrimaryGeneratedColumn('uuid')
   idOfferees: string;
 
+  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   @OneToOne((_type) => Account, { eager: true })
   account: Account;
 
