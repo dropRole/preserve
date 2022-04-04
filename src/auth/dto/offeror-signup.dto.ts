@@ -1,9 +1,23 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { AuthCredentialsDTO } from './auth-credentials.dto';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class OfferorSignUpDTO {
-  authCredentialsDTO: AuthCredentialsDTO;
-  
+  @IsString()
+  @MinLength(4)
+  @MaxLength(20)
+  username: string;
+
+  @MinLength(8)
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
+  password: string;
+
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -24,15 +38,15 @@ export class OfferorSignUpDTO {
   @IsNotEmpty()
   businessHours: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   responsiveness: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   compliance: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   timeliness: number;
 }
