@@ -1,5 +1,5 @@
 /offerees
 
-GET             PATCH                  
-/:idOfferees   /:idOfferees/username
-/:username      /:idOfferees/email     
+POST    GET             PATCH                  
+/        /:idOfferees   /:idOfferees/username
+         /:username     /:idOfferees/email     
