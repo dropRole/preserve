@@ -1,6 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { AuthCredentialsDTO } from './auth-credentials.dto';
 
-export class RecordOfferorDTO {
+export class OfferorSignUpDTO {
+  authCredentialsDTO: AuthCredentialsDTO;
+  
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -21,15 +24,15 @@ export class RecordOfferorDTO {
   @IsNotEmpty()
   businessHours: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   responsiveness: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   compliance: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   timeliness: number;
 }
