@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
+import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,11 +13,8 @@ export class AuthController {
   }
 
   @Post('/offeror/signup')
-  offerorSignUp(
-    @Body('authCredentialsDTO') authCredentialsDTO: AuthCredentialsDTO,
-    @Body('recordOfferorDTO') recordOfferorDTO: RecordOfferorDTO,
-  ): Promise<void> {
-    return this.authService.offerorSignUp(authCredentialsDTO, recordOfferorDTO);
+  offerorSignUp(@Body() offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
+    return this.authService.offerorSignUp(offerorSignUpDto);
   }
 
   @Post('/signin')

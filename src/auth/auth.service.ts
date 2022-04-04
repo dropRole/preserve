@@ -7,8 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from './jwt-payload.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OfferorsService } from 'src/offerors/offerors.service';
-import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
 import { Privilege } from './enum/privilege.enum';
+import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,15 +28,33 @@ export class AuthService {
     return this.offereesService.recordAnOfferee(account);
   }
 
-  async offerorSignUp(
-    authCredentialsDTO: AuthCredentialsDTO,
-    recordOfferorDTO: RecordOfferorDTO,
-  ): Promise<void> {
+  async offerorSignUp(offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
+    const {
+      authCredentialsDTO,
+      name,
+      address,
+      email,
+      telephone,
+      businessHours,
+      responsiveness,
+      compliance,
+      timeliness,
+    } = offerorSignUpDto;
     const account = await this.accountsRepository.insertAccount(
       authCredentialsDTO,
       Privilege.Offeree,
     );
-    return this.offerorsService.recordAnOfferor(recordOfferorDTO, account);
+    return this.offerorsService.recordAnOfferor(
+      name,
+      address,
+      email,
+      telephone,
+      businessHours,
+      responsiveness,
+      compliance,
+      timeliness,
+      account,
+    );
   }
 
   async signIn(
