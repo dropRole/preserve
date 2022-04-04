@@ -30,7 +30,8 @@ export class AuthService {
 
   async offerorSignUp(offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
     const {
-      authCredentialsDTO,
+      username,
+      password,
       name,
       address,
       email,
@@ -40,9 +41,12 @@ export class AuthService {
       compliance,
       timeliness,
     } = offerorSignUpDto;
+    const authCredentialsDTO = new AuthCredentialsDTO();
+    authCredentialsDTO.username = username;
+    authCredentialsDTO.password = password;
     const account = await this.accountsRepository.insertAccount(
       authCredentialsDTO,
-      Privilege.Offeree,
+      Privilege.Offeror,
     );
     return this.offerorsService.recordAnOfferor(
       name,
