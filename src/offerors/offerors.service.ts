@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from 'src/auth/account.entity';
-import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -20,10 +19,27 @@ export class OfferorsService {
   ) {}
 
   recordAnOfferor(
-    recordOfferorDTO: RecordOfferorDTO,
+    name: string,
+    address: string,
+    email: string,
+    telephone: string,
+    businessHours: string,
+    responsiveness: number,
+    compliance: number,
+    timeliness: number,
     account: Account,
   ): Promise<void> {
-    return this.offerorsRepository.insertOfferor(recordOfferorDTO, account);
+    return this.offerorsRepository.insertOfferor(
+      name,
+      address,
+      email,
+      telephone,
+      businessHours,
+      responsiveness,
+      compliance,
+      timeliness,
+      account,
+    );
   }
 
   getOfferorById(idOfferors: string): Promise<Offeror> {

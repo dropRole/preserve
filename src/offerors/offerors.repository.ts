@@ -1,6 +1,5 @@
 import { Account } from 'src/auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
-import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -9,19 +8,16 @@ import { Offeror } from './offeror.entity';
 @EntityRepository(Offeror)
 export class OfferorsRepository extends Repository<Offeror> {
   async insertOfferor(
-    recordOfferorDTO: RecordOfferorDTO,
+    name: string,
+    address: string,
+    email: string,
+    telephone: string,
+    businessHours: string,
+    responsiveness: number,
+    compliance: number,
+    timeliness: number,
     account: Account,
   ): Promise<void> {
-    const {
-      name,
-      address,
-      email,
-      telephone,
-      businessHours,
-      responsiveness,
-      compliance,
-      timeliness,
-    } = recordOfferorDTO;
     const offeror = this.create({
       name,
       address,
