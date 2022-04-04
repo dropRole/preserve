@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Privileges } from 'src/auth/privilege.decorator';
-import { RecordOfferorDTO } from './dto/record-offeror.dto';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -13,14 +12,6 @@ import { OfferorsService } from './offerors.service';
 @Controller('offerors')
 export class OfferorsController {
   constructor(private offerorsService: OfferorsService) {}
-
-  @Post()
-  recordAnOfferor(
-    account: Account,
-    recordOfferorDTO: RecordOfferorDTO,
-  ): Promise<void> {
-    return this.recordAnOfferor(account, recordOfferorDTO);
-  }
 
   @Get('/:idOfferors')
   @Privileges(Privilege.Admin, Privilege.Offeree)
