@@ -1,6 +1,6 @@
 /offerors
 
-POST    GET             PATCH
-/       /:idOfferors    /:idOfferors/username
-        /:username      /:idOfferors/email
-                        /:idOfferors/businessInformation
+GET             PATCH
+/:idOfferors    /:idOfferors/username
+/:username      /:idOfferors/email
+                /:idOfferors/businessInformation
