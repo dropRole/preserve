@@ -1,4 +1,4 @@
-import { Controller, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Body, Get, Param, Patch, Post } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
@@ -11,6 +11,11 @@ import { OffereesService } from './offerees.service';
 @Controller('offerees')
 export class OffereesController {
   constructor(private offereesService: OffereesService) {}
+
+  @Post()
+  recordAnOfferee(account: Account): Promise<void> {
+    return this.recordAnOfferee(account);
+  }
 
   @Get('/:idOfferees')
   @Privileges(Privilege.Admin, Privilege.Offeror)

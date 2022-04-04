@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { RecordOfferorDTO } from 'src/offerors/dto/record-offeror.dto';
 import { Privilege } from './enum/privilege.enum';
+import { Account } from './account.entity';
 
 @Injectable()
 export class AuthService {
@@ -20,23 +21,22 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async offereeSignUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
-    const account = await this.accountsRepository.insertAccount(
+  async offereeSignUp(
+    authCredentialsDTO: AuthCredentialsDTO,
+  ): Promise<Account> {
+    return await this.accountsRepository.insertAccount(
       authCredentialsDTO,
       Privilege.Offeree,
     );
-    return this.offereesService.recordAnOfferee(account);
   }
 
   async offerorSignUp(
     authCredentialsDTO: AuthCredentialsDTO,
-    recordOfferorDTO: RecordOfferorDTO,
-  ): Promise<void> {
-    const account = await this.accountsRepository.insertAccount(
+  ): Promise<Account> {
+    return await this.accountsRepository.insertAccount(
       authCredentialsDTO,
       Privilege.Offeree,
     );
-    return this.offerorsService.recordAnOfferor(recordOfferorDTO, account);
   }
 
   async signIn(
