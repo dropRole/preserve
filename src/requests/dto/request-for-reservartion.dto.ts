@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class RequestForReservationDTO {
   @IsString()
@@ -13,7 +13,7 @@ export class RequestForReservationDTO {
   @IsNotEmpty()
   requestedFor: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   seats: number;
 
