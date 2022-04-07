@@ -11,20 +11,39 @@ import { Request } from './request.entity';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { Account } from 'src/auth/account.entity';
+import { OfferorsService } from 'src/offerors/offerors.service';
+import { OffereesService } from 'src/offerees/offerees.service';
 
 @Injectable()
 export class RequestsService {
   constructor(
-    @Inject(forwardRef(() => RequestsService))
+    @Inject(forwardRef(() => ReservationsService))
     private reservationsService: ReservationsService,
     @InjectRepository(RequestsRepository)
     private requestsRepository: RequestsRepository,
+    private offerorsService: OfferorsService,
+    private offereesService: OffereesService,
   ) {}
 
-  requestForReservation(
+  async requestForReservation(
+    account: Account,
     requestForReservationDTO: RequestForReservationDTO,
   ): Promise<Request> {
-    return this.requestsRepository.insertRequest(requestForReservationDTO);
+    const { idOfferors, requestedAt, requestedFor, seats, cause, note } =
+      requestForReservationDTO;
+    const offeror = await this.offerorsService.getOfferorById(idOfferors);
+    const offeree = await this.offereesService.getOffereeByUsername(
+      account.username,
+    );
+    return this.requestsRepository.insertRequest(
+      offeror,
+      offeree,
+      requestedAt,
+      requestedFor,
+      seats,
+      cause,
+      note,
+    );
   }
 
   getRequests(
