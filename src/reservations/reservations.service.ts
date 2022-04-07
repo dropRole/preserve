@@ -2,7 +2,6 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
