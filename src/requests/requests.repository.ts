@@ -1,20 +1,25 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
+import { Offeree } from 'src/offerees/offeree.entity';
+import { Offeror } from 'src/offerors/offeror.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
-import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
 import { Request } from './request.entity';
 
 @EntityRepository(Request)
 export class RequestsRepository extends Repository<Request> {
   async insertRequest(
-    requestForReservationDTO: RequestForReservationDTO,
+    offeror: Offeror,
+    offeree: Offeree,
+    requestedAt: string,
+    requestedFor: string,
+    seats: number,
+    cause: string,
+    note: string,
   ): Promise<Request> {
-    const { offeree, offeror, requestedAt, requestedFor, seats, cause, note } =
-      requestForReservationDTO;
     const request = this.create({
-      offeree,
       offeror,
+      offeree,
       requestedAt,
       requestedFor,
       seats,
