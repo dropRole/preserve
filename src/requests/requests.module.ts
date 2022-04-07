@@ -1,8 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from 'src/auth/auth.module';
+import { OffereesModule } from 'src/offerees/offerees.module';
+import { OfferorsModule } from 'src/offerors/offerors.module';
 import { ReservationsModule } from 'src/reservations/reservations.module';
 import { ReservationsRepository } from 'src/reservations/reservations.repository';
-import { ReservationsService } from 'src/reservations/reservations.service';
 import { RequestsController } from './requests.controller';
 import { RequestsRepository } from './requests.repository';
 import { RequestsService } from './requests.service';
@@ -11,9 +13,12 @@ import { RequestsService } from './requests.service';
   imports: [
     TypeOrmModule.forFeature([RequestsRepository, ReservationsRepository]),
     forwardRef(() => ReservationsModule),
+    AuthModule,
+    OfferorsModule,
+    OffereesModule,
   ],
   controllers: [RequestsController],
-  providers: [RequestsService, ReservationsService],
+  providers: [RequestsService],
   exports: [RequestsService],
 })
 export class RequestsModule {}
