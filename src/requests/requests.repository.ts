@@ -15,7 +15,7 @@ export class RequestsRepository extends Repository<Request> {
     requestedFor: string,
     seats: number,
     cause: string,
-    note: string,
+    note?: string,
   ): Promise<Request> {
     const request = this.create({
       offeror,
