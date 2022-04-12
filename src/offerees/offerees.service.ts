@@ -23,7 +23,7 @@ export class OffereesService {
     return this.offereesRepository.selectOfferee(idOfferees);
   }
   getOffereeByUsername(username: string): Promise<Offeree> {
-    return this.offereesRepository.selectOfferee(username);
+    return this.offereesRepository.selectOffereeByUsername(username);
   }
   async updateOffereeUsername(
     account: Account,
