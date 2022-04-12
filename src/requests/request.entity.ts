@@ -4,6 +4,7 @@ import { Offeror } from 'src/offerors/offeror.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -17,9 +18,11 @@ export class Request {
   @ManyToOne((_type) => Offeror, (offeror) => offeror.requests, {
     eager: false,
   })
+  @JoinColumn({ name: 'idOfferors', referencedColumnName: 'idOfferors' })
   offeror: Offeror;
 
   @ManyToOne((_type) => Offeree, (offeree) => offeree.requests, { eager: true })
+  @JoinColumn({ name: 'idOfferees', referencedColumnName: 'idOfferees' })
   offeree: Offeree;
 
   @Column()
@@ -34,8 +37,8 @@ export class Request {
   @Column()
   cause: string;
 
-  @Column()
-  note: string = null;
+  @Column({ nullable: true })
+  note: string;
 
   @OneToMany((_type) => Complaint, (complaint) => complaint.request, {
     eager: false,
