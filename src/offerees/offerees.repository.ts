@@ -22,7 +22,7 @@ export class OffereesRepository extends Repository<Offeree> {
   }
   async selectOffereeByUsername(username: string): Promise<Offeree> {
     const query = this.createQueryBuilder('offerees');
-    query.where({ username });
+    query.where({ account: { username } });
     try {
       // if select query failed to execute
       return await query.getOne();
