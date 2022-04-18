@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { Request } from 'src/requests/request.entity';
@@ -59,11 +59,13 @@ export class ReservationsRepository extends Repository<Reservation> {
         error.message,
       );
     }
+    // if reservation hasn't been made
+    if (typeof reservation === 'undefined') return undefined;
     // if reservation wasn't made nor received by the given account nor admin owns the account
     if (
-      reservation.request.offeree.account !== account ||
-      reservation.request.offeree.account !== account ||
-      account.privilege !== Privilege.Admin
+      account.privilege !== Privilege.Admin ||
+      reservation.request.offeree.account.username !== account.username ||
+      reservation.request.offeror.account.username !== account.username
     )
       throw new UnauthorizedException(
         'Reservation is not related with your account.',
