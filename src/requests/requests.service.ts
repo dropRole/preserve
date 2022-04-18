@@ -13,6 +13,7 @@ import { ReservationsService } from 'src/reservations/reservations.service';
 import { Account } from 'src/auth/account.entity';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { OffereesService } from 'src/offerees/offerees.service';
+import { Reservation } from 'src/reservations/reservation.entity';
 
 @Injectable()
 export class RequestsService {
@@ -62,11 +63,12 @@ export class RequestsService {
 
   async retreatRequest(account: Account, idRequests: string): Promise<void> {
     const request = await this.getRequestById(account, idRequests);
-    // if request hasn't been confirmed as reservation
-    if (this.reservationsService.getReservation(account, idRequests))
-      throw new ConflictException('Request is already confirmed.');
-    // if request is owned by an account
-    if (request.offeree.account == account)
+    // if request hasn't been confirmed and is owned by an account
+    if (
+      (await this.reservationsService.getReservation(account, idRequests)) ===
+        undefined &&
+      request.offeree.account.username === account.username
+    )
       return this.requestsRepository.deleteRequest(idRequests);
   }
 }
