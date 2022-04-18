@@ -53,8 +53,11 @@ export class RequestsRepository extends Repository<Request> {
   ): Promise<Request[]> {
     const { todaysDate } = getRequestsFilterDTO;
     const query = this.createQueryBuilder('requests');
-    query.where({ account });
-    query.andWhere('requestedAt::DATE = :todaysDate', { todaysDate });
+    query.innerJoin('requests.offeror', 'offerors');
+    query.where({ offeror: { account: { username: account.username } } });
+    query.andWhere('requests."requestedAt"::DATE = :todaysDate', {
+      todaysDate,
+    });
     try {
       // if select query failed to execute
       return await query.getMany();
@@ -71,7 +74,7 @@ export class RequestsRepository extends Repository<Request> {
     let request: Request;
     try {
       // if select query failed to execute
-      request = await this.findOne({ idRequests });
+      request = await this.findOne({ where: { idRequests } });
     } catch (error) {
       throw new QueryFailedError(
         `SELECT * FROM requests WHERE idRequest = ${idRequests}`,
@@ -81,8 +84,8 @@ export class RequestsRepository extends Repository<Request> {
     }
     // if request wasn't sent by nor an account owner received it
     if (
-      request.offeree.account !== account ||
-      request.offeror.account !== account
+      request.offeree.account.username !== account.username &&
+      request.offeror.account.username !== account.username
     )
       throw new UnauthorizedException(
         "Request wasn't sent nor received by your account.",
