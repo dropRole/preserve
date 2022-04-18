@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OffereesModule } from 'src/offerees/offerees.module';
 import { OffereesRepository } from 'src/offerees/offerees.repository';
@@ -27,8 +27,8 @@ import { OfferorsService } from 'src/offerors/offerors.service';
         expiresIn: 3600,
       },
     }),
-    OfferorsModule,
-    OffereesModule,
+    forwardRef(() => OfferorsModule),
+    forwardRef(() => OffereesModule),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, OfferorsService, OffereesService],
