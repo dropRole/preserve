@@ -16,7 +16,7 @@ export class Request {
   idRequests: string;
 
   @ManyToOne((_type) => Offeror, (offeror) => offeror.requests, {
-    eager: false,
+    eager: true,
   })
   @JoinColumn({ name: 'idOfferors', referencedColumnName: 'idOfferors' })
   offeror: Offeror;
