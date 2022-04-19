@@ -3,16 +3,15 @@ import { ReservationsController } from './reservations.controller';
 import { ReservationsRepository } from './reservations.repository';
 import { ReservationsService } from './reservations.service';
 import { RequestsModule } from '../requests/requests.module';
-import { RequestsService } from '../requests/requests.service';
 import { RequestsRepository } from 'src/requests/requests.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OfferorsModule } from 'src/offerors/offerors.module';
-import { OfferorsService } from 'src/offerors/offerors.service';
 import { OffereesModule } from 'src/offerees/offerees.module';
-import { OffereesService } from 'src/offerees/offerees.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     TypeOrmModule.forFeature([ReservationsRepository, RequestsRepository]),
     forwardRef(() => RequestsModule),
     OfferorsModule,
