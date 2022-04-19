@@ -22,8 +22,16 @@ export class ReservationsService {
     private reservationsRepository: ReservationsRepository,
   ) {}
 
-  reserve(makeReservationDTO: MakeReservationDTO): Promise<void> {
-    return this.reservationsRepository.insertReservation(makeReservationDTO);
+  async reserve(
+    account: Account,
+    makeReservationDTO: MakeReservationDTO,
+  ): Promise<void> {
+    const { idRequests } = makeReservationDTO;
+    const request = await this.requestService.getRequestById(
+      account,
+      idRequests,
+    );
+    return this.reservationsRepository.insertReservation(request);
   }
 
   async getReservations(
@@ -33,13 +41,9 @@ export class ReservationsService {
     const { todaysDate } = getReservationFilterDTO;
     const getRequestsFilterDTO = new GetRequestsFilterDTO();
     getRequestsFilterDTO.todaysDate = todaysDate;
-    const requests = await this.requestService.getRequests(
+    return this.reservationsRepository.selectReservations(
       account,
       getReservationFilterDTO,
-    );
-    return this.reservationsRepository.selectReservations(
-      getReservationFilterDTO,
-      requests,
     );
   }
 
@@ -50,7 +54,7 @@ export class ReservationsService {
   async deleteReservation(account: Account, idRequests: string): Promise<void> {
     const reservation = await this.getReservation(account, idRequests);
     // if reservation wasn't confirmed by the account
-    if (reservation.request.offeror.account !== account)
+    if (reservation.request.offeror.account.username !== account.username)
       throw new UnauthorizedException(
         "You're not the confirmator of the reservation.",
       );
