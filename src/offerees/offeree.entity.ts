@@ -15,18 +15,23 @@ export class Offeree {
   @PrimaryGeneratedColumn('uuid')
   idOfferees: string;
 
-  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   @OneToOne((_type) => Account, { eager: true })
+  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
 
-  @Column({ nullable: true })
+  @Column({ type: 'character varying', length: 60, nullable: true })
   email: string;
 
   @OneToMany((_type) => Request, (request) => request.offeree, { eager: false })
+  @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
   requests: Request[];
 
   @OneToMany((_type) => Prohibition, (prohibition) => prohibition.offeree, {
     eager: false,
+  })
+  @JoinColumn({
+    name: 'idProhibitions',
+    referencedColumnName: 'idProhibitions',
   })
   prohibitions: Prohibition[];
 }
