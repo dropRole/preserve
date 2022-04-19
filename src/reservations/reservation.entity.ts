@@ -13,12 +13,12 @@ export class Reservation {
   idReservations: string;
 
   @OneToOne((_type) => Request, { eager: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
   request: Request;
 
   @Column()
   code: string;
 
-  @Column()
+  @Column({ type: 'timestamp', default: 'NOW' })
   confirmedAt: string;
 }
