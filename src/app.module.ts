@@ -22,7 +22,7 @@ import { ProhibitionsModule } from './prohibitions/prohibitions.module';
       password: 'postgres',
       database: 'preserve',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     OfferorsModule,
     OffereesModule,
