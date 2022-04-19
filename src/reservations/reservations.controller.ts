@@ -6,7 +6,9 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
@@ -16,14 +18,18 @@ import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsService } from './reservations.service';
 
-@Controller('reservation')
+@Controller('reservations')
+@UseGuards(AuthGuard())
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
   @Post()
   @Privileges(Privilege.Offeror)
-  reserve(@Body() makeReservationDTO: MakeReservationDTO): Promise<void> {
-    return this.reservationsService.reserve(makeReservationDTO);
+  reserve(
+    @GetAccount() account: Account,
+    @Body() makeReservationDTO: MakeReservationDTO,
+  ): Promise<void> {
+    return this.reservationsService.reserve(account, makeReservationDTO);
   }
 
   @Get()
@@ -47,7 +53,7 @@ export class ReservationsController {
     return this.reservationsService.getReservation(account, idRequests);
   }
 
-  @Delete()
+  @Delete('/:idRequests')
   @Privileges(Privilege.Offeror)
   deleteReservation(
     @GetAccount() account: Account,
