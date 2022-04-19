@@ -1,46 +1,49 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { Request } from 'src/requests/request.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
-import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
+import { v4 as uuid } from 'uuid';
 
 @EntityRepository(Reservation)
 export class ReservationsRepository extends Repository<Reservation> {
-  async insertReservation(
-    makeReservationDTO: MakeReservationDTO,
-  ): Promise<void> {
-    const { request, code, confirmedAt } = makeReservationDTO;
-    const reservation = this.create({ request, code, confirmedAt });
+  async insertReservation(request: Request): Promise<void> {
+    const code = uuid().substring(0, 8);
+    const reservation = this.create({
+      request,
+      code,
+    });
     try {
       // if insert query failed
       await this.save(reservation);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO reservations VALUES(${request.idRequests}, ${code}, ${confirmedAt})`,
-        [request.idRequests, code, confirmedAt],
+        `INSERT INTO reservations VALUES(${request.idRequests}, ${code}, DEFAULT)`,
+        [request.idRequests, code],
         error.message,
       );
     }
   }
 
   async selectReservations(
+    account: Account,
     getReservationFilterDTO: GetReservationsFilterDTO,
-    requests: Request[],
   ): Promise<Reservation[]> {
-    const query = this.createQueryBuilder('reservations');
     const { todaysDate } = getReservationFilterDTO;
-    query.where('reservations.confirmedAt::DATE === :todaysDate', {
+    const query = this.createQueryBuilder('reservations');
+    query.innerJoin('reservations.request', 'requests');
+    query.innerJoin('requests.offeror', 'offerors');
+    query.where('reservations."confirmedAt"::DATE = :todaysDate', {
       todaysDate,
     });
-    query.andWhere('reservation.request IN(:requests)', { requests });
+    query.andWhere({ request: { offeror: { account } } });
     try {
       // if select query failed
       return await query.getMany();
     } catch (error) {
-      throw new QueryFailedError(query.getSql(), [requests], error.message);
+      throw new QueryFailedError(query.getSql(), [account], error.message);
     }
   }
 
@@ -63,8 +66,8 @@ export class ReservationsRepository extends Repository<Reservation> {
     if (typeof reservation === 'undefined') return undefined;
     // if reservation wasn't made nor received by the given account nor admin owns the account
     if (
-      account.privilege !== Privilege.Admin ||
-      reservation.request.offeree.account.username !== account.username ||
+      account.privilege !== Privilege.Admin &&
+      reservation.request.offeree.account.username !== account.username &&
       reservation.request.offeror.account.username !== account.username
     )
       throw new UnauthorizedException(
