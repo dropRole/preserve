@@ -1,30 +1,29 @@
 import { Account } from 'src/auth/account.entity';
+import { Reservation } from 'src/reservations/reservation.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
-import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @EntityRepository(Complaint)
 export class ComplaintsRepository extends Repository<Complaint> {
   async insertComplaint(
-    submitComplaintDTO: SubmitComplaintDTO,
+    reservation: Reservation,
+    counteredComplaint: Complaint,
+    content: string,
     account: Account,
   ): Promise<void> {
-    const { request, counteredComplaint, content, written } =
-      submitComplaintDTO;
     const complaint = this.create({
-      request,
-      account,
+      reservation,
       counteredComplaint,
+      account,
       content,
-      written,
     });
     try {
       // if insert query failed
       await this.insert(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `INSERT INTO complaints VALUES(${request.idRequests}, ${account.username}, ${counteredComplaint.idComplaints}, ${content}, ${written})`,
+        `INSERT INTO complaints VALUES(${reservation.request.idRequests}, ${account.username}, ${counteredComplaint.idComplaints}, ${content}, NOW())`,
         undefined,
         error.message,
       );
