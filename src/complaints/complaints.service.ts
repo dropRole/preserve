@@ -22,17 +22,17 @@ export class ComplaintsService {
     account: Account,
     submitComplaintDTO: SubmitComplaintDTO,
   ): Promise<void> {
-    const { idReservations, idComplaints, content } = submitComplaintDTO;
+    const { idReservations, counteredComplaint, content } = submitComplaintDTO;
     const reservation = await this.reservationsService.getReservation(
       account,
       idReservations,
     );
-    const counteredComplaint = await this.complaintsRepository.findOne({
-      idComplaints,
+    const complaint = await this.complaintsRepository.findOne({
+      idComplaints: counteredComplaint,
     });
     return this.complaintsRepository.insertComplaint(
       reservation,
-      counteredComplaint,
+      complaint,
       content,
       account,
     );

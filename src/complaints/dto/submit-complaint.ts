@@ -7,7 +7,7 @@ export class SubmitComplaintDTO {
 
   @IsOptional()
   @IsString()
-  idComplaints: string;
+  counteredComplaint: string;
 
   @IsString()
   @IsNotEmpty()
