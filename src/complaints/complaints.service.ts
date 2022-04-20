@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from 'src/auth/account.entity';
+import { ReservationsService } from 'src/reservations/reservations.service';
 import { Complaint } from './complaint.entity';
 import { ComplaintsRepository } from './complaints.repository';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
@@ -15,13 +16,24 @@ export class ComplaintsService {
   constructor(
     @InjectRepository(ComplaintsRepository)
     private complaintsRepository: ComplaintsRepository,
+    private reservationsService: ReservationsService,
   ) {}
-  complain(
+  async complain(
     submitComplaintDTO: SubmitComplaintDTO,
     account: Account,
   ): Promise<void> {
+    const { idRequests, idComplaints, content } = submitComplaintDTO;
+    const reservation = await this.reservationsService.getReservation(
+      account,
+      idRequests,
+    );
+    const counteredComplaint = await this.complaintsRepository.findOne({
+      idComplaints,
+    });
     return this.complaintsRepository.insertComplaint(
-      submitComplaintDTO,
+      reservation,
+      counteredComplaint,
+      content,
       account,
     );
   }
