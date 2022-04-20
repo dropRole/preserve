@@ -25,19 +25,19 @@ export class Request {
   @JoinColumn({ name: 'idOfferees', referencedColumnName: 'idOfferees' })
   offeree: Offeree;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   requestedAt: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   requestedFor: string;
 
-  @Column()
+  @Column({ type: 'smallint' })
   seats: number;
 
-  @Column()
+  @Column({ type: 'text' })
   cause: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   note: string;
 
   @OneToMany((_type) => Complaint, (complaint) => complaint.request, {
