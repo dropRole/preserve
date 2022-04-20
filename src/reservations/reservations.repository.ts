@@ -49,16 +49,16 @@ export class ReservationsRepository extends Repository<Reservation> {
 
   async selectReservation(
     account: Account,
-    idRequests: string,
+    idReservations: string,
   ): Promise<Reservation> {
     let reservation: Reservation;
     try {
       // if select query failed
-      reservation = await this.findOne({ idReservations: idRequests });
+      reservation = await this.findOne({ idReservations });
     } catch (error) {
       throw new QueryFailedError(
-        `SELECT * FROM reservations WHERE idRequests = ${idRequests}`,
-        [idRequests],
+        `SELECT * FROM reservations WHERE idReservations = ${idReservations}`,
+        [idReservations],
         error.message,
       );
     }
