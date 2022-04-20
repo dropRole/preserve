@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
@@ -17,6 +19,7 @@ import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @Controller('complaints')
+@UseGuards(AuthGuard())
 export class ComplaintsController {
   constructor(private complaintsService: ComplaintsService) {}
 
@@ -26,7 +29,7 @@ export class ComplaintsController {
     @Body() submitComplaintDTO: SubmitComplaintDTO,
     @GetAccount() account: Account,
   ): Promise<void> {
-    return this.complaintsService.complain(submitComplaintDTO, account);
+    return this.complaintsService.complain(account, submitComplaintDTO);
   }
 
   @Get('/:idReservations')
