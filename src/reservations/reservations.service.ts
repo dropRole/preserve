@@ -47,8 +47,14 @@ export class ReservationsService {
     );
   }
 
-  getReservation(account: Account, idRequests: string): Promise<Reservation> {
-    return this.reservationsRepository.selectReservation(account, idRequests);
+  getReservation(
+    account: Account,
+    idReservations: string,
+  ): Promise<Reservation> {
+    return this.reservationsRepository.selectReservation(
+      account,
+      idReservations,
+    );
   }
 
   async deleteReservation(account: Account, idRequests: string): Promise<void> {
