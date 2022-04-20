@@ -34,7 +34,7 @@ export class Complaint {
     nullable: true,
   })
   @JoinColumn({
-    name: 'idCounteredComplaints',
+    name: 'counteredComplaint',
     referencedColumnName: 'idComplaints',
   })
   counteredComplaint: Complaint;
