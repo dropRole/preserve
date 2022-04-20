@@ -2,6 +2,7 @@ import { Account } from 'src/auth/account.entity';
 import { Prohibition } from 'src/prohibitions/prohibitions.entity';
 import { Request } from 'src/requests/request.entity';
 import {
+  Check,
   Column,
   Entity,
   JoinColumn,
@@ -15,39 +16,47 @@ export class Offeror {
   @PrimaryGeneratedColumn('uuid')
   idOfferors: string;
 
-  @Column()
+  @Column({ type: 'character varying', length: 100 })
   name: string;
 
-  @Column()
+  @Column({ type: 'character varying', length: 80 })
   address: string;
 
-  @Column()
+  @Column({ type: 'character varying', length: 60 })
   email: string;
 
-  @Column()
+  @Column({ type: 'character varying', length: 13 })
   telephone: string;
 
-  @Column()
+  @Column({ type: 'text' })
   businessHours: string;
 
-  @Column()
+  @Column({ type: 'smallint' })
+  @Check('responsiveness IN(5, 6, 7, 8, 9, 10)')
   responsiveness: number;
 
-  @Column()
+  @Column({ type: 'smallint' })
+  @Check('compliance IN(5, 6, 7, 8, 9, 10)')
   compliance: number;
 
-  @Column()
+  @Column({ type: 'smallint' })
+  @Check('timeliness IN(5, 6, 7, 8, 9, 10)')
   timeliness: number;
 
-  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   @OneToOne((_type) => Account, { eager: true })
+  @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
 
   @OneToMany((_type) => Request, (request) => request.offeror, { eager: false })
+  @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
   requests: Request[];
 
   @OneToMany((_type) => Prohibition, (prohibition) => prohibition.offeror, {
     eager: true,
+  })
+  @JoinColumn({
+    name: 'idProhibitions',
+    referencedColumnName: 'idProhibitions',
   })
   prohibitions: Prohibition[];
 }
