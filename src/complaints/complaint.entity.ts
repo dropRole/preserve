@@ -1,5 +1,5 @@
 import { Account } from 'src/auth/account.entity';
-import { Request } from 'src/requests/request.entity';
+import { Reservation } from 'src/reservations/reservation.entity';
 import {
   Column,
   Entity,
@@ -14,11 +14,14 @@ export class Complaint {
   @PrimaryGeneratedColumn('uuid')
   idComplaints: string;
 
-  @ManyToOne((_type) => Request, (request) => request.complaints, {
+  @ManyToOne((_type) => Reservation, (reservation) => reservation.complaints, {
     eager: false,
   })
-  @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
-  request: Request;
+  @JoinColumn({
+    name: 'idReservations',
+    referencedColumnName: 'idReservations',
+  })
+  reservation: Reservation;
 
   @OneToOne((_type) => Account, (account) => account.complaints, {
     eager: true,
@@ -39,7 +42,7 @@ export class Complaint {
   @Column({ type: 'text' })
   content: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: 'now' })
   written: string;
 
   @Column({ type: 'timestamp', nullable: true })
