@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class SubmitComplaintDTO {
   @IsString()
   @IsNotEmpty()
-  idRequests: string;
+  idReservations: string;
 
   @IsOptional()
   @IsString()
