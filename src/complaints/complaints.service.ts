@@ -19,13 +19,13 @@ export class ComplaintsService {
     private reservationsService: ReservationsService,
   ) {}
   async complain(
-    submitComplaintDTO: SubmitComplaintDTO,
     account: Account,
+    submitComplaintDTO: SubmitComplaintDTO,
   ): Promise<void> {
-    const { idRequests, idComplaints, content } = submitComplaintDTO;
+    const { idReservations, idComplaints, content } = submitComplaintDTO;
     const reservation = await this.reservationsService.getReservation(
       account,
-      idRequests,
+      idReservations,
     );
     const counteredComplaint = await this.complaintsRepository.findOne({
       idComplaints,
