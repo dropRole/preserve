@@ -16,7 +16,7 @@ export class Reservation {
   @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
   request: Request;
 
-  @Column()
+  @Column({ type: 'character varying', length: 8 })
   code: string;
 
   @Column({ type: 'timestamp', default: 'NOW' })
