@@ -2,10 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Request } from 'src/requests/request.entity';
+import { Complaint } from 'src/complaints/complaint.entity';
 
 @Entity('reservations')
 export class Reservation {
@@ -21,4 +23,9 @@ export class Reservation {
 
   @Column({ type: 'timestamp', default: 'NOW' })
   confirmedAt: string;
+
+  @OneToMany((_type) => Complaint, (complaint) => complaint.reservation, {
+    eager: false,
+  })
+  complaints: Complaint[];
 }

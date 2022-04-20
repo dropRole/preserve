@@ -39,9 +39,4 @@ export class Request {
 
   @Column({ type: 'text', nullable: true })
   note: string;
-
-  @OneToMany((_type) => Complaint, (complaint) => complaint.request, {
-    eager: false,
-  })
-  complaints: Complaint[];
 }
