@@ -17,12 +17,12 @@ export class Prohibition {
   })
   offeree: Offeree;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   beginning: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   conclusion: string;
 
-  @Column()
+  @Column({ type: 'text' })
   cause: string;
 }
