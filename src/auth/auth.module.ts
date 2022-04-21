@@ -12,6 +12,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { OfferorsModule } from 'src/offerors/offerors.module';
 import { OfferorsRepository } from 'src/offerors/offerors.repository';
 import { OfferorsService } from 'src/offerors/offerors.service';
+import { PrivilegesGuard } from './privileges.guard';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { OfferorsService } from 'src/offerors/offerors.service';
     forwardRef(() => OffereesModule),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, OfferorsService, OffereesService],
-  exports: [JwtStrategy, PassportModule],
+  providers: [AuthService, JwtStrategy, PrivilegesGuard],
+  exports: [JwtStrategy, PassportModule, PrivilegesGuard],
 })
 export class AuthModule {}
