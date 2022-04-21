@@ -17,9 +17,10 @@ import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Account } from 'src/auth/account.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { PrivilegesGuard } from 'src/auth/privileges.guard';
 
 @Controller('requests')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), PrivilegesGuard)
 export class RequestsController {
   constructor(private requestsService: RequestsService) {}
 

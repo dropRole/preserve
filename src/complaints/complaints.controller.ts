@@ -13,13 +13,14 @@ import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Privileges } from 'src/auth/privilege.decorator';
+import { PrivilegesGuard } from 'src/auth/privileges.guard';
 import { Complaint } from './complaint.entity';
 import { ComplaintsService } from './complaints.service';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 import { SubmitComplaintDTO } from './dto/submit-complaint';
 
 @Controller('complaints')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), PrivilegesGuard)
 export class ComplaintsController {
   constructor(private complaintsService: ComplaintsService) {}
 
