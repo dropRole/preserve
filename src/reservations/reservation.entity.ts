@@ -22,7 +22,7 @@ export class Reservation {
   code: string;
 
   @Column({ type: 'timestamp', default: 'NOW' })
-  confirmedAt: string;
+  confirmedAt: Date;
 
   @OneToMany((_type) => Complaint, (complaint) => complaint.reservation, {
     eager: false,

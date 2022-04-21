@@ -18,10 +18,10 @@ export class Prohibition {
   offeree: Offeree;
 
   @Column({ type: 'timestamp' })
-  beginning: string;
+  beginning: Date;
 
   @Column({ type: 'timestamp' })
-  conclusion: string;
+  conclusion: Date;
 
   @Column({ type: 'text' })
   cause: string;

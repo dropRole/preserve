@@ -26,10 +26,10 @@ export class Request {
   offeree: Offeree;
 
   @Column({ type: 'timestamp' })
-  requestedAt: string;
+  requestedAt: Date;
 
   @Column({ type: 'timestamp' })
-  requestedFor: string;
+  requestedFor: Date;
 
   @Column({ type: 'smallint' })
   seats: number;
