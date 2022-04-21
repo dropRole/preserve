@@ -44,8 +44,8 @@ export class Complaint {
   content: string;
 
   @Column({ type: 'timestamp', default: 'now' })
-  written: string;
+  written: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  updated: string;
+  updated: Date;
 }
