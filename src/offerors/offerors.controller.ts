@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Privileges } from 'src/auth/privilege.decorator';
+import { PrivilegesGuard } from 'src/auth/privileges.guard';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
@@ -10,6 +12,7 @@ import { Offeror } from './offeror.entity';
 import { OfferorsService } from './offerors.service';
 
 @Controller('offerors')
+@UseGuards(AuthGuard(), PrivilegesGuard)
 export class OfferorsController {
   constructor(private offerorsService: OfferorsService) {}
 

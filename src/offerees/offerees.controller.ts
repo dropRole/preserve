@@ -1,14 +1,17 @@
-import { Controller, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Body, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Privileges } from 'src/auth/privilege.decorator';
+import { PrivilegesGuard } from 'src/auth/privileges.guard';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 import { OffereesService } from './offerees.service';
 
 @Controller('offerees')
+@UseGuards(AuthGuard(), PrivilegesGuard)
 export class OffereesController {
   constructor(private offereesService: OffereesService) {}
 

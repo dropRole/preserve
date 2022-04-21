@@ -13,13 +13,14 @@ import { Account } from 'src/auth/account.entity';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { GetAccount } from 'src/auth/get-account.decorator';
 import { Privileges } from 'src/auth/privilege.decorator';
+import { PrivilegesGuard } from 'src/auth/privileges.guard';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsService } from './reservations.service';
 
 @Controller('reservations')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), PrivilegesGuard)
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
