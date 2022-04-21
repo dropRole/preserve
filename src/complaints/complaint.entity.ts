@@ -25,6 +25,7 @@ export class Complaint {
 
   @OneToOne((_type) => Account, (account) => account.complaints, {
     eager: true,
+    createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
