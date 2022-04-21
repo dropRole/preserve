@@ -36,7 +36,7 @@ export class ComplaintsController {
   @Get('/:idReservations')
   @Privileges(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
   getComplaints(
-    @Param() idReservations: string,
+    @Param('idReservations') idReservations: string,
     @GetAccount() account: Account,
   ): Promise<Complaint[]> {
     return this.complaintsService.getComplaints(idReservations, account);
@@ -51,9 +51,11 @@ export class ComplaintsController {
     return this.complaintsService.reComplain(reSubmitComplaintDTO, account);
   }
 
-  @Delete()
+  @Delete('/:idComplaints')
   @Privileges(Privilege.Offeror, Privilege.Offeree)
-  withdrawComplaint(@Param() idComplaints: string): Promise<void> {
+  withdrawComplaint(
+    @Param('idComplaints') idComplaints: string,
+  ): Promise<void> {
     return this.complaintsService.withdrawComplaint(idComplaints);
   }
 }
