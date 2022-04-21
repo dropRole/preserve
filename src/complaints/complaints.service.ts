@@ -53,23 +53,23 @@ export class ComplaintsService {
     reSubmitComplaintDTO: ReSubmitComplaintDTO,
     account: Account,
   ): Promise<void> {
-    const { idComplaints } = reSubmitComplaintDTO;
+    const { idComplaints, content } = reSubmitComplaintDTO;
     const complaint = await this.complaintsRepository.findOne({ idComplaints });
     // if account doesn't belong to the author
-    if (complaint.account != account)
+    if (complaint.account.username != account.username)
       throw new UnauthorizedException(
         "You're not the author of the complaint.",
       );
     // if complaint doesn't exist
     if (!complaint)
       throw new NotFoundException('Subject complaint was not found.');
-    return this.complaintsRepository.updateComplaint(reSubmitComplaintDTO);
+    return this.complaintsRepository.updateComplaint(idComplaints, content);
   }
 
   async withdrawComplaint(idComplaints: string): Promise<void> {
     // if complaint doesn't exist
-    if (!(await this.complaintsRepository.findOne(idComplaints)))
-      throw new NotFoundException('Subject complant was not found');
+    if (!(await this.complaintsRepository.findOne({ idComplaints })))
+      throw new NotFoundException('Subject complaint was not found');
     return this.complaintsRepository.deleteComplaint(idComplaints);
   }
 }
