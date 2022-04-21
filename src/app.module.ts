@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OfferorsModule } from './offerors/offerors.module';
 import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
+import { APP_GUARD } from '@nestjs/core';
+import { PrivilegesGuard } from './auth/privileges.guard';
 
 @Module({
   imports: [
@@ -27,6 +29,12 @@ import { ProhibitionsModule } from './prohibitions/prohibitions.module';
     OfferorsModule,
     OffereesModule,
     ProhibitionsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: PrivilegesGuard,
+    },
   ],
 })
 export class AppModule {}
