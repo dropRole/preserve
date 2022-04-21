@@ -1,7 +1,8 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Privilege } from './enum/privilege.enum';
 
+@Injectable()
 export class PrivilegesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
   canActivate(context: ExecutionContext): boolean {
@@ -11,9 +12,9 @@ export class PrivilegesGuard implements CanActivate {
     );
     // if no roles are required
     if (!privileges) return true;
-    const { account } = context.switchToHttp().getRequest();
+    const { user } = context.switchToHttp().getRequest();
     return privileges.some((privilege) => {
-      if (privilege === account.privilege) return true;
+      if (privilege === user.privilege) return true;
     });
   }
 }
