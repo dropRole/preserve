@@ -1,8 +1,12 @@
 import { Account } from 'src/auth/account.entity';
 import { Reservation } from 'src/reservations/reservation.entity';
-import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
+import {
+  EntityRepository,
+  QueryFailedError,
+  Repository,
+  Timestamp,
+} from 'typeorm';
 import { Complaint } from './complaint.entity';
-import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';
 
 @EntityRepository(Complaint)
 export class ComplaintsRepository extends Repository<Complaint> {
@@ -35,12 +39,14 @@ export class ComplaintsRepository extends Repository<Complaint> {
     account: Account,
   ): Promise<Complaint[]> {
     const query = this.createQueryBuilder('complaints');
-    query.where({ idRequests: idReservations });
-    query.andWhere('complaint.username = :username', {
-      username: account.username,
+    query.innerJoin('complaints.reservation', 'reservations');
+    query.innerJoin('reservations.request', 'requests');
+    query.innerJoin('requests.offeror', 'offerors');
+    query.where({
+      reservation: { idReservations },
     });
-    query.orWhere(
-      'complaint.counteredTo IN (SELECT idComplaints FROM complaints WHERE username = :username)',
+    query.andWhere(
+      '(complaints.username = :username OR offerors.username = :username)',
       { username: account.username },
     );
     try {
@@ -66,20 +72,16 @@ export class ComplaintsRepository extends Repository<Complaint> {
     }
   }
 
-  async updateComplaint(
-    reSubmitComplaintDTO: ReSubmitComplaintDTO,
-  ): Promise<void> {
-    const { idComplaints, content } = reSubmitComplaintDTO;
+  async updateComplaint(idComplaints: string, content: string): Promise<void> {
     const complaint = await this.findOne({ idComplaints });
-    const updated = (+new Date()).toString();
     complaint.content = content;
-    complaint.updated = updated;
+    complaint.updated = new Date();
     try {
       // if update query failed to execute
       await this.save(complaint);
     } catch (error) {
       throw new QueryFailedError(
-        `UPDATE complaints SET content = ${content} WHERE idComplaints = ${idComplaints}`,
+        `UPDATE complaints SET content = ${content}, updated = NOW() WHERE idComplaints = ${idComplaints}`,
         [content, idComplaints],
         error.message,
       );
