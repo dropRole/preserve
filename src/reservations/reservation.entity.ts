@@ -1,21 +1,14 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { Request } from 'src/requests/request.entity';
 import { Complaint } from 'src/complaints/complaint.entity';
 
 @Entity('reservations')
 export class Reservation {
-  @PrimaryGeneratedColumn('uuid')
-  idReservations: string;
-
-  @OneToOne((_type) => Request, { eager: true })
-  @JoinColumn({ name: 'idRequests', referencedColumnName: 'idRequests' })
+  @OneToOne((_type) => Request, { primary: true, eager: true })
+  @JoinColumn({
+    name: 'idReservations',
+    referencedColumnName: 'idReservations',
+  })
   request: Request;
 
   @Column({ type: 'character varying', length: 8 })
