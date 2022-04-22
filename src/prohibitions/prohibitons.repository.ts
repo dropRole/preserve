@@ -69,8 +69,8 @@ export class ProhibitionsRepository extends Repository<Prohibition> {
   ): Promise<void> {
     const { beginning, conclusion } = updateProhibitonTimeframeDTO;
     const prohibition = await this.findOne({ idProhibitions });
-    prohibition.beginning = beginning;
-    prohibition.conclusion = conclusion;
+    prohibition.beginning = new Date(beginning);
+    prohibition.conclusion = new Date(conclusion);
     try {
       // if update query failed to execute
       await this.save(prohibition);
