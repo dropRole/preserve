@@ -7,7 +7,7 @@ export class Reservation {
   @OneToOne((_type) => Request, { primary: true, eager: true })
   @JoinColumn({
     name: 'idReservations',
-    referencedColumnName: 'idReservations',
+    referencedColumnName: 'idRequests',
   })
   request: Request;
 
