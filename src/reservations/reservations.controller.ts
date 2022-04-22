@@ -45,13 +45,13 @@ export class ReservationsController {
     );
   }
 
-  @Get('/:idReservations')
+  @Get('/:idRequests')
   @Privileges(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
   getReservation(
     @GetAccount() account: Account,
-    @Param('idReservations') idReservations: string,
+    @Param('idRequests') idRequests: string,
   ): Promise<Reservation> {
-    return this.reservationsService.getReservation(account, idReservations);
+    return this.reservationsService.getReservation(account, idRequests);
   }
 
   @Delete('/:idRequests')
