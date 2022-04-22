@@ -66,10 +66,19 @@ export class ComplaintsService {
     return this.complaintsRepository.updateComplaint(idComplaints, content);
   }
 
-  async withdrawComplaint(idComplaints: string): Promise<void> {
+  async withdrawComplaint(
+    account: Account,
+    idComplaints: string,
+  ): Promise<void> {
+    const complaint = await this.complaintsRepository.findOne({ idComplaints });
     // if complaint doesn't exist
-    if (!(await this.complaintsRepository.findOne({ idComplaints })))
+    if (!complaint)
       throw new NotFoundException('Subject complaint was not found');
+    // if unathorized deletion attemp
+    if (complaint.account.username !== account.username)
+      throw new UnauthorizedException(
+        'Unauthorized complaint deletion attempt. ',
+      );
     return this.complaintsRepository.deleteComplaint(idComplaints);
   }
 }

@@ -54,8 +54,9 @@ export class ComplaintsController {
   @Delete('/:idComplaints')
   @Privileges(Privilege.Offeror, Privilege.Offeree)
   withdrawComplaint(
+    @GetAccount() account: Account,
     @Param('idComplaints') idComplaints: string,
   ): Promise<void> {
-    return this.complaintsService.withdrawComplaint(idComplaints);
+    return this.complaintsService.withdrawComplaint(account, idComplaints);
   }
 }
