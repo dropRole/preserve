@@ -19,7 +19,6 @@ export class Complaint {
   })
   @JoinColumn({
     name: 'idReservations',
-    referencedColumnName: 'idReservations',
   })
   reservation: Reservation;
 
