@@ -37,7 +37,7 @@ export class RequestsController {
   }
 
   @Get()
-  @Privileges(Privilege.Offeror)
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
   getRequests(
     @GetAccount() account: Account,
     @Query() getRequestsFilterDTO: GetRequestsFilterDTO,
