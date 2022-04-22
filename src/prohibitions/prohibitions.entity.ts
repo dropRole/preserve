@@ -1,6 +1,12 @@
 import { Offeree } from 'src/offerees/offeree.entity';
 import { Offeror } from 'src/offerors/offeror.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('prohibitions')
 export class Prohibition {
@@ -10,11 +16,13 @@ export class Prohibition {
   @ManyToOne((_type) => Offeror, (offeree) => offeree.prohibitions, {
     eager: false,
   })
+  @JoinColumn({ name: 'idOfferors', referencedColumnName: 'idOfferors' })
   offeror: Offeror;
 
-  @ManyToOne((_type) => Offeree, (offeror) => offeror.prohibitions, {
+  @ManyToOne((_type) => Offeree, (offeree) => offeree.prohibitions, {
     eager: false,
   })
+  @JoinColumn({ name: 'idOfferees', referencedColumnName: 'idOfferees' })
   offeree: Offeree;
 
   @Column({ type: 'timestamp' })
