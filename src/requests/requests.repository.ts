@@ -54,7 +54,9 @@ export class RequestsRepository extends Repository<Request> {
     const { todaysDate } = getRequestsFilterDTO;
     const query = this.createQueryBuilder('requests');
     query.innerJoin('requests.offeror', 'offerors');
+    query.innerJoin('requests.offeree', 'offerees');
     query.where({ offeror: { account: { username: account.username } } });
+    query.orWhere({ offeree: { account: { username: account.username } } });
     query.andWhere('requests."requestedAt"::DATE = :todaysDate', {
       todaysDate,
     });
