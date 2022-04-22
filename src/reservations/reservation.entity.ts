@@ -14,7 +14,7 @@ export class Reservation {
   @Column({ type: 'character varying', length: 8 })
   code: string;
 
-  @Column({ type: 'timestamp', default: 'NOW' })
+  @Column({ type: 'timestamp', default: 'now' })
   confirmedAt: Date;
 
   @OneToMany((_type) => Complaint, (complaint) => complaint.reservation, {
