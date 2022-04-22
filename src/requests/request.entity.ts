@@ -1,4 +1,3 @@
-import { Complaint } from 'src/complaints/complaint.entity';
 import { Offeree } from 'src/offerees/offeree.entity';
 import { Offeror } from 'src/offerors/offeror.entity';
 import {
@@ -6,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
