@@ -1,6 +1,6 @@
 ﻿/*
 Created: 15/12/2021
-Modified: 02/04/2022
+Modified: 22/04/2022
 Project: pReserve
 Model: Global
 Author: dropRole
@@ -32,7 +32,7 @@ ALTER TABLE "accounts" ADD CONSTRAINT "PK_accounts" PRIMARY KEY ("username")
 
 CREATE TABLE "offerees"(
  "id_offerees" UUID NOT NULL,
- "accounts" Character varying(20) NOT NULL,
+ "username" Character varying(20) NOT NULL,
  "email" Character varying(60)
 )
 WITH (
@@ -41,7 +41,7 @@ WITH (
 
 -- Create indexes for table offerees
 
-CREATE INDEX "IX_accounts_offerees" ON "offerees" ("accounts")
+CREATE INDEX "IX_accounts_offerees" ON "offerees" ("username")
 ;
 
 -- Add keys for table offerees
@@ -64,7 +64,7 @@ CREATE TABLE "offerors"(
         CONSTRAINT "mark" CHECK (VALUE IN(5, 6, 7, 8, 9, 10)),
  "timeliness" Smallint DEFAULT 5 NOT NULL
         CONSTRAINT "mark" CHECK (VALUE IN(5, 6, 7, 8, 9, 10)),
- "accounts" Character varying(20) NOT NULL
+ "username" Character varying(20) NOT NULL
 )
 WITH (
  autovacuum_enabled=true)
@@ -78,7 +78,7 @@ ALTER TABLE "offerors" ALTER COLUMN "timeliness" SET STORAGE PLAIN
 
 -- Create indexes for table offerors
 
-CREATE INDEX "IX_accounts_offerors" ON "offerors" ("accounts")
+CREATE INDEX "IX_accounts_offerors" ON "offerors" ("username")
 ;
 
 -- Add keys for table offerors
@@ -118,7 +118,7 @@ ALTER TABLE "requests" ADD CONSTRAINT "PK_requests" PRIMARY KEY ("id_requests")
 -- Table reservations
 
 CREATE TABLE "reservations"(
- "id_requests" UUID NOT NULL,
+ "id_reservations" UUID NOT NULL,
  "code" Character varying(8) NOT NULL,
  "confirmed_at" Timestamp NOT NULL
 )
@@ -128,21 +128,21 @@ WITH (
 
 -- Create indexes for table reservations
 
-CREATE INDEX "IX_requests_reservations" ON "reservations" ("id_requests")
+CREATE INDEX "IX_requests_reservations" ON "reservations" ("id_reservations")
 ;
 
 -- Add keys for table reservations
 
-ALTER TABLE "reservations" ADD CONSTRAINT "PK_reservations" PRIMARY KEY ("id_requests")
+ALTER TABLE "reservations" ADD CONSTRAINT "PK_reservations" PRIMARY KEY ("id_reservations")
 ;
 
 -- Table complaints
 
 CREATE TABLE "complaints"(
  "id_complaints" UUID NOT NULL,
- "id_requests" UUID NOT NULL,
+ "id_reservations" UUID NOT NULL,
  "username" Character varying(20) NOT NULL,
- "countered_to" UUID,
+ "countered_complaint" UUID,
  "content" Text NOT NULL,
  "written" Timestamp NOT NULL,
  "updated" Timestamp
@@ -153,10 +153,10 @@ WITH (
 
 -- Create indexes for table complaints
 
-CREATE INDEX "IX_complaints_complaints" ON "complaints" ("countered_to")
+CREATE INDEX "IX_complaints_complaints" ON "complaints" ("countered_complaint")
 ;
 
-CREATE INDEX "IX_reservations_complaints" ON "complaints" ("id_requests")
+CREATE INDEX "IX_reservations_complaints" ON "complaints" ("id_reservations")
 ;
 
 CREATE INDEX "IX_users_complaints" ON "complaints" ("username")
@@ -195,25 +195,25 @@ ALTER TABLE "prohibitions" ADD CONSTRAINT "PK_prohibitions" PRIMARY KEY ("id_pro
 ;
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 
-ALTER TABLE "reservations" ADD CONSTRAINT "requests_reservations" FOREIGN KEY ("id_requests") REFERENCES "requests" ("id_requests") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "reservations" ADD CONSTRAINT "requests_reservations" FOREIGN KEY ("id_reservations") REFERENCES "requests" ("id_requests") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "complaints" ADD CONSTRAINT "complaints_complaints" FOREIGN KEY ("countered_to") REFERENCES "complaints" ("id_complaints") ON DELETE RESTRICT ON UPDATE CASCADE
+ALTER TABLE "complaints" ADD CONSTRAINT "complaints_complaints" FOREIGN KEY ("countered_complaint") REFERENCES "complaints" ("id_complaints") ON DELETE RESTRICT ON UPDATE CASCADE
 ;
 
 ALTER TABLE "requests" ADD CONSTRAINT "offerors_requests" FOREIGN KEY ("id_offerors") REFERENCES "offerors" ("id_offerors") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "complaints" ADD CONSTRAINT "reservations_complaints" FOREIGN KEY ("id_requests") REFERENCES "reservations" ("id_requests") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "complaints" ADD CONSTRAINT "reservations_complaints" FOREIGN KEY ("id_reservations") REFERENCES "reservations" ("id_reservations") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "complaints" ADD CONSTRAINT "accounts_complaints" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "offerees" ADD CONSTRAINT "accounts_offerees" FOREIGN KEY ("accounts") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "offerees" ADD CONSTRAINT "accounts_offerees" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
-ALTER TABLE "offerors" ADD CONSTRAINT "accounts_offerors" FOREIGN KEY ("accounts") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE "offerors" ADD CONSTRAINT "accounts_offerors" FOREIGN KEY ("username") REFERENCES "accounts" ("username") ON DELETE NO ACTION ON UPDATE NO ACTION
 ;
 
 ALTER TABLE "requests" ADD CONSTRAINT "offerees_requests" FOREIGN KEY ("id_offerees") REFERENCES "offerees" ("id_offerees") ON DELETE NO ACTION ON UPDATE NO ACTION
