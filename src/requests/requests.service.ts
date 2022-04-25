@@ -1,6 +1,5 @@
 import {
-  forwardRef,
-  Inject,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,18 +9,18 @@ import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
 import { RequestsRepository } from './requests.repository';
 import { Request } from './request.entity';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
-import { ReservationsService } from 'src/reservations/reservations.service';
 import { Account } from 'src/auth/account.entity';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { OffereesService } from 'src/offerees/offerees.service';
+import { ReservationsRepository } from 'src/reservations/reservations.repository';
 
 @Injectable()
 export class RequestsService {
   constructor(
-    @Inject(forwardRef(() => ReservationsService))
-    private reservationsService: ReservationsService,
     @InjectRepository(RequestsRepository)
     private requestsRepository: RequestsRepository,
+    @InjectRepository(ReservationsRepository)
+    private reservationsRepository: ReservationsRepository,
     private offerorsService: OfferorsService,
     private offereesService: OffereesService,
   ) {}
@@ -69,8 +68,13 @@ export class RequestsService {
 
   async retreatRequest(account: Account, idRequests: string): Promise<void> {
     const request = await this.getRequestById(account, idRequests);
-    // if not the account of an author
+    // if request was confirmed as the reservation
+    if (await this.reservationsRepository.findOne({ request: { idRequests } }))
+      throw new ConflictException(
+        `Request ${idRequests} was confirmed as a reservation.`,
+      );
     if (request.offeree.account.username !== account.username)
+      // if not the account of an author
       throw new UnauthorizedException("You're not authorized for the request.");
     return this.requestsRepository.deleteRequest(idRequests);
   }
