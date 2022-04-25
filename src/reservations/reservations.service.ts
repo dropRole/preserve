@@ -2,6 +2,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Account } from 'src/auth/account.entity';
@@ -12,6 +13,7 @@ import { ReservationsRepository } from './reservations.repository';
 import { RequestsService } from '../requests/requests.service';
 import { GetRequestsFilterDTO } from 'src/requests/dto/get-requests-filter.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Privilege } from 'src/auth/enum/privilege.enum';
 
 @Injectable()
 export class ReservationsService {
@@ -47,8 +49,29 @@ export class ReservationsService {
     );
   }
 
-  getReservation(account: Account, idRequests: string): Promise<Reservation> {
-    return this.reservationsRepository.selectReservation(account, idRequests);
+  async getReservation(
+    account: Account,
+    idRequests: string,
+  ): Promise<Reservation> {
+    const reservation = await this.reservationsRepository.selectReservation(
+      account,
+      idRequests,
+    );
+    // if the given request wasn't the subject of reservation
+    if (!reservation)
+      throw new NotFoundException(
+        `The given request ${idRequests} wasn't the subject of any reservation. `,
+      );
+    // if reservation wasn't made nor received by the given account nor admin owns the account
+    if (
+      account.privilege !== Privilege.Admin &&
+      reservation.request.offeree.account.username !== account.username &&
+      reservation.request.offeror.account.username !== account.username
+    )
+      throw new UnauthorizedException(
+        'Reservation is not related with your account.',
+      );
+    return reservation;
   }
 
   async deleteReservation(account: Account, idRequests: string): Promise<void> {
