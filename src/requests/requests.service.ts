@@ -1,8 +1,9 @@
 import {
-  ConflictException,
   forwardRef,
   Inject,
   Injectable,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
@@ -13,7 +14,6 @@ import { ReservationsService } from 'src/reservations/reservations.service';
 import { Account } from 'src/auth/account.entity';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { OffereesService } from 'src/offerees/offerees.service';
-import { Reservation } from 'src/reservations/reservation.entity';
 
 @Injectable()
 export class RequestsService {
@@ -58,17 +58,20 @@ export class RequestsService {
   }
 
   getRequestById(account: Account, idRequests: string): Promise<Request> {
-    return this.requestsRepository.selectRequest(account, idRequests);
+    const request = this.requestsRepository.selectRequest(account, idRequests);
+    // if the subject request wasn't submitted
+    if (!request)
+      throw new NotFoundException(
+        `The subject request ${idRequests} wasn't found.`,
+      );
+    return request;
   }
 
   async retreatRequest(account: Account, idRequests: string): Promise<void> {
     const request = await this.getRequestById(account, idRequests);
-    // if request hasn't been confirmed and is owned by an account
-    if (
-      (await this.reservationsService.getReservation(account, idRequests)) ===
-        undefined &&
-      request.offeree.account.username === account.username
-    )
-      return this.requestsRepository.deleteRequest(idRequests);
+    // if not the account of an author
+    if (request.offeree.account.username !== account.username)
+      throw new UnauthorizedException("You're not authorized for the request.");
+    return this.requestsRepository.deleteRequest(idRequests);
   }
 }
