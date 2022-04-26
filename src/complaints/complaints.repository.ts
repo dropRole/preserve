@@ -35,19 +35,20 @@ export class ComplaintsRepository extends Repository<Complaint> {
   }
 
   async selectComplaints(
-    idReservations: string,
+    reservation: Reservation,
     account: Account,
   ): Promise<Complaint[]> {
     const query = this.createQueryBuilder('complaints');
     query.innerJoin('complaints.reservation', 'reservations');
     query.innerJoin('reservations.request', 'requests');
     query.innerJoin('requests.offeror', 'offerors');
-    query.where({
-      reservation: { idReservations },
-    });
+    query.where({ reservation });
     query.andWhere(
-      '(complaints.username = :username OR offerors.username = :username)',
-      { username: account.username },
+      '(complaints.username = :authorUsername OR offerors.username = :offerorsUsername)',
+      {
+        authorUsername: account.username,
+        offerorsUsername: reservation.request.offeror.account.username,
+      },
     );
     try {
       return await query.getMany();
@@ -55,7 +56,7 @@ export class ComplaintsRepository extends Repository<Complaint> {
       // if select query failed to execute
       throw new QueryFailedError(
         query.getSql(),
-        [idReservations],
+        [reservation.request.idRequests],
         error.message,
       );
     }
