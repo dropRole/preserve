@@ -36,10 +36,10 @@ export class ComplaintsController {
   @Get('/:idReservations')
   @Privileges(Privilege.Admin, Privilege.Offeror, Privilege.Offeree)
   getComplaints(
-    @Param('idReservations') idReservations: string,
     @GetAccount() account: Account,
+    @Param('idReservations') idReservations: string,
   ): Promise<Complaint[]> {
-    return this.complaintsService.getComplaints(idReservations, account);
+    return this.complaintsService.getComplaints(account, idReservations);
   }
 
   @Patch()
