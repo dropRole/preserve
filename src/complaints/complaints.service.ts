@@ -38,11 +38,15 @@ export class ComplaintsService {
     );
   }
 
-  getComplaints(
-    idReservations: string,
+  async getComplaints(
     account: Account,
+    idReservations: string,
   ): Promise<Complaint[]> {
-    return this.complaintsRepository.selectComplaints(idReservations, account);
+    const reservation = await this.reservationsService.getReservation(
+      account,
+      idReservations,
+    );
+    return this.complaintsRepository.selectComplaints(reservation, account);
   }
 
   getCounterComplaints(counteredTo: string): Promise<Complaint[]> {
