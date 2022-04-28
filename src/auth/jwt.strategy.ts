@@ -15,7 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private accountsRepository: AccountsRepository,
   ) {
     super({
-      secretOrKey: 'preserveapp',
+      secretOrKey:
+        ';BY/[2n`@h!Yfr;HK4ezTa/.)h5A]R!r4g"t<z9xFETbbxXp9Fm>*}!&y^!8$ay%',
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
