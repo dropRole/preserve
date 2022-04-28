@@ -1,21 +1,24 @@
 import { ConflictException } from '@nestjs/common';
+import { Offeree } from 'src/offerees/offeree.entity';
+import { Offeror } from 'src/offerors/offeror.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
-import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
 import { Prohibition } from './prohibitions.entity';
 
 @EntityRepository(Prohibition)
 export class ProhibitionsRepository extends Repository<Prohibition> {
   async insertProhibition(
-    prohibitOffereeDTO: ProhibitOffereeDTO,
+    offeror: Offeror,
+    offeree: Offeree,
+    beginning: string,
+    conclusion: string,
+    cause: string,
   ): Promise<void> {
-    const { offeror, offeree, beginning, conclusion, cause } =
-      prohibitOffereeDTO;
     const prohibition = this.create({
       offeror,
       offeree,
-      beginning,
-      conclusion,
+      beginning: new Date(beginning),
+      conclusion: new Date(conclusion),
       cause,
     });
     // if offeree is already prohibited
