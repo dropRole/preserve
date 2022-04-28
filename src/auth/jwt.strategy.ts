@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Account } from './account.entity';
 import { AccountsRepository } from './accounts.repository';
+import { adminCredentials } from './constants';
+import { Privilege } from './enum/privilege.enum';
 import { JWTPayload } from './jwt-payload.interface';
 
 @Injectable()
@@ -20,6 +22,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JWTPayload) {
     const { username } = payload;
+    // if admins account
+    if (adminCredentials.username === adminCredentials.username) {
+      const account = new Account();
+      account.username = adminCredentials.username;
+      account.password = adminCredentials.password;
+      account.privilege = Privilege.Admin;
+      return account;
+    }
     const account: Account = await this.accountsRepository.findOne({
       username,
     });

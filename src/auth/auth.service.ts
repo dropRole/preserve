@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { Privilege } from './enum/privilege.enum';
 import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
+import { adminCredentials } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -65,13 +66,23 @@ export class AuthService {
     authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialsDTO;
+    let payload: JWTPayload, accessToken: string;
+    // if admin account attempted a sign in
+    if (
+      username === adminCredentials.username &&
+      (await bcrypt.compare(password, adminCredentials.password))
+    ) {
+      payload = { username: adminCredentials.username };
+      accessToken = await this.jwtService.sign(payload);
+      return { accessToken };
+    }
     const account = await this.accountsRepository.findOne({
       username,
     });
     // if account with the given credentials is registered
     if (account && (await bcrypt.compare(password, account.password))) {
-      const payload: JWTPayload = { username };
-      const accessToken = await this.jwtService.sign(payload);
+      payload = { username };
+      accessToken = await this.jwtService.sign(payload);
       return { accessToken };
     } else throw new UnauthorizedException('Check your login credentials.');
   }
