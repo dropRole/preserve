@@ -8,10 +8,14 @@ import { OfferorsModule } from './offerors/offerors.module';
 import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configValidationSchema } from 'src/config.schema';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: [`.env.stage.${process.env.STAGE}`] }),
+    ConfigModule.forRoot({
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
+      validationSchema: configValidationSchema,
+    }),
     AuthModule,
     RequestsModule,
     ReservationsModule,
@@ -26,7 +30,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        autoLoadEntities: false,
+        autoLoadEntities: true,
         synchronize: true,
       }),
     }),
