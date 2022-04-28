@@ -7,22 +7,28 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OfferorsModule } from './offerors/offerors.module';
 import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ envFilePath: [`.env.stage.${process.env.STAGE}`] }),
     AuthModule,
     RequestsModule,
     ReservationsModule,
     ComplaintsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'preserve',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        autoLoadEntities: false,
+        synchronize: true,
+      }),
     }),
     OfferorsModule,
     OffereesModule,
