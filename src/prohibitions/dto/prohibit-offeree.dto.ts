@@ -1,11 +1,13 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Offeree } from 'src/offerees/offeree.entity';
-import { Offeror } from 'src/offerors/offeror.entity';
 
 export class ProhibitOffereeDTO {
-  offeree: Offeree;
+  @IsNotEmpty()
+  @IsString()
+  idOfferees: string;
 
-  offeror: Offeror;
+  @IsNotEmpty()
+  @IsString()
+  idOfferors: string;
 
   @IsString()
   @IsNotEmpty()
