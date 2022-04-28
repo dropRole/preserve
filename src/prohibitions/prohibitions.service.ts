@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OffereesService } from 'src/offerees/offerees.service';
+import { OfferorsService } from 'src/offerors/offerors.service';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
 import { Prohibition } from './prohibitions.entity';
@@ -10,10 +12,24 @@ export class ProhibitionsService {
   constructor(
     @InjectRepository(ProhibitionsRepository)
     private prohibitionsRepository: ProhibitionsRepository,
+    private offerorsService: OfferorsService,
+    private offereesService: OffereesService,
   ) {}
 
-  prohibitAnOfferee(prohibitOffereeDTO: ProhibitOffereeDTO): Promise<void> {
-    return this.prohibitionsRepository.insertProhibition(prohibitOffereeDTO);
+  async prohibitAnOfferee(
+    prohibitOffereeDTO: ProhibitOffereeDTO,
+  ): Promise<void> {
+    const { idOfferees, idOfferors, beginning, conclusion, cause } =
+      prohibitOffereeDTO;
+    const offeror = await this.offerorsService.getOfferorById(idOfferors);
+    const offeree = await this.offereesService.getOfferee(idOfferees);
+    return this.prohibitionsRepository.insertProhibition(
+      offeror,
+      offeree,
+      beginning,
+      conclusion,
+      cause,
+    );
   }
 
   getProhibitions(idOfferors: string): Promise<Prohibition[]> {
