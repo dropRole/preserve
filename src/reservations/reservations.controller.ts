@@ -34,7 +34,7 @@ export class ReservationsController {
   }
 
   @Get()
-  @Privileges(Privilege.Offeror)
+  @Privileges(Privilege.Admin, Privilege.Offeror)
   getReservations(
     @GetAccount() account: Account,
     @Query() getReservationsFilterDTO: GetReservationsFilterDTO,

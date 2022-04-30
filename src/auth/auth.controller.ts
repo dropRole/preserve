@@ -2,6 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
+import { Privilege } from './enum/privilege.enum';
+import { Privileges } from './privilege.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +15,7 @@ export class AuthController {
   }
 
   @Post('/offeror/signup')
+  @Privileges(Privilege.Admin)
   offerorSignUp(@Body() offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
     return this.authService.offerorSignUp(offerorSignUpDto);
   }
