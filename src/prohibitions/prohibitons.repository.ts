@@ -38,7 +38,7 @@ export class ProhibitionsRepository extends Repository<Prohibition> {
 
   async selectProhibitions(idOfferors: string): Promise<Prohibition[]> {
     const query = this.createQueryBuilder('prohibitions');
-    query.where({ idOfferors });
+    query.where({ offeror: { idOfferors } });
     try {
       // if select query failed to execute
       return await query.getMany();
