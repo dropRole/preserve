@@ -28,7 +28,7 @@ export class ProhibitionsController {
     return this.prohibitonsService.prohibitAnOfferee(prohibitOffereeDTO);
   }
 
-  @Get('/:idOfferors')
+  @Get('/offeror/:idOfferors')
   @Privileges(Privilege.Admin, Privilege.Offeror)
   getProhibitions(
     @Param('idOfferors') idOfferors: string,
@@ -38,13 +38,11 @@ export class ProhibitionsController {
 
   @Get('/:idProhibitions')
   @Privileges(Privilege.Admin, Privilege.Offeror)
-  getProhibition(
-    @Param('idProhibitions') idProhibitions: string,
-  ): Promise<Prohibition> {
+  getProhibition(@Param() idProhibitions: string): Promise<Prohibition> {
     return this.prohibitonsService.getProhibition(idProhibitions);
   }
 
-  @Patch('/:idProhibitons')
+  @Patch('/:idProhibitions')
   @Privileges(Privilege.Admin)
   updateProhibitionTimeframe(
     @Param('idProhibitons') idProhibitons: string,
