@@ -53,7 +53,7 @@ export class ProhibitionsRepository extends Repository<Prohibition> {
 
   async selectProhibition(idProhibitions: string): Promise<Prohibition> {
     const query = this.createQueryBuilder('prohibitions');
-    query.where(idProhibitions);
+    query.where({ idProhibitions });
     try {
       // if select query failed to execute
       return await query.getOne();
@@ -89,7 +89,7 @@ export class ProhibitionsRepository extends Repository<Prohibition> {
   async deleteProhibition(idProhibitions: string): Promise<void> {
     try {
       // if delete query failed to execute
-      await this.delete(idProhibitions);
+      await this.delete({ idProhibitions });
     } catch (error) {
       throw new QueryFailedError(
         `DELETE FROM prohibitions WHERE idProhibitions = ${idProhibitions}`,
