@@ -45,7 +45,7 @@ export class ProhibitionsController {
   @Patch('/:idProhibitions')
   @Privileges(Privilege.Admin)
   updateProhibitionTimeframe(
-    @Param('idProhibitons') idProhibitons: string,
+    @Param('idProhibitions') idProhibitons: string,
     @Body() updateProhibitonTimeframeDTO: UpdateProhibitionTimeframeDTO,
   ): Promise<void> {
     return this.prohibitonsService.updateProhibitionTimeframe(
@@ -54,9 +54,11 @@ export class ProhibitionsController {
     );
   }
 
-  @Delete(':idProhibitions')
+  @Delete('/:idProhibitions')
   @Privileges(Privilege.Admin)
-  deleteProhibition(idProhibitions: string): Promise<void> {
+  deleteProhibition(
+    @Param('idProhibitions') idProhibitions: string,
+  ): Promise<void> {
     return this.prohibitonsService.deleteProhibition(idProhibitions);
   }
 }
