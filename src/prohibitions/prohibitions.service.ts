@@ -57,8 +57,8 @@ export class ProhibitionsService {
   }
 
   async deleteProhibition(idProhibitions: string): Promise<void> {
-    // if reservation prohibition was determened
-    if (this.getProhibition(idProhibitions))
+    // if reservation prohibition was determined
+    if (await this.getProhibition(idProhibitions))
       return this.prohibitionsRepository.deleteProhibition(idProhibitions);
     else
       throw new NotFoundException(
