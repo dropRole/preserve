@@ -17,11 +17,11 @@ export class OffereesController {
 
   @Get('/:idOfferees')
   @Privileges(Privilege.Admin, Privilege.Offeror)
-  getOfferee(@Param() idOfferees: string): Promise<Offeree> {
-    return this.offereesService.getOfferee(idOfferees);
+  getOffereeById(@Param('idOfferees') idOfferees: string): Promise<Offeree> {
+    return this.offereesService.getOffereeById(idOfferees);
   }
 
-  @Get(':/username')
+  @Get('/username/:username')
   @Privileges(Privilege.Admin)
   getOffereeByUsername(@Param('username') username: string): Promise<Offeree> {
     return this.offereesService.getOffereeByUsername(username);
