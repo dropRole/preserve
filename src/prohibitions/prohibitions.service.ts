@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Offeree } from 'src/offerees/offeree.entity';
 import { OffereesService } from 'src/offerees/offerees.service';
 import { OfferorsService } from 'src/offerors/offerors.service';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
@@ -22,7 +23,7 @@ export class ProhibitionsService {
     const { idOfferees, idOfferors, beginning, conclusion, cause } =
       prohibitOffereeDTO;
     const offeror = await this.offerorsService.getOfferorById(idOfferors);
-    const offeree = await this.offereesService.getOfferee(idOfferees);
+    const offeree = await this.offereesService.getOffereeById(idOfferees);
     return this.prohibitionsRepository.insertProhibition(
       offeror,
       offeree,
