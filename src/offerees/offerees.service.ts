@@ -16,14 +16,36 @@ export class OffereesService {
     @InjectRepository(OffereesRepository)
     private offereesRepository: OffereesRepository,
   ) {}
+
   recordAnOfferee(account: Account): Promise<void> {
     return this.offereesRepository.insertOfferee(account);
   }
-  getOfferee(idOfferees: string): Promise<Offeree> {
-    return this.offereesRepository.selectOfferee(idOfferees);
+
+  async getOffereeById(idOfferees: string): Promise<Offeree> {
+    const offeree = await this.offereesRepository.findOne({ idOfferees });
+    // if subject offeree doesn't exist
+    if (!offeree)
+      throw new NotFoundException(
+        `The subject ${idOfferees} offeree doesn't exist.`,
+      );
+    // eradicate password and privilege properties from Account property
+    delete offeree.account.password;
+    delete offeree.account.privilege;
+    return offeree;
   }
-  getOffereeByUsername(username: string): Promise<Offeree> {
-    return this.offereesRepository.selectOffereeByUsername(username);
+  async getOffereeByUsername(username: string): Promise<Offeree> {
+    const offeree = await this.offereesRepository.findOne({
+      where: { account: { username } },
+    });
+    // if subject offeree doesn't exist
+    if (!offeree)
+      throw new NotFoundException(
+        `An offeree with ${username} username doesn't exist.`,
+      );
+    // eradicate password and privilege properties from Account property
+    delete offeree.account.password;
+    delete offeree.account.privilege;
+    return offeree;
   }
   async updateOffereeUsername(
     account: Account,

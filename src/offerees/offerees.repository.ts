@@ -10,26 +10,7 @@ export class OffereesRepository extends Repository<Offeree> {
     const offeree = this.create({ account });
     await this.insert(offeree);
   }
-  async selectOfferee(idOfferees: string): Promise<Offeree> {
-    const query = this.createQueryBuilder('offerees');
-    query.where({ idOfferees });
-    try {
-      // if select query failed to execute
-      return await query.getOne();
-    } catch (error) {
-      throw new QueryFailedError(query.getSql(), [idOfferees], error.message);
-    }
-  }
-  async selectOffereeByUsername(username: string): Promise<Offeree> {
-    const query = this.createQueryBuilder('offerees');
-    query.where({ account: { username } });
-    try {
-      // if select query failed to execute
-      return await query.getOne();
-    } catch (error) {
-      throw new QueryFailedError(query.getSql(), [username], error.message);
-    }
-  }
+
   async updateOffereeUsername(
     account: Account,
     updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
