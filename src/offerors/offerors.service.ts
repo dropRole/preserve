@@ -49,25 +49,6 @@ export class OfferorsService {
   getOfferorByUsername(username: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorByUsername(username);
   }
-  async updateOfferorUsername(
-    account: Account,
-    updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
-  ): Promise<void> {
-    const { username } = updateOfferorUsernameDTO;
-    // if offeror was not found
-    if (!(await this.offerorsRepository.findOne({ account })))
-      throw new NotFoundException('Offeror was not found.');
-    // if handed username already exists
-    if (
-      this.offerorsRepository.selectOfferorByUsername(username) instanceof
-      Offeror
-    )
-      throw new ConflictException('Username already exists.');
-    return this.offerorsRepository.updateOfferorUsername(
-      account,
-      updateOfferorUsernameDTO,
-    );
-  }
 
   async updateOfferorEmail(
     account: Account,
