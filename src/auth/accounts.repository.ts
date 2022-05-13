@@ -31,9 +31,12 @@ export class AccountsRepository extends Repository<Account> {
     account: Account,
     username: string,
   ): Promise<void> {
-    account.username = username;
+    const accountUpdate = new Account();
+    accountUpdate.username = username;
+    accountUpdate.password = account.password;
+    accountUpdate.privilege = account.privilege;
     try {
-      await this.save(account);
+      await this.update(account, accountUpdate);
     } catch (error) {
       throw new QueryFailedError(
         'UPDATE accounts SER username = :newUsername WHERE username = :lastUsername ',
