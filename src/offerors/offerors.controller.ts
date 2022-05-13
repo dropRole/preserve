@@ -22,17 +22,29 @@ export class OfferorsController {
     return this.offerorsService.getOfferorById(idOfferors);
   }
 
-  @Get('/username/:username')
+  @Get('/:username')
   @Privileges(Privilege.Admin)
   getOfferorByUsername(@Param('username') username: string): Promise<Offeror> {
     return this.offerorsService.getOfferorByUsername(username);
   }
 
-  @Patch('/email')
+  @Patch('/:idOfferors/username')
+  @Privileges(Privilege.Offeror)
+  updateOfferorUsername(
+    @GetAccount() account: Account,
+    @Body('username') updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
+  ): Promise<void> {
+    return this.offerorsService.updateOfferorUsername(
+      account,
+      updateOfferorUsernameDTO,
+    );
+  }
+
+  @Patch('/:idOfferors/email')
   @Privileges(Privilege.Offeror)
   updateOfferorEmail(
     @GetAccount() account: Account,
-    @Body() updateOfferorEmailDTO: UpdateOfferorEmailDTO,
+    @Body('username') updateOfferorEmailDTO: UpdateOfferorEmailDTO,
   ): Promise<void> {
     return this.offerorsService.updateOfferorEmail(
       account,
@@ -40,16 +52,16 @@ export class OfferorsController {
     );
   }
 
-  @Patch('/businessInfo')
+  @Patch('/:idOfferors/businessInformation')
   @Privileges(Privilege.Offeror)
   updateOfferorBussinessInfo(
     @GetAccount() account: Account,
-    @Body() updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
+    @Body('username')
+    updateOfferorBusinessInfoDTO: UpdateOfferorBusinessInfoDTO,
   ): Promise<void> {
     return this.offerorsService.updateOfferorBusinessInfo(
       account,
       updateOfferorBusinessInfoDTO,
     );
   }
-
 }
