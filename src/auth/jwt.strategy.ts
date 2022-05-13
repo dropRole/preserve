@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JWTPayload) {
     const { username } = payload;
     // if admins account
-    if (adminCredentials.username === adminCredentials.username) {
+    if (username === adminCredentials.username) {
       const account = new Account();
       account.username = adminCredentials.username;
       account.password = adminCredentials.password;
