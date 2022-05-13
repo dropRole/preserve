@@ -28,18 +28,6 @@ export class OfferorsController {
     return this.offerorsService.getOfferorByUsername(username);
   }
 
-  @Patch('/:idOfferors/username')
-  @Privileges(Privilege.Offeror)
-  updateOfferorUsername(
-    @GetAccount() account: Account,
-    @Body('username') updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
-  ): Promise<void> {
-    return this.offerorsService.updateOfferorUsername(
-      account,
-      updateOfferorUsernameDTO,
-    );
-  }
-
   @Patch('/:idOfferors/email')
   @Privileges(Privilege.Offeror)
   updateOfferorEmail(

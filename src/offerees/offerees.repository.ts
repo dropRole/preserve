@@ -1,7 +1,6 @@
 import { Account } from 'src/auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
-import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 
 @EntityRepository(Offeree)

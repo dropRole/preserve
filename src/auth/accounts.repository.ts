@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Account } from './account.entity';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
@@ -25,5 +25,21 @@ export class AccountsRepository extends Repository<Account> {
         throw new ConflictException('Username already exists.');
     }
     return account;
+  }
+
+  async updateAccountUsername(
+    account: Account,
+    username: string,
+  ): Promise<void> {
+    account.username = username;
+    try {
+      await this.save(account);
+    } catch (error) {
+      throw new QueryFailedError(
+        'UPDATE accounts SER username = :newUsername WHERE username = :lastUsername ',
+        [username, account.username],
+        error.message,
+      );
+    }
   }
 }

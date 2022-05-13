@@ -75,25 +75,6 @@ export class OfferorsRepository extends Repository<Offeror> {
     }
   }
 
-  async updateOfferorUsername(
-    account: Account,
-    updateOfferorUsernameDTO: UpdateOfferorUsernameDTO,
-  ): Promise<void> {
-    const { username } = updateOfferorUsernameDTO;
-    const offeror = await this.findOne({ account });
-    account.username = username;
-    offeror.account = account;
-    try {
-      // if select query failed to execute
-      await this.save(offeror);
-    } catch (error) {
-      throw new QueryFailedError(
-        `UPDATE offerors SET username = ${username} WHERE idOfferors = ${offeror.idOfferors}`,
-        [offeror.idOfferors, username],
-        error.message,
-      );
-    }
-  }
   async updateOfferorEmail(
     account: Account,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,
