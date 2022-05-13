@@ -8,6 +8,7 @@ import { GetAccount } from './get-account.decorator';
 import { Account } from './account.entity';
 import { UpdateUsernameDTO } from './dto/update-username.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { PrivilegesGuard } from './privileges.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +20,7 @@ export class AuthController {
   }
 
   @Post('/offeror/signup')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), PrivilegesGuard)
   @Privileges(Privilege.Admin)
   offerorSignUp(@Body() offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
     return this.authService.offerorSignUp(offerorSignUpDto);
@@ -33,7 +34,7 @@ export class AuthController {
   }
 
   @Patch('/username')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), PrivilegesGuard)
   @Privileges(Privilege.Offeror, Privilege.Offeree)
   updateAccountUsername(
     @GetAccount() account: Account,
