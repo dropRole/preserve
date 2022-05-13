@@ -33,7 +33,6 @@ export class OffereesService {
     delete offeree.account.privilege;
     return offeree;
   }
-
   async getOffereeByUsername(username: string): Promise<Offeree> {
     const offeree = await this.offereesRepository.findOne({
       where: { account: { username } },
@@ -48,14 +47,32 @@ export class OffereesService {
     delete offeree.account.privilege;
     return offeree;
   }
-
+  async updateOffereeUsername(
+    account: Account,
+    updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
+  ): Promise<void> {
+    const { username } = updateOffereeUsernameDTO;
+    // if offeree was not found
+    if (!(await this.offereesRepository.findOne({ account })))
+      throw new NotFoundException('Offeree was not found.');
+    // if provided username doesn't already exist
+    if (
+      this.offereesRepository.selectOffereeByUsername(username) instanceof
+      Offeree
+    )
+      throw new ConflictException('Username already exists.');
+    return this.offereesRepository.updateOffereeUsername(
+      account,
+      updateOffereeUsernameDTO,
+    );
+  }
   async updateOffereeEmail(
     account: Account,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     // if offeree was not found
     if (!(await this.offereesRepository.findOne({ account })))
-      throw new NotFoundException(`Offeree ${account.username} was not found.`);
+      throw new NotFoundException('Offeree was not found.');
     return this.offereesRepository.updateOffereeEmail(
       account,
       updateOffereeEmailDTO,

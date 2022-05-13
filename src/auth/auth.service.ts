@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { OffereesService } from 'src/offerees/offerees.service';
 import { AccountsRepository } from './accounts.repository';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
@@ -10,6 +14,8 @@ import { OfferorsService } from 'src/offerors/offerors.service';
 import { Privilege } from './enum/privilege.enum';
 import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
 import { adminCredentials } from './constants';
+import { Account } from './account.entity';
+import { UpdateUsernameDTO } from './dto/update-username.dto';
 
 @Injectable()
 export class AuthService {
@@ -85,5 +91,20 @@ export class AuthService {
       accessToken = await this.jwtService.sign(payload);
       return { accessToken };
     } else throw new UnauthorizedException('Check your login credentials.');
+  }
+
+  async updateAccountUsername(
+    account: Account,
+    updateAccountUsername: UpdateUsernameDTO,
+  ): Promise<void> {
+    const { username } = updateAccountUsername;
+    // if account doesn't exist
+    if (
+      !(await this.accountsRepository.findOne({
+        where: { username: account.username },
+      }))
+    )
+      throw new NotFoundException(`Account with ${username} was not found.`);
+    return this.accountsRepository.updateAccountUsername(account, username);
   }
 }
