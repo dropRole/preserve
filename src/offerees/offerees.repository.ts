@@ -10,7 +10,26 @@ export class OffereesRepository extends Repository<Offeree> {
     const offeree = this.create({ account });
     await this.insert(offeree);
   }
-  
+
+  async updateOffereeUsername(
+    account: Account,
+    updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
+  ): Promise<void> {
+    const { username } = updateOffereeUsernameDTO;
+    const offeree = await this.findOne({ account });
+    account.username = username;
+    offeree.account = account;
+    try {
+      // if update query failed to execute
+      await this.save(offeree);
+    } catch (error) {
+      throw new QueryFailedError(
+        `UPDATE offerees SET username = ${username} WHERE id_offerees = ${offeree.idOfferees}`,
+        [username],
+        error.message,
+      );
+    }
+  }
   async updateOffereeEmail(
     account: Account,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,

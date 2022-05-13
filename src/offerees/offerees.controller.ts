@@ -27,23 +27,11 @@ export class OffereesController {
     return this.offereesService.getOffereeByUsername(username);
   }
 
-  @Patch('/:idOfferees/username')
-  @Privileges(Privilege.Offeree)
-  updateOffereeUsername(
-    @GetAccount() account: Account,
-    @Body('username') updateOffereeUsernameDTO: UpdateOffereeUsernameDTO,
-  ): Promise<void> {
-    return this.offereesService.updateOffereeUsername(
-      account,
-      updateOffereeUsernameDTO,
-    );
-  }
-
-  @Patch('/:idOfferees/email')
+  @Patch('/email')
   @Privileges(Privilege.Offeree)
   updateOffereeEmail(
     @GetAccount() account: Account,
-    @Body('email') updateOffereeEmailDTO: UpdateOffereeEmailDTO,
+    @Body() updateOffereeEmailDTO: UpdateOffereeEmailDTO,
   ): Promise<void> {
     return this.offereesService.updateOffereeEmail(
       account,
