@@ -1,9 +1,13 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Patch, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
 import { Privilege } from './enum/privilege.enum';
 import { Privileges } from './privilege.decorator';
+import { GetAccount } from './get-account.decorator';
+import { Account } from './account.entity';
+import { UpdateUsernameDTO } from './dto/update-username.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +19,7 @@ export class AuthController {
   }
 
   @Post('/offeror/signup')
+  @UseGuards(AuthGuard())
   @Privileges(Privilege.Admin)
   offerorSignUp(@Body() offerorSignUpDto: OfferorSignUpDTO): Promise<void> {
     return this.authService.offerorSignUp(offerorSignUpDto);
@@ -25,5 +30,15 @@ export class AuthController {
     @Body() authCredentialsDTO: AuthCredentialsDTO,
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDTO);
+  }
+
+  @Patch('/username')
+  @UseGuards(AuthGuard())
+  @Privileges(Privilege.Offeror, Privilege.Offeree)
+  updateAccountUsername(
+    @GetAccount() account: Account,
+    @Body() updateUsernameDTO: UpdateUsernameDTO,
+  ): Promise<void> {
+    return this.authService.updateAccountUsername(account, updateUsernameDTO);
   }
 }
