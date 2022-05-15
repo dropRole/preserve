@@ -96,7 +96,7 @@ export class AuthService {
   async updateAccountUsername(
     account: Account,
     updateAccountUsername: UpdateUsernameDTO,
-  ): Promise<void> {
+  ): Promise<{ accessToken: string }> {
     const { username } = updateAccountUsername;
     // if account doesn't exist
     if (
@@ -105,6 +105,10 @@ export class AuthService {
       }))
     )
       throw new NotFoundException(`Account with ${username} was not found.`);
-    return this.accountsRepository.updateAccountUsername(account, username);
+    if (this.accountsRepository.updateAccountUsername(account, username)) {
+      const payload: JWTPayload = { username };
+      const accessToken: string = this.jwtService.sign(payload);
+      return { accessToken };
+    }
   }
 }

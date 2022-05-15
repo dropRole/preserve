@@ -39,7 +39,7 @@ export class AuthController {
   updateAccountUsername(
     @GetAccount() account: Account,
     @Body() updateUsernameDTO: UpdateUsernameDTO,
-  ): Promise<void> {
+  ): Promise<{accessToken: string}> {
     return this.authService.updateAccountUsername(account, updateUsernameDTO);
   }
 }
