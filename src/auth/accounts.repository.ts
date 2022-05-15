@@ -30,13 +30,15 @@ export class AccountsRepository extends Repository<Account> {
   async updateAccountUsername(
     account: Account,
     username: string,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const accountUpdate = new Account();
     accountUpdate.username = username;
     accountUpdate.password = account.password;
     accountUpdate.privilege = account.privilege;
     try {
-      await this.update(account, accountUpdate);
+      const result = await this.update(account, accountUpdate);
+      // if username successfully updated
+      if (result.affected === 1) return true;
     } catch (error) {
       throw new QueryFailedError(
         'UPDATE accounts SER username = :newUsername WHERE username = :lastUsername ',
