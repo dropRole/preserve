@@ -23,7 +23,7 @@ export class Complaint {
   reservation: Reservation;
 
   @OneToOne((_type) => Account, (account) => account.complaints, {
-    eager: true,
+    eager: false,
     createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
