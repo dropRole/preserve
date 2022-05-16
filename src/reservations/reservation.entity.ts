@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { Request } from 'src/requests/request.entity';
-import { Complaint } from 'src/complaints/complaint.entity';
+import { Request } from '../requests/request.entity';
+import { Complaint } from '../complaints/complaint.entity';
 
 @Entity('reservations')
 export class Reservation {

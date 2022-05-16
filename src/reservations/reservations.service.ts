@@ -5,15 +5,15 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Account } from 'src/auth/account.entity';
+import { Account } from '../auth/account.entity';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationsRepository } from './reservations.repository';
 import { RequestsService } from '../requests/requests.service';
-import { GetRequestsFilterDTO } from 'src/requests/dto/get-requests-filter.dto';
+import { GetRequestsFilterDTO } from '../requests/dto/get-requests-filter.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Privilege } from 'src/auth/enum/privilege.enum';
+import { Privilege } from '../auth/enum/privilege.enum';
 
 @Injectable()
 export class ReservationsService {

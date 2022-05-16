@@ -1,5 +1,5 @@
-import { Account } from 'src/auth/account.entity';
-import { Reservation } from 'src/reservations/reservation.entity';
+import { Account } from '../auth/account.entity';
+import { Reservation } from '../reservations/reservation.entity';
 import {
   Column,
   Entity,

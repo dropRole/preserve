@@ -1,4 +1,4 @@
-import { Account } from 'src/auth/account.entity';
+import { Account } from '../auth/account.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
 import { Offeree } from './offeree.entity';

@@ -1,13 +1,8 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from 'src/auth/account.entity';
+import { Account } from '../auth/account.entity';
 import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info.dto';
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
-import { UpdateOfferorUsernameDTO } from './dto/update-offeror-username.dto';
 import { Offeror } from './offeror.entity';
 import { OfferorsRepository } from './offerors.repository';
 
@@ -49,7 +44,7 @@ export class OfferorsService {
   getOfferorByUsername(username: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorByUsername(username);
   }
-  
+
   async updateOfferorEmail(
     account: Account,
     updateOfferorEmailDTO: UpdateOfferorEmailDTO,

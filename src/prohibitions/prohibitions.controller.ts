@@ -9,9 +9,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Privilege } from 'src/auth/enum/privilege.enum';
-import { Privileges } from 'src/auth/privilege.decorator';
-import { PrivilegesGuard } from 'src/auth/privileges.guard';
+import { Privilege } from '../auth/enum/privilege.enum';
+import { Privileges } from '../auth/privilege.decorator';
+import { PrivilegesGuard } from '../auth/privileges.guard';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
 import { Prohibition } from './prohibitions.entity';

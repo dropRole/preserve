@@ -9,11 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Account } from 'src/auth/account.entity';
-import { Privilege } from 'src/auth/enum/privilege.enum';
-import { GetAccount } from 'src/auth/get-account.decorator';
-import { Privileges } from 'src/auth/privilege.decorator';
-import { PrivilegesGuard } from 'src/auth/privileges.guard';
+import { Account } from '../auth/account.entity';
+import { Privilege } from '../auth/enum/privilege.enum';
+import { GetAccount } from '../auth/get-account.decorator';
+import { Privileges } from '../auth/privilege.decorator';
+import { PrivilegesGuard } from '../auth/privileges.guard';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { MakeReservationDTO } from './dto/make-reservation.dto';
 import { Reservation } from './reservation.entity';

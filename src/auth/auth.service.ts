@@ -3,14 +3,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { OffereesService } from 'src/offerees/offerees.service';
+import { OffereesService } from '../offerees/offerees.service';
 import { AccountsRepository } from './accounts.repository';
 import { AuthCredentialsDTO } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from './jwt-payload.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OfferorsService } from 'src/offerors/offerors.service';
+import { OfferorsService } from '../offerors/offerors.service';
 import { Privilege } from './enum/privilege.enum';
 import { OfferorSignUpDTO } from './dto/offeror-signup.dto';
 import { adminCredentials } from './constants';

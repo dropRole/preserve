@@ -1,5 +1,5 @@
-import { Account } from 'src/auth/account.entity';
-import { Request } from 'src/requests/request.entity';
+import { Account } from '../auth/account.entity';
+import { Request } from '../requests/request.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { Reservation } from './reservation.entity';

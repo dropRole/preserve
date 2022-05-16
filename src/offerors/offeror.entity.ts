@@ -1,6 +1,6 @@
-import { Account } from 'src/auth/account.entity';
-import { Prohibition } from 'src/prohibitions/prohibitions.entity';
-import { Request } from 'src/requests/request.entity';
+import { Account } from '../auth/account.entity';
+import { Prohibition } from '../prohibitions/prohibitions.entity';
+import { Request } from '../requests/request.entity';
 import {
   Check,
   Column,

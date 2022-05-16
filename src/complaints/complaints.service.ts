@@ -4,8 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from 'src/auth/account.entity';
-import { ReservationsService } from 'src/reservations/reservations.service';
+import { Account } from '../auth/account.entity';
+import { ReservationsService } from '../reservations/reservations.service';
 import { Complaint } from './complaint.entity';
 import { ComplaintsRepository } from './complaints.repository';
 import { ReSubmitComplaintDTO } from './dto/re-submit-complaint.dto';

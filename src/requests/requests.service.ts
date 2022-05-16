@@ -9,10 +9,10 @@ import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
 import { RequestsRepository } from './requests.repository';
 import { Request } from './request.entity';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
-import { Account } from 'src/auth/account.entity';
-import { OfferorsService } from 'src/offerors/offerors.service';
-import { OffereesService } from 'src/offerees/offerees.service';
-import { ReservationsRepository } from 'src/reservations/reservations.repository';
+import { Account } from '../auth/account.entity';
+import { OfferorsService } from '../offerors/offerors.service';
+import { OffereesService } from '../offerees/offerees.service';
+import { ReservationsRepository } from '../reservations/reservations.repository';
 
 @Injectable()
 export class RequestsService {

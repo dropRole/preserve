@@ -1,4 +1,4 @@
-import { Complaint } from 'src/complaints/complaint.entity';
+import { Complaint } from '../complaints/complaint.entity';
 import { Check, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Privilege } from './enum/privilege.enum';
 

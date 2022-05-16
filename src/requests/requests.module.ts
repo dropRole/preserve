@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
-import { OffereesModule } from 'src/offerees/offerees.module';
-import { OfferorsModule } from 'src/offerors/offerors.module';
-import { ReservationsRepository } from 'src/reservations/reservations.repository';
+import { AuthModule } from '../auth/auth.module';
+import { OffereesModule } from '../offerees/offerees.module';
+import { OfferorsModule } from '../offerors/offerors.module';
+import { ReservationsRepository } from '../reservations/reservations.repository';
 import { RequestsController } from './requests.controller';
 import { RequestsRepository } from './requests.repository';
 import { RequestsService } from './requests.service';

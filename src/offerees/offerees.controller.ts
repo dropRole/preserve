@@ -1,12 +1,11 @@
 import { Controller, Body, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Account } from 'src/auth/account.entity';
-import { Privilege } from 'src/auth/enum/privilege.enum';
-import { GetAccount } from 'src/auth/get-account.decorator';
-import { Privileges } from 'src/auth/privilege.decorator';
-import { PrivilegesGuard } from 'src/auth/privileges.guard';
+import { Account } from '../auth/account.entity';
+import { Privilege } from '../auth/enum/privilege.enum';
+import { GetAccount } from '../auth/get-account.decorator';
+import { Privileges } from '../auth/privilege.decorator';
+import { PrivilegesGuard } from '../auth/privileges.guard';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
-import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 import { OffereesService } from './offerees.service';
 

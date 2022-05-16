@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { Account } from 'src/auth/account.entity';
-import { Offeree } from 'src/offerees/offeree.entity';
-import { Offeror } from 'src/offerors/offeror.entity';
+import { Account } from '../auth/account.entity';
+import { Offeree } from '../offerees/offeree.entity';
+import { Offeror } from '../offerors/offeror.entity';
 import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
 import { Request } from './request.entity';

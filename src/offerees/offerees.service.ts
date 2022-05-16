@@ -1,12 +1,7 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from 'src/auth/account.entity';
+import { Account } from '../auth/account.entity';
 import { UpdateOffereeEmailDTO } from './dto/update-offeree-email.dto';
-import { UpdateOffereeUsernameDTO } from './dto/update-offeree-username.dto';
 import { Offeree } from './offeree.entity';
 import { OffereesRepository } from './offerees.repository';
 
@@ -33,7 +28,7 @@ export class OffereesService {
     delete offeree.account.privilege;
     return offeree;
   }
-  
+
   async getOffereeByUsername(username: string): Promise<Offeree> {
     const offeree = await this.offereesRepository.findOne({
       where: { account: { username } },

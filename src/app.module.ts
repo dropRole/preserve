@@ -8,7 +8,7 @@ import { OfferorsModule } from './offerors/offerors.module';
 import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configValidationSchema } from 'src/config.schema';
+import { configValidationSchema } from './config.schema';
 
 @Module({
   imports: [

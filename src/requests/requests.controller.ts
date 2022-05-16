@@ -12,12 +12,12 @@ import { RequestForReservationDTO } from './dto/request-for-reservartion.dto';
 import { RequestsService } from './requests.service';
 import { Request } from './request.entity';
 import { GetRequestsFilterDTO } from './dto/get-requests-filter.dto';
-import { Privileges } from 'src/auth/privilege.decorator';
-import { Privilege } from 'src/auth/enum/privilege.enum';
-import { GetAccount } from 'src/auth/get-account.decorator';
-import { Account } from 'src/auth/account.entity';
+import { Privileges } from '../auth/privilege.decorator';
+import { Privilege } from '../auth/enum/privilege.enum';
+import { GetAccount } from '../auth/get-account.decorator';
+import { Account } from '../auth/account.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { PrivilegesGuard } from 'src/auth/privileges.guard';
+import { PrivilegesGuard } from '../auth/privileges.guard';
 
 @Controller('requests')
 @UseGuards(AuthGuard(), PrivilegesGuard)

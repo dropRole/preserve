@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Offeree } from 'src/offerees/offeree.entity';
-import { OffereesService } from 'src/offerees/offerees.service';
-import { OfferorsService } from 'src/offerors/offerors.service';
+import { OffereesService } from '../offerees/offerees.service';
+import { OfferorsService } from '../offerors/offerors.service';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { UpdateProhibitionTimeframeDTO } from './dto/update-prohibition-timeframe.dto';
 import { Prohibition } from './prohibitions.entity';
