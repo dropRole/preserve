@@ -1,11 +1,6 @@
 import { Account } from '../auth/account.entity';
 import { Reservation } from '../reservations/reservation.entity';
-import {
-  EntityRepository,
-  QueryFailedError,
-  Repository,
-  Timestamp,
-} from 'typeorm';
+import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { Complaint } from './complaint.entity';
 
 @EntityRepository(Complaint)
