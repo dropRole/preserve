@@ -57,17 +57,6 @@ export class ComplaintsRepository extends Repository<Complaint> {
     }
   }
 
-  async selectCounterComplaints(counteredTo: string): Promise<Complaint[]> {
-    const query = this.createQueryBuilder('complaints');
-    query.where({ idComplaints: counteredTo });
-    try {
-      return await query.getMany();
-    } catch (error) {
-      // if select query failed to execute
-      throw new QueryFailedError(query.getSql(), [counteredTo], error.message);
-    }
-  }
-
   async updateComplaint(idComplaints: string, content: string): Promise<void> {
     const complaint = await this.findOne({ idComplaints });
     complaint.content = content;

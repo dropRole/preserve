@@ -49,13 +49,9 @@ export class ComplaintsService {
     return this.complaintsRepository.selectComplaints(reservation, account);
   }
 
-  getCounterComplaints(counteredTo: string): Promise<Complaint[]> {
-    return this.complaintsRepository.selectCounterComplaints(counteredTo);
-  }
-
   async reComplain(
-    reSubmitComplaintDTO: ReSubmitComplaintDTO,
     account: Account,
+    reSubmitComplaintDTO: ReSubmitComplaintDTO,
   ): Promise<void> {
     const { idComplaints, content } = reSubmitComplaintDTO;
     const complaint = await this.complaintsRepository.findOne({ idComplaints });
