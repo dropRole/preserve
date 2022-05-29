@@ -5,11 +5,23 @@ import { Offeree } from './offeree.entity';
 
 @EntityRepository(Offeree)
 export class OffereesRepository extends Repository<Offeree> {
+  
   async insertOfferee(account: Account): Promise<void> {
     const offeree = this.create({ account });
-    await this.insert(offeree);
+    try {
+      // query might fail on execution
+      await this.insert(offeree);
+    } catch (error) {
+      throw new QueryFailedError(
+        `INSERT INTO offerees VALUES(${
+          (offeree.email, offeree.account.username)
+        })`,
+        [offeree.email, offeree.account.username],
+        error.message,
+      );
+    }
   }
-  
+
   async updateOffereeEmail(
     account: Account,
     updateOffereeEmailDTO: UpdateOffereeEmailDTO,
