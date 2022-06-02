@@ -7,7 +7,7 @@ import { OffereesService } from '../offerees/offerees.service';
 import { ProhibitOffereeDTO } from './dto/prohibit-offeree.dto';
 import { Prohibition } from './prohibitions.entity';
 
-describe('prohibitionsService', () => {
+xdescribe('prohibitionsService', () => {
   let prohibitionsService: ProhibitionsService;
   // instantiate dummy prohibitions module before running tests
   beforeEach(async () => {

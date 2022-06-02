@@ -1,14 +1,10 @@
 import { Test } from '@nestjs/testing';
-import {
-  mockOffereeAccount,
-  mockOffereesRepository,
-  mockUpdateOffereeEmailDTO,
-} from './mocks.constants';
+import * as mocks from './mocks.constants';
 import { Offeree } from './offeree.entity';
 import { OffereesRepository } from './offerees.repository';
 import { OffereesService } from './offerees.service';
 
-describe('offereesService', () => {
+xdescribe('offereesService', () => {
   let offereesService: OffereesService;
   // before each test initialize dummy offerees module
   beforeEach(async () => {
@@ -17,7 +13,7 @@ describe('offereesService', () => {
         OffereesService,
         {
           provide: OffereesRepository,
-          useValue: mockOffereesRepository,
+          useValue: mocks.offereesRepository,
         },
       ],
     }).compile();
@@ -27,7 +23,7 @@ describe('offereesService', () => {
   describe('recordAnOfferee', () => {
     // evoke offereesService.recordAnOfferee and expect an Offeree instance
     it('Insert an offeree record into the offerees repository.', () => {
-      const result = offereesService.recordAnOfferee(mockOffereeAccount);
+      const result = offereesService.recordAnOfferee(mocks.offereeAccount);
       expect(result).resolves.toBeInstanceOf(Offeree);
     });
   });
@@ -54,8 +50,8 @@ describe('offereesService', () => {
     // evoke offereesService.updateOffereeEmail and don't expect an exception to be thrown
     it('Update offerees email with the provided address.', () => {
       const result = offereesService.updateOffereeEmail(
-        mockOffereeAccount,
-        mockUpdateOffereeEmailDTO,
+        mocks.offereeAccount,
+        mocks.updateOffereeEmailDTO,
       );
       expect(result).resolves.not.toThrow();
     });

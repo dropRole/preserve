@@ -2,43 +2,35 @@ import { Test } from '@nestjs/testing';
 import { ComplaintsService } from './complaints.service';
 import { ComplaintsRepository } from './complaints.repository';
 import { ReservationsService } from '../reservations/reservations.service';
-import {
-  mockComplaintsRepository,
-  mockAccount,
-  mockSubmitComplaintDTO,
-  mockReservationsService,
-  mockReSubmitComplaintDTO,
-} from './testing-mocks';
+import * as mocks from './mocks.constants';
 import { Complaint } from './complaint.entity';
 
-describe('ComplaintsService', () => {
+xdescribe('ComplaintsService', () => {
   let complaintsService: ComplaintsService;
-  let complaintsRepository;
-  // before each test initialize dummy module composed of ComplaintsService and ComplaitnsRepository
+  // before each test initialize dummy complaints module
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
         ComplaintsService,
         {
           provide: ComplaintsRepository,
-          useFactory: mockComplaintsRepository,
+          useValue: mocks.complaintsRepository,
         },
         {
           provide: ReservationsService,
-          useValue: mockReservationsService,
+          useValue: mocks.reservationsService,
         },
       ],
     }).compile();
     complaintsService = module.get(ComplaintsService);
-    complaintsRepository = module.get(ComplaintsRepository);
   });
 
   describe('complain', () => {
     it('Inserts a complaint into the repository and returns it.', () => {
       // evoke complaintsService.complain method and compare to the excpected value
       const result = complaintsService.complain(
-        mockAccount,
-        mockSubmitComplaintDTO,
+        mocks.account,
+        mocks.submitComplaintDTO,
       );
       expect(result).resolves.toEqual(Complaint);
     });
@@ -48,7 +40,7 @@ describe('ComplaintsService', () => {
     // evoke complaintsService.complain method and compare to the excpected value
     it('Get complaints according to the requestant account.', () => {
       const result = complaintsService.getComplaints(
-        mockAccount,
+        mocks.account,
         '4b320768-69a9-48a5-adaf-c102d6c093ae',
       );
       expect(result).resolves.toEqual([Complaint]);

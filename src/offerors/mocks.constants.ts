@@ -6,38 +6,38 @@ import { UpdateOfferorBusinessInfoDTO } from './dto/update-offeror-business-info
 import { UpdateOfferorEmailDTO } from './dto/update-offeror-email.dto';
 import { Offeror } from './offeror.entity';
 
-export const mockUpdateOfferorEmailDTO = new UpdateOfferorEmailDTO();
-mockUpdateOfferorEmailDTO.email = 'lucifer@chocolate.com';
+export const updateOfferorEmailDTO = new UpdateOfferorEmailDTO();
+updateOfferorEmailDTO.email = 'lucifer@chocolate.com';
 
-export const mockUpdateOfferorBusinessInfoDTO =
-  new UpdateOfferorBusinessInfoDTO();
-mockUpdateOfferorBusinessInfoDTO.address = 'Efenkova 61a';
-mockUpdateOfferorBusinessInfoDTO.telephone = '+38670771406';
-mockUpdateOfferorBusinessInfoDTO.businessHours = 'mon-sun 08-22';
+export const updateOfferorBusinessInfoDTO = new UpdateOfferorBusinessInfoDTO();
+updateOfferorBusinessInfoDTO.address = 'Efenkova 61a';
+updateOfferorBusinessInfoDTO.telephone = '+38670771406';
+updateOfferorBusinessInfoDTO.businessHours = 'mon-sun 08-22';
 
-export const mockOfferorAccount = new Account();
-mockOfferorAccount.username = 'luciFer';
-mockOfferorAccount.password =
+export const offerorAccount = new Account();
+offerorAccount.username = 'luciFer';
+offerorAccount.password =
   '$2b$10$0CfAwEHTXO2DwQ/CMq0re.AH0G2qWssGt6Emf8XKPn7MuXoYDlU5y';
-mockOfferorAccount.privilege = Privilege.Offeror;
-mockOfferorAccount.complaints = [];
+offerorAccount.privilege = Privilege.Offeror;
+offerorAccount.complaints = [];
 
-export const mockOfferor = new Offeror();
-mockOfferor.idOfferors = '36cbb4d6-d187-4fb3-95cc-4730b189bf13';
-mockOfferor.account = mockOfferorAccount;
-mockOfferor.name = 'Lucifer d.o.o';
-mockOfferor.address = 'Šaleška cesta 19a';
-mockOfferor.email = 'lucifer@gmail.com';
-mockOfferor.telephone = '03 580 720';
-mockOfferor.businessHours = 'pon-ned 07-22';
-mockOfferor.responsiveness = 10;
-mockOfferor.compliance = 10;
-mockOfferor.timeliness = 10;
+export const offeror = new Offeror();
+offeror.idOfferors = '36cbb4d6-d187-4fb3-95cc-4730b189bf13';
+offeror.account = offerorAccount;
+offeror.name = 'Lucifer d.o.o';
+offeror.address = 'Šaleška cesta 19a';
+offeror.email = 'lucifer@gmail.com';
+offeror.telephone = '03 580 720';
+offeror.businessHours = 'pon-ned 07-22';
+offeror.responsiveness = 10;
+offeror.compliance = 10;
+offeror.timeliness = 10;
 
-export const mockOfferorsRepository = {
-  insertOfferor: jest.fn().mockResolvedValue(mockOfferor),
-  selectOfferorById: jest.fn().mockResolvedValue(mockOfferor),
-  selectOfferorByUsername: jest.fn().mockResolvedValue(mockOfferor),
-  findOne: jest.fn().mockResolvedValue(mockOfferor),
+export const offerorsRepository = {
+  insertOfferor: jest.fn().mockResolvedValue(offeror),
+  selectOfferorById: jest.fn().mockResolvedValue(offeror),
+  selectOfferorByUsername: jest.fn().mockResolvedValue(offeror),
+  findOne: jest.fn().mockResolvedValue(offeror),
   updateOfferorEmail: jest.fn().mockResolvedValue(Promise.resolve()),
+  updateOfferorBusinessInfo: jest.fn().mockResolvedValue(Promise.resolve()),
 };
