@@ -49,7 +49,7 @@ export class ReservationsService {
     );
   }
 
-  async getReservation(
+  async getReservationById(
     account: Account,
     idRequests: string,
   ): Promise<Reservation> {
@@ -75,7 +75,7 @@ export class ReservationsService {
   }
 
   async deleteReservation(account: Account, idRequests: string): Promise<void> {
-    const reservation = await this.getReservation(account, idRequests);
+    const reservation = await this.getReservationById(account, idRequests);
     // if reservation wasn't confirmed by the account
     if (reservation.request.offeror.account.username !== account.username)
       throw new UnauthorizedException(

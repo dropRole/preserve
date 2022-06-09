@@ -23,7 +23,7 @@ export class ComplaintsService {
     submitComplaintDTO: SubmitComplaintDTO,
   ): Promise<void> {
     const { idReservations, counteredComplaint, content } = submitComplaintDTO;
-    const reservation = await this.reservationsService.getReservation(
+    const reservation = await this.reservationsService.getReservationById(
       account,
       idReservations,
     );
@@ -42,7 +42,7 @@ export class ComplaintsService {
     account: Account,
     idReservations: string,
   ): Promise<Complaint[]> {
-    const reservation = await this.reservationsService.getReservation(
+    const reservation = await this.reservationsService.getReservationById(
       account,
       idReservations,
     );
