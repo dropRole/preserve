@@ -51,7 +51,7 @@ export class ReservationsController {
     @GetAccount() account: Account,
     @Param('idRequests') idRequests: string,
   ): Promise<Reservation> {
-    return this.reservationsService.getReservation(account, idRequests);
+    return this.reservationsService.getReservationById(account, idRequests);
   }
 
   @Delete('/:idRequests')
