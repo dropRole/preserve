@@ -48,7 +48,7 @@ export class ComplaintsController {
     @Body() reSubmitComplaintDTO: ReSubmitComplaintDTO,
     @GetAccount() account: Account,
   ): Promise<void> {
-    return this.complaintsService.reComplain(reSubmitComplaintDTO, account);
+    return this.complaintsService.reComplain(account, reSubmitComplaintDTO);
   }
 
   @Delete('/:idComplaints')
