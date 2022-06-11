@@ -9,6 +9,7 @@ import { OffereesModule } from './offerees/offerees.module';
 import { ProhibitionsModule } from './prohibitions/prohibitions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -38,5 +39,6 @@ import { configValidationSchema } from './config.schema';
     OffereesModule,
     ProhibitionsModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
