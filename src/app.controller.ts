@@ -12,4 +12,9 @@ export class AppController {
   signup(@Res() res: Response) {
     return res.render('signup');
   }
+
+  @Get('/signin')
+  signin(@Res() res: Response) {
+    return res.render('signin');
+  }
 }
