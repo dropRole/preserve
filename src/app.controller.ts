@@ -5,6 +5,11 @@ import { Response } from 'express';
 export class AppController {
   @Get()
   root(@Res() res: Response) {
-    return res.render('index', { preserve: 'Preleminary attempt.' });
+    return res.render('index');
+  }
+
+  @Get('/signup')
+  signup(@Res() res: Response) {
+    return res.render('signup');
   }
 }
