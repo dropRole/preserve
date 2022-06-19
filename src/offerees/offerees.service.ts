@@ -40,8 +40,6 @@ export class OffereesService {
         `An offeree with ${username} username doesn't exist.`,
       );
     // eradicate password and privilege properties from Account property
-    delete offeree.account.password;
-    delete offeree.account.privilege;
     return offeree;
   }
 
