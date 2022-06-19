@@ -55,7 +55,7 @@ const signUp = async (event) => {
   if (response.status === 201) {
     signUpRslt.textContent = 'You have succesfully signed up.';
     setTimeout(() => {
-      window.location.replace('/login')
+      window.location.replace('/signin')
     }, 3000);
   }
 
