@@ -26,7 +26,7 @@ const signin = async (event) => {
     sessionStorage.setItem('JWT', accessToken);
     signInRslt.textContent = 'Sign in was successful.';
     setTimeout(() => {
-      window.location.replace('/requests');
+      window.location.replace('/offeree');
     }, 3000);
     return;
   }
