@@ -10,6 +10,7 @@ import { ProhibitionsModule } from './prohibitions/prohibitions.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { AppController } from './app.controller';
+import { GeolocationModule } from './geolocation/geolocation.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AppController } from './app.controller';
     OfferorsModule,
     OffereesModule,
     ProhibitionsModule,
+    GeolocationModule,
   ],
   controllers: [AppController],
 })
