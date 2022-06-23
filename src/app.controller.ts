@@ -3,6 +3,7 @@ import { Response } from 'express';
 
 @Controller()
 export class AppController {
+
   @Get()
   root(@Res() res: Response) {
     return res.render('index');
@@ -16,5 +17,10 @@ export class AppController {
   @Get('/signin')
   signin(@Res() res: Response) {
     return res.render('signin');
+  }
+
+  @Get('/offeree')
+  offereeHomePage(@Res() res: Response) {
+    return res.render('homepage');
   }
 }
