@@ -1,6 +1,5 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 import { Privilege } from 'src/auth/enum/privilege.enum';
 import { Privileges } from 'src/auth/privilege.decorator';
