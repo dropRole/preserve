@@ -60,32 +60,40 @@ const createOfferorTable = (offerors) => {
   tHdRow.append(tHdCellResponsiveness);
   tHdRow.append(tHdCellCompliance);
   tHdRow.append(tHdCellTimeliness);
-
   tHead.append(tHdRow);
 
   offerors.forEach((offeror) => {
-    const tBdRow = document.createElement('tr'),
-      tBdCellName = document.createElement('td'),
-      tBdCellAddress = document.createElement('td'),
-      tBdCellBusinessHours = document.createElement('td'),
-      tBdCellResponsiveness = document.createElement('td'),
-      tBdCellCompliance = document.createElement('td'),
-      tBdCellTimeliness = document.createElement('td');
+    const tBRow = document.createElement('tr'),
+      tBCellName = document.createElement('td'),
+      tBCellAddress = document.createElement('td'),
+      tBCellBusinessHours = document.createElement('td'),
+      tBCellResponsiveness = document.createElement('td'),
+      tBCellCompliance = document.createElement('td'),
+      tBCellTimeliness = document.createElement('td'),
+      tBCellOptions = document.createElement('th'),
+      tBOReservationButton = document.createElement('button');
 
-    tBdCellName.textContent = offeror.name;
-    tBdCellAddress.textContent = offeror.address;
-    tBdCellBusinessHours.textContent = offeror.businessHours;
-    tBdCellResponsiveness.textContent = offeror.responsiveness;
-    tBdCellCompliance.textContent = offeror.compliance;
-    tBdCellTimeliness.textContent = offeror.timeliness;
+    tBCellOptions.colspan = 2;
 
-    tBdRow.append(tBdCellName);
-    tBdRow.append(tBdCellAddress);
-    tBdRow.append(tBdCellBusinessHours);
-    tBdRow.append(tBdCellResponsiveness);
-    tBdRow.append(tBdCellCompliance);
-    tBdRow.append(tBdCellTimeliness);
-    tBody.append(tBdRow);
+    tBCellName.textContent = offeror.name;
+    tBCellAddress.textContent = offeror.address;
+    tBCellBusinessHours.textContent = offeror.businessHours;
+    tBCellResponsiveness.textContent = offeror.responsiveness;
+    tBCellCompliance.textContent = offeror.compliance;
+    tBCellTimeliness.textContent = offeror.timeliness;
+    tBOReservationButton.textContent = 'Reserve';
+
+    tBOReservationButton.classList = 'btn btn-warning';
+
+    tBRow.append(tBCellName);
+    tBRow.append(tBCellAddress);
+    tBRow.append(tBCellBusinessHours);
+    tBRow.append(tBCellResponsiveness);
+    tBRow.append(tBCellCompliance);
+    tBRow.append(tBCellTimeliness);
+    tBCellOptions.append(tBOReservationButton)
+    tBRow.append(tBCellOptions)
+    tBody.append(tBRow);
   });
 
   table.append(tHead);
@@ -120,7 +128,7 @@ const getOfferorsByGeolocation = async (event) => {
 
   div.classList = 'table-responsive';
 
-  div.append(table)
+  div.append(table);
   documentFragment.append(div);
 
   modalBody.innerHTML = '';
