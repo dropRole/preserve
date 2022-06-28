@@ -21,6 +21,14 @@ export class OfferorsController {
     return this.offerorsService.getOfferorById(idOfferors);
   }
 
+  @Get('/geolocation/:municipality')
+  @Privileges(Privilege.Offeree)
+  getOfferorsByMunicipality(
+    @Param('municipality') municipality: string,
+  ): Promise<Offeror[]> {
+    return this.offerorsService.getOfferorsByMunicipality(municipality);
+  }
+
   @Get('/:username')
   @Privileges(Privilege.Admin)
   getOfferorByUsername(@Param('username') username: string): Promise<Offeror> {

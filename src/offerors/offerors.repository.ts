@@ -48,6 +48,22 @@ export class OfferorsRepository extends Repository<Offeror> {
     }
   }
 
+  async selectOfferorsByMunicipality(municipality: string): Promise<Offeror[]> {
+    const query = this.createQueryBuilder('offerors');
+    query.where('UPPER(offerors.address) LIKE UPPER(:municipality)', {
+      municipality: `%${municipality}%`,
+    });
+    try {
+      return await query.getMany();
+    } catch (error) {
+      throw new QueryFailedError(
+        query.getSql(),
+        [`%${municipality}%`],
+        error.message,
+      );
+    }
+  }
+
   async selectOfferorById(idOfferors: string): Promise<Offeror> {
     try {
       // if select query failed to execute

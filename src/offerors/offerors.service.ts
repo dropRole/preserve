@@ -37,6 +37,10 @@ export class OfferorsService {
     );
   }
 
+  getOfferorsByMunicipality(municipality: string): Promise<Offeror[]> {
+    return this.offerorsRepository.selectOfferorsByMunicipality(municipality);
+  }
+
   getOfferorById(idOfferors: string): Promise<Offeror> {
     return this.offerorsRepository.selectOfferorById(idOfferors);
   }
