@@ -71,7 +71,7 @@ const createOfferorTable = (offerors) => {
       tBCellCompliance = document.createElement('td'),
       tBCellTimeliness = document.createElement('td'),
       tBCellOptions = document.createElement('th'),
-      tBOReservationButton = document.createElement('button');
+      tBOReqFrmBtn = document.createElement('button');
 
     tBCellOptions.colspan = 2;
 
@@ -81,9 +81,21 @@ const createOfferorTable = (offerors) => {
     tBCellResponsiveness.textContent = offeror.responsiveness;
     tBCellCompliance.textContent = offeror.compliance;
     tBCellTimeliness.textContent = offeror.timeliness;
-    tBOReservationButton.textContent = 'Reserve';
+    tBOReqFrmBtn.textContent = 'Reserve';
 
-    tBOReservationButton.classList = 'btn btn-warning';
+    tBOReqFrmBtn.classList = 'btn btn-warning';
+
+    tBOReqFrmBtn.dataset.toggle = 'modal';
+    tBOReqFrmBtn.dataset.target = '#resReqMdl';
+    tBOReqFrmBtn.dataset.offeror = offeror.name;
+    tBOReqFrmBtn.dataset.idOfferors = offeror.idOfferors;
+    tBOReqFrmBtn.addEventListener('click', (event) => {
+      const form = document.getElementById('resReqFrm');
+      form.querySelector('input[name=offeror]').value =
+        event.target.dataset.offeror;
+      form.querySelector('input[name=idOfferors]').value =
+        event.target.dataset.idOfferors;
+    });
 
     tBRow.append(tBCellName);
     tBRow.append(tBCellAddress);
@@ -91,8 +103,8 @@ const createOfferorTable = (offerors) => {
     tBRow.append(tBCellResponsiveness);
     tBRow.append(tBCellCompliance);
     tBRow.append(tBCellTimeliness);
-    tBCellOptions.append(tBOReservationButton)
-    tBRow.append(tBCellOptions)
+    tBCellOptions.append(tBOReqFrmBtn);
+    tBRow.append(tBCellOptions);
     tBody.append(tBRow);
   });
 
