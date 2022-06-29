@@ -25,6 +25,24 @@
 
   <body class='d-flex h-100 text-center text-white bg-dark'>
     <script src='../js/homepage.js' defer></script>
+    <script
+      src='https://code.jquery.com/jquery-3.2.1.slim.min.js'
+      integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN'
+      crossorigin='anonymous'
+      defer
+    ></script>
+    <script
+      src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'
+      integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q'
+      crossorigin='anonymous'
+      defer
+    ></script>
+    <script
+      src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'
+      integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl'
+      crossorigin='anonymous'
+      defer
+    ></script>
     <div class='cover-container d-flex w-100 h-100 p-3 mx-auto flex-column'>
       <header class='mb-auto'>
         <div>
@@ -37,9 +55,108 @@
       </header>
 
       <main class='px-3'>
-        <p id="geolocation" class="h4">Geocoding...</p>
-        <button class="btn btn-outline-light">Search</button>
+        <p id='estGeoMun' class='h4'>Geocoding...</p>
+        <button
+          id='srchOffrBtn'
+          class='btn btn-outline-light'
+          data-toggle='modal'
+          data-target='#offInsMdl'
+          disabled
+        >Search</button>
       </main>
+
+      <!-- Offeror insight modal -->
+      <div
+        class='modal fade'
+        id='offInsMdl'
+        tabindex='-1'
+        aria-labelledby='offInsMdlLbl'
+        aria-hidden='true'
+      >
+        <div class='modal-dialog modal-lg'>
+          <div class='modal-content'>
+            <div class='modal-header'>
+              <h5 class='modal-title' id='offInsMdlLbl'>Offerors</h5>
+              <button
+                type='button'
+                class='btn-close'
+                data-dismiss='modal'
+                data-target='#offInsMdl'
+                aria-label='Close'
+              ></button>
+            </div>
+            <div class='modal-body'>
+              ...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! Modal form for reservation request }}
+
+      <div
+        class='modal fade'
+        id='resReqMdl'
+        tabindex='-1'
+        aria-labelledby='resReqMdlLbl'
+        aria-hidden='true'
+      >
+        <div class='modal-dialog'>
+          <div class='modal-content'>
+            <div class='modal-header'>
+              <h5 class='modal-title' id='resReqMdlLbl'>Request reservation</h5>
+              <button
+                type='button'
+                class='btn-close'
+                data-bs-dismiss='modal'
+                data-target='#resReqMdl'
+                aria-label='Close'
+              ></button>
+            </div>
+            <div class='modal-body'>
+              <form id="resReqFrm">
+                <input type="hidden" name="idOfferors">
+                <div class='mb-3'>
+                  <label
+                    for='offeror'
+                    class='col-form-label'
+                  >Offeror:</label>
+                  <input type='input' name="offeror" class='form-control' disabled />
+                </div>
+                <div class='mb-3'>
+                  <label
+                    for='requestedFor'
+                    class='col-form-label'
+                  >Requested for:</label>
+                  <input type='datetime-local' class='form-control' id='requestedFor' />
+                </div>
+                <div class='mb-3'>
+                  <label
+                    for='seats'
+                    class='col-form-label'
+                  >Seats:</label>
+                  <input type='number' class='form-control' id='seats' />
+                </div>
+                <div class='mb-3'>
+                  <label
+                    for='cause'
+                    class='col-form-label'
+                  >Cause:</label>
+                  <input type='input' class='form-control' id='cause' />
+                </div>
+                <div class='mb-3'>
+                  <label
+                    for='note'
+                    class='col-form-label'
+                  >Note:</label>
+                  <textarea class='form-control' id='note' resize="none"></textarea>
+                </div>
+                <button class="btn btn-outline-dark" type="submit">Request</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <footer class='mt-auto text-white-50'>
         <p>Cover template for
