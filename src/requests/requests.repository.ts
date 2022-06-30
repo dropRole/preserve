@@ -17,18 +17,22 @@ export class RequestsRepository extends Repository<Request> {
     cause: string,
     note?: string,
   ): Promise<Request> {
-    const request = this.create({
-      offeror,
-      offeree,
-      requestedAt,
-      requestedFor,
-      seats,
-      cause,
-      note,
-    });
+    const query = this.createQueryBuilder('requests')
+      .insert()
+      .values([
+        {
+          offeror,
+          offeree,
+          requestedAt: () => `CAST('${requestedAt}' AS TIMESTAMP )`,
+          requestedFor: () => `CAST('${requestedFor}' AS TIMESTAMP)`,
+          seats,
+          cause,
+          note,
+        },
+      ]);
     try {
       // if insert query failed to execute
-      await this.insert(request);
+      await query.execute();
     } catch (error) {
       throw new QueryFailedError(
         `INSERT INTO requests VALUES(${offeror.idOfferors}, ${offeree.idOfferees}, ${requestedAt}, ${requestedFor}, ${seats}, ${cause}, ${note})`,
@@ -44,7 +48,15 @@ export class RequestsRepository extends Repository<Request> {
         error.message,
       );
     }
-    return request;
+    return this.create({
+      offeror,
+      offeree,
+      requestedAt,
+      requestedFor,
+      seats,
+      cause,
+      note,
+    });
   }
 
   async selectRequests(
