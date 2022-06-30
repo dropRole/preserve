@@ -90,7 +90,7 @@ const createOfferorTable = (offerors) => {
     tBOReqFrmBtn.dataset.offeror = offeror.name;
     tBOReqFrmBtn.dataset.idOfferors = offeror.idOfferors;
     tBOReqFrmBtn.addEventListener('click', (event) => {
-      const form = document.getElementById('resReqFrm');
+      const form = document.getElementById('reservationRequest');
       form.querySelector('input[name=offeror]').value =
         event.target.dataset.offeror;
       form.querySelector('input[name=idOfferors]').value =
@@ -146,3 +146,51 @@ const getOfferorsByGeolocation = async (event) => {
   modalBody.innerHTML = '';
   modalBody.append(documentFragment);
 };
+
+// submit the reservation request for the subject offeror
+const submitReservationRequest = async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(document.getElementById('reservationRequest'));
+
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const urlencoded = new URLSearchParams();
+  urlencoded.append('idOfferors', formData.get('idOfferors'));
+  urlencoded.append('requestedAt', `${new Date().toLocaleString()}`);
+  urlencoded.append(
+    'requestedFor',
+    `${formData.get('date')} ${formData.get('time')}`,
+  );
+  urlencoded.append('seats', formData.get('seats'));
+  urlencoded.append('cause', formData.get('cause'));
+  urlencoded.append('note', formData.get('note'));
+
+  const requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: urlencoded,
+  };
+
+  const response = await fetch('/requests', requestOptions);
+
+  // if request was made
+  if (response && response.status === 201) {
+    alert('Request was sucessfully made.');
+    document
+      .getElementById('reservationRequest')
+      .querySelectorAll('input, textarea')
+      .forEach((element) => (element.value = ''));
+    document
+      .querySelector('button[data-target="#resReqMdl"][data-dismiss="modal"]')
+      .click();
+    return;
+  }
+  alert("Request wasn't successfully made.");
+  return;
+};
+
+const reqSubBtn = document.getElementById('requestSubmit');
+reqSubBtn.addEventListener('click', submitReservationRequest);
