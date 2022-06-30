@@ -65,6 +65,7 @@ export class RequestsRepository extends Repository<Request> {
   ): Promise<Request[]> {
     const { todaysDate } = getRequestsFilterDTO;
     const query = this.createQueryBuilder('requests');
+    query.addSelect('offerors.name')
     query.innerJoin('requests.offeror', 'offerors');
     query.innerJoin('requests.offeree', 'offerees');
     query.where({ offeror: { account: { username: account.username } } });
