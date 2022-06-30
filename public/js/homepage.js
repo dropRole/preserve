@@ -32,6 +32,43 @@ const establishGeolocation = () => {
 };
 establishGeolocation();
 
+// create and return cards populated with reservation requests data for the subject offeror
+const renderRequestInsightCards = (requests) => {
+  const documentFragment = new DocumentFragment(),
+    modalBody = document.querySelector('#resReqInsMdl .modal-body');
+  requests.forEach((request) => {
+    const card = document.createElement('div'),
+      unorderedList = document.createElement('ul'),
+      lstItmOffr = document.createElement('li'),
+      lstItmReqAt = document.createElement('li'),
+      lstItmReqFor = document.createElement('li'),
+      lstItmReqSeats = document.createElement('li'),
+      lstItmReqCause = document.createElement('li'),
+      lstItmReqNote = document.createElement('li');
+
+    card.classList = 'card';
+    unorderedList.classList = 'list-group list-group-flush';
+
+    lstItmOffr.textContent = `Offeror: ${request.offeror.name}`;
+    lstItmReqAt.textContent = `Requested at: ${request.requestedAt}`;
+    lstItmReqFor.textContent = `Requested for: ${request.requestedFor}`;
+    lstItmReqSeats.textContent = `Seats: ${request.seats}`;
+    lstItmReqCause.textContent = `Cause: ${request.cause}`;
+    lstItmReqNote.textContent = `Note: ${request.note}`;
+
+    unorderedList.append(lstItmOffr);
+    unorderedList.append(lstItmReqAt);
+    unorderedList.append(lstItmReqFor);
+    unorderedList.append(lstItmReqSeats);
+    unorderedList.append(lstItmReqCause);
+    unorderedList.append(lstItmReqNote);
+    card.append(unorderedList);
+    documentFragment.append(card);
+  });
+  modalBody.innerHTML = '';
+  modalBody.append(documentFragment);
+};
+
 // create and return table element populated with offeror data
 const createOfferorTable = (offerors) => {
   const table = document.createElement('table'),
@@ -194,3 +231,31 @@ const submitReservationRequest = async (event) => {
 
 const reqSubBtn = document.getElementById('requestSubmit');
 reqSubBtn.addEventListener('click', submitReservationRequest);
+
+const resReqInsBtn = document.getElementById('resReqInsBtn');
+resReqInsBtn.addEventListener('click', async () => {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers,
+  };
+
+  const response = await fetch(
+    `/requests?todaysDate=${new Date().toLocaleDateString()}`,
+    requestOptions,
+  );
+
+  // if reservations for today's date were made
+  if (response.status === 200) {
+    const requests = await response.json();
+    renderRequestInsightCards(requests);
+    return;
+  }
+
+  document.querySelector('#resReqInsMdl .modal-body').textContent =
+    'There were nought reservations made today.';
+  return;
+});
