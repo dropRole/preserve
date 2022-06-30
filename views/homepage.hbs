@@ -108,50 +108,80 @@
               <button
                 type='button'
                 class='btn-close'
-                data-bs-dismiss='modal'
+                data-dismiss='modal'
                 data-target='#resReqMdl'
                 aria-label='Close'
               ></button>
             </div>
             <div class='modal-body'>
-              <form id="resReqFrm">
                 <input type="hidden" name="idOfferors">
+              <form id='reservationRequest'>
+                <input type='hidden' name='idOfferors' />
                 <div class='mb-3'>
-                  <label
-                    for='offeror'
-                    class='col-form-label'
-                  >Offeror:</label>
-                  <input type='input' name="offeror" class='form-control' disabled />
+                  <label for='offeror' class='col-form-label'>Offeror:</label>
+                  <input
+                    type='input'
+                    name='offeror'
+                    class='form-control'
+                    disabled
+                  />
+                </div>
+                <div class='row'>
+                  <div class='col-6'>
+                    <label for='date' class='col-form-label'>Date:</label>
+                    <input
+                      type='date'
+                      name='date'
+                      class='form-control'
+                      id='date'
+                      required
+                    />
+                  </div>
+                  <div class='col-6'>
+                    <label for='time' class='col-form-label'>Time:</label>
+                    <input
+                      type='time'
+                      name='time'
+                      class='form-control'
+                      id='time'
+                      required
+                    />
+                  </div>
                 </div>
                 <div class='mb-3'>
-                  <label
-                    for='requestedFor'
-                    class='col-form-label'
-                  >Requested for:</label>
-                  <input type='datetime-local' class='form-control' id='requestedFor' />
+                  <label for='seats' class='col-form-label'>Seats:</label>
+                  <input
+                    type='number'
+                    name='seats'
+                    class='form-control'
+                    id='seats'
+                    required
+                  />
                 </div>
                 <div class='mb-3'>
-                  <label
-                    for='seats'
-                    class='col-form-label'
-                  >Seats:</label>
-                  <input type='number' class='form-control' id='seats' />
+                  <label for='cause' class='col-form-label'>Cause:</label>
+                  <input
+                    type='input'
+                    name='cause'
+                    class='form-control'
+                    id='cause'
+                    required
+                  />
                 </div>
                 <div class='mb-3'>
-                  <label
-                    for='cause'
-                    class='col-form-label'
-                  >Cause:</label>
-                  <input type='input' class='form-control' id='cause' />
+                  <label for='note' class='col-form-label'>Note:</label>
+                  <textarea
+                    class='form-control'
+                    id='note'
+                    name='note'
+                    resize='none'
+                  ></textarea>
                 </div>
-                <div class='mb-3'>
-                  <label
-                    for='note'
-                    class='col-form-label'
-                  >Note:</label>
-                  <textarea class='form-control' id='note' resize="none"></textarea>
-                </div>
-                <button class="btn btn-outline-dark" type="submit">Request</button>
+                <button
+                  id='requestSubmit'
+                  class='btn btn-outline-dark'
+                  type='submit'
+                >Request</button>
               </form>
             </div>
           </div>
