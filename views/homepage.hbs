@@ -63,6 +63,7 @@
           data-target='#offInsMdl'
           disabled
         >Search</button>
+        <button id="resReqInsBtn" class='btn btn-primary' data-toggle="modal" data-target="#resReqInsMdl">Inspect requests</button>
       </main>
 
       <!-- Offeror insight modal -->
@@ -114,7 +115,7 @@
               ></button>
             </div>
             <div class='modal-body'>
-                <input type="hidden" name="idOfferors">
+              <input type='hidden' name='idOfferors' />
               <form id='reservationRequest'>
                 <input type='hidden' name='idOfferors' />
                 <div class='mb-3'>
@@ -183,6 +184,34 @@
                   type='submit'
                 >Request</button>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! Modal for reservation requests insight }}
+
+      <div
+        class='modal fade'
+        id='resReqInsMdl'
+        tabindex='-1'
+        aria-labelledby='resReqInsMdlLbl'
+        aria-hidden='true'
+      >
+        <div class='modal-dialog'>
+          <div class='modal-content'>
+            <div class='modal-header'>
+              <h5 class='modal-title' id='resReqInsMdlLbl'>Reservation requests</h5>
+              <button
+                type='button'
+                class='btn-close'
+                data-dismiss='modal'
+                data-target='#resReqInsMdl'
+                aria-label='Close'
+              ></button>
+            </div>
+            <div class='modal-body'>
+
             </div>
           </div>
         </div>
