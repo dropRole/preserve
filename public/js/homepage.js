@@ -40,6 +40,7 @@ const renderRequestInsightCards = (requests) => {
     const card = document.createElement('div'),
       unorderedList = document.createElement('ul'),
       lstItmOffr = document.createElement('li'),
+      lstItmAddr = document.createElement('li'),
       lstItmReqAt = document.createElement('li'),
       lstItmReqFor = document.createElement('li'),
       lstItmReqSeats = document.createElement('li'),
@@ -50,13 +51,19 @@ const renderRequestInsightCards = (requests) => {
     unorderedList.classList = 'list-group list-group-flush';
 
     lstItmOffr.textContent = `Offeror: ${request.offeror.name}`;
-    lstItmReqAt.textContent = `Requested at: ${request.requestedAt}`;
-    lstItmReqFor.textContent = `Requested for: ${request.requestedFor}`;
+    lstItmAddr.textContent = `Address: ${request.offeror.address}`;
+    lstItmReqAt.textContent = `Requested at: ${new Date(
+      request.requestedAt,
+    ).toLocaleString()}`;
+    lstItmReqFor.textContent = `Requested for: ${new Date(
+      request.requestedFor,
+    ).toLocaleString()}`;
     lstItmReqSeats.textContent = `Seats: ${request.seats}`;
     lstItmReqCause.textContent = `Cause: ${request.cause}`;
     lstItmReqNote.textContent = `Note: ${request.note}`;
 
     unorderedList.append(lstItmOffr);
+    unorderedList.append(lstItmAddr);
     unorderedList.append(lstItmReqAt);
     unorderedList.append(lstItmReqFor);
     unorderedList.append(lstItmReqSeats);
