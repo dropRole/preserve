@@ -63,7 +63,8 @@
           data-target='#offInsMdl'
           disabled
         >Search</button>
-        <button id="resReqInsBtn" class='btn btn-primary' data-toggle="modal" data-target="#resReqInsMdl">Inspect requests</button>
+        <button id="resReqInsBtn" class='btn btn-primary' data-toggle="modal" data-target="#insightModal">Inspect requests</button>
+        <button id="resInsBtn" class="btn btn-success" data-toggle="modal" data-target="#insightModal">Inspect todays reservations</button>
       </main>
 
       <!-- Offeror insight modal -->
@@ -189,24 +190,24 @@
         </div>
       </div>
 
-      {{! Modal for reservation requests insight }}
+      {{! Modal for reservation requests and reservations insight }}
 
       <div
         class='modal fade'
-        id='resReqInsMdl'
+        id='insightModal'
         tabindex='-1'
-        aria-labelledby='resReqInsMdlLbl'
+        aria-labelledby='insMdlLbl'
         aria-hidden='true'
       >
         <div class='modal-dialog'>
           <div class='modal-content'>
             <div class='modal-header'>
-              <h5 class='modal-title' id='resReqInsMdlLbl'>Reservation requests</h5>
+              <h5 class='modal-title' id='insMdlLbl'>Reservation requests</h5>
               <button
                 type='button'
                 class='btn-close'
                 data-dismiss='modal'
-                data-target='#resReqInsMdl'
+                data-target='#insightModal'
                 aria-label='Close'
               ></button>
             </div>

@@ -35,7 +35,7 @@ establishGeolocation();
 // create and return cards populated with reservation requests data for the subject offeror
 const renderRequestInsightCards = (requests) => {
   const documentFragment = new DocumentFragment(),
-    modalBody = document.querySelector('#resReqInsMdl .modal-body');
+    modalBody = document.querySelector('#insightModal .modal-body');
   requests.forEach((request) => {
     const card = document.createElement('div'),
       unorderedList = document.createElement('ul'),
@@ -54,10 +54,10 @@ const renderRequestInsightCards = (requests) => {
     lstItmAddr.textContent = `Address: ${request.offeror.address}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
       request.requestedAt,
-    ).toLocaleString()}`;
+    ).toLocaleTimeString()}`;
     lstItmReqFor.textContent = `Requested for: ${new Date(
       request.requestedFor,
-    ).toLocaleString()}`;
+    ).toLocaleTimeString()}`;
     lstItmReqSeats.textContent = `Seats: ${request.seats}`;
     lstItmReqCause.textContent = `Cause: ${request.cause}`;
     lstItmReqNote.textContent = `Note: ${request.note}`;
@@ -262,7 +262,80 @@ resReqInsBtn.addEventListener('click', async () => {
     return;
   }
 
-  document.querySelector('#resReqInsMdl .modal-body').textContent =
-    'There were nought reservations made today.';
+  document.querySelector('#insightModal .modal-body').textContent =
+    'There were nought requests made today.';
+  return;
+});
+
+// create and return cards comprised of the todays reservations for the insight
+const renderReservationInsightCards = async (reservations) => {
+  const documentFragment = new DocumentFragment(),
+    modalBody = document.querySelector('#insightModal .modal-body');
+  reservations.forEach((reservation) => {
+    const card = document.createElement('div'),
+      unorderedList = document.createElement('ul'),
+      lstItmOffr = document.createElement('li'),
+      lstItmReqAt = document.createElement('li'),
+      lstItmReqSeats = document.createElement('li'),
+      lstItmReqCause = document.createElement('li'),
+      lstItmReqNote = document.createElement('li'),
+      lstItmReqCnfrmAt = document.createElement('li'),
+      lstItmReqCode = document.createElement('li');
+
+    card.classList = 'card';
+    unorderedList.classList = 'list-group list-group-flush';
+
+    lstItmOffr.textContent = `Offeror: ${reservation.request.offeror.name}`;
+    lstItmReqAt.textContent = `Requested at: ${new Date(
+      reservation.request.requestedFor,
+    ).toLocaleTimeString()}`;
+    lstItmReqSeats.textContent = `Seats: ${reservation.request.seats}`;
+    lstItmReqCause.textContent = `Cause: ${reservation.request.cause}`;
+    lstItmReqNote.textContent = `Note: ${reservation.request.note}`;
+    lstItmReqCnfrmAt.textContent = `Confirmed at: ${new Date(
+      reservation.confirmedAt,
+    ).toLocaleTimeString()}`;
+    lstItmReqCode.textContent = `Code: ${reservation.code}`;
+
+    unorderedList.append(lstItmOffr);
+    unorderedList.append(lstItmReqAt);
+    unorderedList.append(lstItmReqSeats);
+    unorderedList.append(lstItmReqCause);
+    unorderedList.append(lstItmReqNote);
+    unorderedList.append(lstItmReqCnfrmAt);
+    unorderedList.append(lstItmReqCode);
+    card.append(unorderedList);
+    documentFragment.append(card);
+  });
+  modalBody.innerHTML = '';
+  modalBody.append(documentFragment);
+};
+
+const resInsBtn = document.getElementById('resInsBtn');
+resInsBtn.addEventListener('click', async () => {
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers,
+  };
+
+  const response = await fetch(
+    `/reservations?todaysDate=${new Date().toLocaleDateString()}`,
+    requestOptions,
+  );
+
+  // if reservations are succesfully returned
+  if (response.status === 200) {
+    const reservations = await response.json();
+    // if nought reservations were made
+    if (reservations.length === 0) {
+      alert('Nought reservations were made today');
+      return;
+    }
+    renderReservationInsightCards(reservations);
+    return;
+  }
   return;
 });
