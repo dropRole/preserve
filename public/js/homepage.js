@@ -45,18 +45,21 @@ const renderRequestInsightCards = (requests) => {
       lstItmReqFor = document.createElement('li'),
       lstItmReqSeats = document.createElement('li'),
       lstItmReqCause = document.createElement('li'),
-      lstItmReqNote = document.createElement('li');
+      lstItmReqNote = document.createElement('li'),
+      lstItmReqRt = document.createElement('li'),
+      lstItmReqRtBtn = document.createElement('button');
 
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
-
-    lstItmOffr.classList = 'list-group-item'
-    lstItmAddr.classList = 'list-group-item'
-    lstItmReqAt.classList = 'list-group-item'
-    lstItmReqFor.classList = 'list-group-item'
-    lstItmReqSeats.classList = 'list-group-item'
-    lstItmReqCause.classList = 'list-group-item'
-    lstItmReqNote.classList = 'list-group-item'
+    lstItmOffr.classList = 'list-group-item';
+    lstItmAddr.classList = 'list-group-item';
+    lstItmReqAt.classList = 'list-group-item';
+    lstItmReqFor.classList = 'list-group-item';
+    lstItmReqSeats.classList = 'list-group-item';
+    lstItmReqCause.classList = 'list-group-item';
+    lstItmReqNote.classList = 'list-group-item';
+    lstItmReqRt.classList = 'list-group-item';
+    lstItmReqRtBtn.classList = 'btn btn-warning';
 
     lstItmOffr.textContent = `Offeror: ${request.offeror.name}`;
     lstItmAddr.textContent = `Address: ${request.offeror.address}`;
@@ -70,6 +73,37 @@ const renderRequestInsightCards = (requests) => {
     lstItmReqCause.textContent = `Cause: ${request.cause}`;
     lstItmReqNote.textContent = `Note: ${request.note}`;
 
+    lstItmReqRtBtn.textContent = `Retreat`;
+
+    lstItmReqRtBtn.dataset.idRequests = request.idRequests;
+
+    lstItmReqRtBtn.addEventListener('click', async (event) => {
+      const headers = new Headers();
+      headers.append(
+        'Authorization',
+        `Bearer ${sessionStorage.getItem('JWT')}`,
+      );
+
+      const requestOptions = {
+        method: 'DELETE',
+        headers: headers,
+      };
+
+      const response = await fetch(
+        `/requests/${event.target.dataset.idRequests}`,
+        requestOptions,
+      );
+
+      // if deletion was successful
+      if (response.status === 200) {
+        alert('Request was successfully deleted.');
+        renderRequestInsightCards();
+      }
+
+      if (response.status === 409) alert('Request was already confirmed!');
+      return;
+    });
+
     unorderedList.append(lstItmOffr);
     unorderedList.append(lstItmAddr);
     unorderedList.append(lstItmReqAt);
@@ -77,6 +111,8 @@ const renderRequestInsightCards = (requests) => {
     unorderedList.append(lstItmReqSeats);
     unorderedList.append(lstItmReqCause);
     unorderedList.append(lstItmReqNote);
+    lstItmReqRt.append(lstItmReqRtBtn);
+    unorderedList.append(lstItmReqRt);
     card.append(unorderedList);
     documentFragment.append(card);
   });
@@ -292,14 +328,13 @@ const renderReservationInsightCards = async (reservations) => {
 
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
-
-    lstItmOffr.classList = 'list-group-item'
-    lstItmReqAt.classList = 'list-group-item'
-    lstItmReqSeats.classList = 'list-group-item'
-    lstItmReqCause.classList = 'list-group-item'
-    lstItmReqNote.classList = 'list-group-item'
-    lstItmReqCnfrmAt.classList = 'list-group-item'
-    lstItmReqCode.classList = 'list-group-item'
+    lstItmOffr.classList = 'list-group-item';
+    lstItmReqAt.classList = 'list-group-item';
+    lstItmReqSeats.classList = 'list-group-item';
+    lstItmReqCause.classList = 'list-group-item';
+    lstItmReqNote.classList = 'list-group-item';
+    lstItmReqCnfrmAt.classList = 'list-group-item';
+    lstItmReqCode.classList = 'list-group-item';
 
     lstItmOffr.textContent = `Offeror: ${reservation.request.offeror.name}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
