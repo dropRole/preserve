@@ -1,6 +1,11 @@
 import { Account } from '../auth/account.entity';
 import { Request } from '../requests/request.entity';
-import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
+import {
+  Brackets,
+  EntityRepository,
+  QueryFailedError,
+  Repository,
+} from 'typeorm';
 import { GetReservationsFilterDTO } from './dto/get-reservations-filter.dto';
 import { Reservation } from './reservation.entity';
 import { v4 as uuid } from 'uuid';
@@ -31,12 +36,31 @@ export class ReservationsRepository extends Repository<Reservation> {
   ): Promise<Reservation[]> {
     const { todaysDate } = getReservationFilterDTO;
     const query = this.createQueryBuilder('reservations');
+    query.addSelect('requests.idRequests');
+    query.addSelect('offerors.name');
+    query.addSelect('requests.requestedFor');
+    query.addSelect('requests.seats');
+    query.addSelect('requests.cause');
+    query.addSelect('requests.note');
     query.innerJoin('reservations.request', 'requests');
     query.innerJoin('requests.offeror', 'offerors');
+    query.innerJoin('requests.offeree', 'offerees');
+    query.innerJoin('offerors.account', 'offerorsAccounts');
+    query.innerJoin('offerees.account', 'offereesAccounts');
     query.where('reservations."confirmedAt"::DATE = :todaysDate', {
       todaysDate,
     });
-    query.andWhere({ request: { offeror: { account } } });
+    query.andWhere(
+      new Brackets((query) => {
+        query
+          .where('offerors.username = :username', {
+            username: `${account.username}`,
+          })
+          .orWhere('offerees.username = :username', {
+            username: `${account.username}`,
+          });
+      }),
+    );
     try {
       // if select query failed
       return await query.getMany();
