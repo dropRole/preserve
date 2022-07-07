@@ -15,7 +15,7 @@ export class Offeree {
   @PrimaryGeneratedColumn('uuid')
   idOfferees: string;
 
-  @OneToOne((_type) => Account, { eager: false, onUpdate: 'CASCADE' })
+  @OneToOne((_type) => Account, { eager: true, onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
 

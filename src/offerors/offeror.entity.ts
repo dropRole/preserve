@@ -43,7 +43,7 @@ export class Offeror {
   @Check('timeliness IN(5, 6, 7, 8, 9, 10)')
   timeliness: number;
 
-  @OneToOne((_type) => Account, { eager: false, onUpdate: 'CASCADE' })
+  @OneToOne((_type) => Account, { eager: true, onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
 
