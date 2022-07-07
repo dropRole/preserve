@@ -50,6 +50,14 @@ const renderRequestInsightCards = (requests) => {
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
 
+    lstItmOffr.classList = 'list-group-item'
+    lstItmAddr.classList = 'list-group-item'
+    lstItmReqAt.classList = 'list-group-item'
+    lstItmReqFor.classList = 'list-group-item'
+    lstItmReqSeats.classList = 'list-group-item'
+    lstItmReqCause.classList = 'list-group-item'
+    lstItmReqNote.classList = 'list-group-item'
+
     lstItmOffr.textContent = `Offeror: ${request.offeror.name}`;
     lstItmAddr.textContent = `Address: ${request.offeror.address}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
@@ -284,6 +292,14 @@ const renderReservationInsightCards = async (reservations) => {
 
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
+
+    lstItmOffr.classList = 'list-group-item'
+    lstItmReqAt.classList = 'list-group-item'
+    lstItmReqSeats.classList = 'list-group-item'
+    lstItmReqCause.classList = 'list-group-item'
+    lstItmReqNote.classList = 'list-group-item'
+    lstItmReqCnfrmAt.classList = 'list-group-item'
+    lstItmReqCode.classList = 'list-group-item'
 
     lstItmOffr.textContent = `Offeror: ${reservation.request.offeror.name}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
