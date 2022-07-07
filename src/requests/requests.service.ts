@@ -56,13 +56,34 @@ export class RequestsService {
     );
   }
 
-  getRequestById(account: Account, idRequests: string): Promise<Request> {
-    const request = this.requestsRepository.selectRequest(account, idRequests);
+  async getRequestById(account: Account, idRequests: string): Promise<Request> {
+    const request = await this.requestsRepository.findOne({
+      idRequests,
+    });
+
     // if the subject request wasn't submitted
     if (!request)
       throw new NotFoundException(
         `The subject request ${idRequests} wasn't found.`,
       );
+
+    const offeror = await this.offerorsService.getOfferorById(
+      request.offeror.idOfferors,
+    );
+
+    const offeree = await this.offereesService.getOffereeById(
+      request.offeree.idOfferees,
+    );
+
+    // if the subject request wasn't submitted nor intended for the signed in account
+    if (
+      offeror.account.username !== account.username &&
+      offeree.account.username !== account.username
+    ) {
+      throw new UnauthorizedException(
+        `Your account is not authorized for request ${request.idRequests}`,
+      );
+    }
     return request;
   }
 
