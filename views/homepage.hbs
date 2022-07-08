@@ -57,44 +57,55 @@
       <main class='px-3'>
         <p id='estGeoMun' class='h4'>Geocoding...</p>
         <button
+          id='insMdlTgglBtn'
+          class='d-none'
+          data-toggle='modal'
+          data-target='#insightModal'
+        ></button>
+        <button
           id='srchOffrBtn'
           class='btn btn-outline-light'
-          data-toggle='modal'
-          data-target='#offInsMdl'
           disabled
         >Search</button>
-        <button id="resReqInsBtn" class='btn btn-primary' data-toggle="modal" data-target="#insightModal">Inspect requests</button>
-        <button id="resInsBtn" class="btn btn-success" data-toggle="modal" data-target="#insightModal">Inspect todays reservations</button>
+        <button
+          id='resReqInsBtn'
+          class='btn btn-primary'
+        >Inspect requests</button>
+        <button
+          id='resInsBtn'
+          class='btn btn-success'
+        >Inspect todays reservations</button>
       </main>
 
-      <!-- Offeror insight modal -->
+      {{! Generic insight modal }}
+
       <div
         class='modal fade'
-        id='offInsMdl'
+        id='insightModal'
         tabindex='-1'
-        aria-labelledby='offInsMdlLbl'
+        aria-labelledby='insMdlLbl'
         aria-hidden='true'
       >
         <div class='modal-dialog modal-lg'>
           <div class='modal-content'>
             <div class='modal-header'>
-              <h5 class='modal-title' id='offInsMdlLbl'>Offerors</h5>
+              <h5 class='modal-title' id='insMdlLbl'></h5>
               <button
                 type='button'
                 class='btn-close'
                 data-dismiss='modal'
-                data-target='#offInsMdl'
+                data-target='#insightModal'
                 aria-label='Close'
               ></button>
             </div>
             <div class='modal-body'>
-              ...
+
             </div>
           </div>
         </div>
       </div>
 
-      {{! Modal form for reservation request }}
+      {{! Reservation request modal form }}
 
       <div
         class='modal fade'
@@ -185,34 +196,6 @@
                   type='submit'
                 >Request</button>
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {{! Modal for reservation requests and reservations insight }}
-
-      <div
-        class='modal fade'
-        id='insightModal'
-        tabindex='-1'
-        aria-labelledby='insMdlLbl'
-        aria-hidden='true'
-      >
-        <div class='modal-dialog'>
-          <div class='modal-content'>
-            <div class='modal-header'>
-              <h5 class='modal-title' id='insMdlLbl'>Reservation requests</h5>
-              <button
-                type='button'
-                class='btn-close'
-                data-dismiss='modal'
-                data-target='#insightModal'
-                aria-label='Close'
-              ></button>
-            </div>
-            <div class='modal-body'>
-
             </div>
           </div>
         </div>
