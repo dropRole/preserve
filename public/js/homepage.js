@@ -1,3 +1,12 @@
+const insightModal = document.getElementById('insightModal');
+const insMdlTgglBtn = document.getElementById('insMdlTgglBtn');
+const observer = new MutationObserver(() => {
+  insMdlTgglBtn.click();
+});
+observer.observe(insightModal.querySelector('.modal-body'), {
+  childList: true,
+});
+
 // establish clients geolocation and expose it on the template
 const establishGeolocation = () => {
   // if Geolocation API is present
@@ -21,7 +30,9 @@ const establishGeolocation = () => {
         estGeoMun.textContent = `Search offerors for ${geocoding.address.town}`;
         srchOffrBtn.disabled = false;
         srchOffrBtn.dataset.municipality = geocoding.address.town;
-        srchOffrBtn.addEventListener('click', getOfferorsByGeolocation);
+        srchOffrBtn.addEventListener('click', (event) => {
+          getOfferorsByGeolocation(event);
+        });
       }
     },
     () => console.warn('Geolocation API is not present.'),
@@ -34,8 +45,7 @@ establishGeolocation();
 
 // create and return cards populated with reservation requests data for the subject offeror
 const renderRequestInsightCards = (requests) => {
-  const documentFragment = new DocumentFragment(),
-    modalBody = document.querySelector('#insightModal .modal-body');
+  const documentFragment = new DocumentFragment();
   requests.forEach((request) => {
     const card = document.createElement('div'),
       unorderedList = document.createElement('ul'),
@@ -116,8 +126,8 @@ const renderRequestInsightCards = (requests) => {
     card.append(unorderedList);
     documentFragment.append(card);
   });
-  modalBody.innerHTML = '';
-  modalBody.append(documentFragment);
+  insightModal.querySelector('.modal-body').innerHTML = '';
+  insightModal.querySelector('.modal-body').append(documentFragment);
 };
 
 // create and return table element populated with offeror data
@@ -223,16 +233,16 @@ const getOfferorsByGeolocation = async (event) => {
 
   const documentFragment = new DocumentFragment(),
     div = document.createElement('div'),
-    table = createOfferorTable(offerors),
-    modalBody = document.querySelector('.modal-body');
+    table = createOfferorTable(offerors);
 
   div.classList = 'table-responsive';
 
   div.append(table);
   documentFragment.append(div);
 
-  modalBody.innerHTML = '';
-  modalBody.append(documentFragment);
+  insightModal.querySelector('h5').textContent = 'Found offerors';
+  insightModal.querySelector('.modal-body').innerHTML = '';
+  insightModal.querySelector('.modal-body').append(documentFragment);
 };
 
 // submit the reservation request for the subject offeror
@@ -299,22 +309,23 @@ resReqInsBtn.addEventListener('click', async () => {
     requestOptions,
   );
 
+  insightModal.querySelector('h5').textContent = 'Todays requests';
+
   // if reservations for today's date were made
-  if (response.status === 200) {
+  if (response.status === 200 && (await response.json().length) > 0) {
     const requests = await response.json();
     renderRequestInsightCards(requests);
     return;
   }
 
-  document.querySelector('#insightModal .modal-body').textContent =
+  insightModal.querySelector('.modal-body').textContent =
     'There were nought requests made today.';
   return;
 });
 
 // create and return cards comprised of the todays reservations for the insight
 const renderReservationInsightCards = async (reservations) => {
-  const documentFragment = new DocumentFragment(),
-    modalBody = document.querySelector('#insightModal .modal-body');
+  const documentFragment = new DocumentFragment();
   reservations.forEach((reservation) => {
     const card = document.createElement('div'),
       unorderedList = document.createElement('ul'),
@@ -358,8 +369,8 @@ const renderReservationInsightCards = async (reservations) => {
     card.append(unorderedList);
     documentFragment.append(card);
   });
-  modalBody.innerHTML = '';
-  modalBody.append(documentFragment);
+  insightModal.querySelector('.modal-body').innerHTML = '';
+  insightModal.querySelector('.modal-body').append(documentFragment);
 };
 
 const resInsBtn = document.getElementById('resInsBtn');
@@ -377,16 +388,16 @@ resInsBtn.addEventListener('click', async () => {
     requestOptions,
   );
 
+  insightModal.querySelector('h5').textContent = 'Todays reservations';
+
   // if reservations are succesfully returned
-  if (response.status === 200) {
+  if (response.status === 200 && (await response.json().length) > 0) {
     const reservations = await response.json();
-    // if nought reservations were made
-    if (reservations.length === 0) {
-      alert('Nought reservations were made today');
-      return;
-    }
     renderReservationInsightCards(reservations);
     return;
   }
+
+  insightModal.querySelector('.modal-body').textContent =
+    'Nought reservations were made today.';
   return;
 });
