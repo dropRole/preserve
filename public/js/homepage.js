@@ -1,10 +1,49 @@
 const insightModal = document.getElementById('insightModal');
+
 const insMdlTgglBtn = document.getElementById('insMdlTgglBtn');
+
 const observer = new MutationObserver(() => {
   insMdlTgglBtn.click();
 });
 observer.observe(insightModal.querySelector('.modal-body'), {
   childList: true,
+});
+
+// create option elements, populate them with todays reservations data, interpolate them into the target select element
+const createReservationSelectOptions = (reservations) => {
+  // if no reservations
+  if (reservations.length === 0) return;
+
+  reservations.forEach((reservation) => {
+    const option = document.createElement('option');
+
+    option.value = reservation.idReservations;
+    option.textContent = `${reservation.request.offeror.name} | ${reservation.code} `;
+
+    document.querySelector('select[name=reservation]').append(option);
+  });
+  return;
+};
+
+const complFrmImg = document.getElementById('complFrmImg');
+complFrmImg.addEventListener('click', async () => {
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers,
+  };
+
+  const response = await fetch(
+    `/reservations?todaysDate=${new Date().toLocaleDateString()}`,
+    requestOptions,
+  );
+
+  // if request succeded
+  if (response.status === 200)
+    createReservationSelectOptions(await response.json());
+  return;
 });
 
 // establish clients geolocation and expose it on the template
@@ -311,9 +350,13 @@ resReqInsBtn.addEventListener('click', async () => {
 
   insightModal.querySelector('h5').textContent = 'Todays requests';
 
-  // if reservations for today's date were made
-  if (response.status === 200 && (await response.json().length) > 0) {
-    const requests = await response.json();
+  // if request failed
+  if (response.status !== 200) return;
+
+  const requests = await response.json();
+
+  // if reservations for today's date weren't made
+  if (Object.keys(requests).length) {
     renderRequestInsightCards(requests);
     return;
   }
@@ -335,7 +378,9 @@ const renderReservationInsightCards = async (reservations) => {
       lstItmReqCause = document.createElement('li'),
       lstItmReqNote = document.createElement('li'),
       lstItmReqCnfrmAt = document.createElement('li'),
-      lstItmReqCode = document.createElement('li');
+      lstItmReqCode = document.createElement('li'),
+      lstItmComplaint = document.createElement('li'),
+      lstItmComplBtn = document.createElement('li');
 
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
@@ -346,6 +391,8 @@ const renderReservationInsightCards = async (reservations) => {
     lstItmReqNote.classList = 'list-group-item';
     lstItmReqCnfrmAt.classList = 'list-group-item';
     lstItmReqCode.classList = 'list-group-item';
+    lstItmComplaint.classList = 'list-group-item';
+    lstItmComplBtn.classList = 'btn btn-warning';
 
     lstItmOffr.textContent = `Offeror: ${reservation.request.offeror.name}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
@@ -390,9 +437,13 @@ resInsBtn.addEventListener('click', async () => {
 
   insightModal.querySelector('h5').textContent = 'Todays reservations';
 
-  // if reservations are succesfully returned
-  if (response.status === 200 && (await response.json().length) > 0) {
-    const reservations = await response.json();
+  // if request failed
+  if (response.status !== 200) return;
+
+  const reservations = await response.json();
+
+  // if reservations for todays date were made
+  if (Object.keys(reservations).length) {
     renderReservationInsightCards(reservations);
     return;
   }

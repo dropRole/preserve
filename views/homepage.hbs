@@ -67,17 +67,18 @@
           class='btn btn-outline-light'
           disabled
         >Search</button>
-        <button
-          id='resReqInsBtn'
-          class='btn btn-primary'
-        >Inspect requests</button>
-        <button
-          id='resInsBtn'
-          class='btn btn-success'
-        >Inspect todays reservations</button>
+        <button id='resReqInsBtn' class='btn btn-primary'>Inspect requests</button>
+        <button id='resInsBtn' class='btn btn-success'>Inspect todays
+          reservations</button>
+        <img
+          id='complFrmImg'
+          data-toggle='modal'
+          data-target='#resComplMdl'
+          src='../images/quote.png'
+        />
       </main>
 
-      {{! Generic insight modal }}
+      {{! Generic insight modal dialog }}
 
       <div
         class='modal fade'
@@ -105,7 +106,7 @@
         </div>
       </div>
 
-      {{! Reservation request modal form }}
+      {{! Reservation request modal form dialog }}
 
       <div
         class='modal fade'
@@ -195,6 +196,54 @@
                   class='btn btn-outline-dark'
                   type='submit'
                 >Request</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{! Reservation complaint modal form dialog }}
+
+      <div
+        class='modal fade'
+        id='resComplMdl'
+        tabindex='-1'
+        aria-labelledby='resComplMdlLbl'
+        aria-hidden='true'
+      >
+        <div class='modal-dialog'>
+          <div class='modal-content'>
+            <div class='modal-header'>
+              <h5 class='modal-title' id='resComplMdlLbl'>Complain on
+                reservation</h5>
+              <button
+                type='button'
+                class='btn-close'
+                data-dismiss='modal'
+                data-target='#resComplMdl'
+                aria-label='Close'
+              ></button>
+            </div>
+            <div class='modal-body'>
+              <input type='hidden' name='idOfferors' />
+              <form id='reservationRequest'>
+                <input type='hidden' name='idOfferors' />
+                <div class='mb-3'>
+                  <label
+                    for='reservation'
+                    class='col-form-label'
+                  >Reservation:</label>
+                  <select name='reservation' class='form-control'></select>
+                </div>
+                <div class='mb-3'>
+                  <label for='content' class='col-form-label'>Content:</label>
+                  <textarea class="form-control" name='content'></textarea>
+                </div>
+                <button
+                  id='requestSubmit'
+                  class='btn btn-outline-dark'
+                  type='submit'
+                >Complain</button>
               </form>
             </div>
           </div>
