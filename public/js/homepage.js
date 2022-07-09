@@ -138,15 +138,23 @@ const renderRequestInsightCards = (requests) => {
         headers: headers,
       };
 
-      const response = await fetch(
-        `/requests/${event.target.dataset.idRequests}`,
-        requestOptions,
-      );
+      const idRequests = event.target.dataset.idRequests;
+
+      const response = await fetch(`/requests/${idRequests}`, requestOptions);
 
       // if deletion was successful
       if (response.status === 200) {
         alert('Request was successfully deleted.');
-        renderRequestInsightCards();
+
+        // resign from observing modal dialogs mutatons and eradicate the card holding deleted reservation data
+        observer.disconnect();
+        const card = event.target.closest('.card');
+        card.parentNode.removeChild(card);
+
+        // continue with mutatuon observation
+        observer.observe(insightModal.querySelector('.modal-body'), {
+          childList: true,
+        });
       }
 
       if (response.status === 409) alert('Request was already confirmed!');
