@@ -13,11 +13,13 @@ const complFrmSbmBtn = document.getElementById('complFrmSbmBtn');
 complFrmSbmBtn.addEventListener('click', async (event) => {
   event.preventDefault();
 
-  const formData = new FormData(document.getElementById('resComplFrm'));
+  const resComplFrm = document.getElementById('resComplFrm');
 
-  const urlencoded = new URLSearchParams()
-  urlencoded.append('idReservations', formData.get('idReservations'))
-  urlencoded.append('content', formData.get('content'))
+  const formData = new FormData(resComplFrm);
+
+  const urlencoded = new URLSearchParams();
+  urlencoded.append('idReservations', formData.get('idReservations'));
+  urlencoded.append('content', formData.get('content'));
 
   const headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -32,7 +34,14 @@ complFrmSbmBtn.addEventListener('click', async (event) => {
   const response = await fetch('/complaints', requestOptions);
 
   // if request succeded
-  if (response.status === 201) alert('Complaint was successfully submitted.');
+  if (response.status === 201) {
+    alert('Complaint was successfully submitted.');
+    resComplFrm.querySelectorAll('input, textarea').forEach((element) => {
+      element.value = '';
+    });
+    complFrmImg.click();
+    // empty the complaint forms inputs and close the modal dialog
+  }
 
   // if request was bad
   if (response.status === 400) alert('Complaint was unsuccessful.');
@@ -45,12 +54,16 @@ const createReservationSelectOptions = (reservations) => {
   // if no reservations
   if (reservations.length === 0) return;
 
+  const selectElement = document.querySelector('select[name=idReservations]');
+  for (let i = selectElement.length; i--; )
+    selectElement.remove(selectElement[i]);
+
   reservations.forEach((reservation) => {
     const option = document.createElement('option');
     option.value = reservation.request.idRequests;
     option.textContent = `${reservation.request.offeror.name} | ${reservation.code} `;
 
-    document.querySelector('select[name=idReservations]').append(option);
+    selectElement.append(option);
   });
   return;
 };
