@@ -20,7 +20,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     });
     try {
       // if insert query failed
-      await this.save(reservation);
+      await this.insert(reservation);
     } catch (error) {
       throw new QueryFailedError(
         `INSERT INTO reservations VALUES(${request.idRequests}, ${code}, DEFAULT)`,
