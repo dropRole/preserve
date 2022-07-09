@@ -9,6 +9,37 @@ observer.observe(insightModal.querySelector('.modal-body'), {
   childList: true,
 });
 
+const complFrmSbmBtn = document.getElementById('complFrmSbmBtn');
+complFrmSbmBtn.addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(document.getElementById('resComplFrm'));
+
+  const urlencoded = new URLSearchParams()
+  urlencoded.append('idReservations', formData.get('idReservations'))
+  urlencoded.append('content', formData.get('content'))
+
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: urlencoded,
+  };
+
+  const response = await fetch('/complaints', requestOptions);
+
+  // if request succeded
+  if (response.status === 201) alert('Complaint was successfully submitted.');
+
+  // if request was bad
+  if (response.status === 400) alert('Complaint was unsuccessful.');
+
+  return;
+});
+
 // create option elements, populate them with todays reservations data, interpolate them into the target select element
 const createReservationSelectOptions = (reservations) => {
   // if no reservations
@@ -16,11 +47,10 @@ const createReservationSelectOptions = (reservations) => {
 
   reservations.forEach((reservation) => {
     const option = document.createElement('option');
-
-    option.value = reservation.idReservations;
+    option.value = reservation.request.idRequests;
     option.textContent = `${reservation.request.offeror.name} | ${reservation.code} `;
 
-    document.querySelector('select[name=reservation]').append(option);
+    document.querySelector('select[name=idReservations]').append(option);
   });
   return;
 };

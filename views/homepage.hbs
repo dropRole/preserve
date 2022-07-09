@@ -128,7 +128,6 @@
               ></button>
             </div>
             <div class='modal-body'>
-              <input type='hidden' name='idOfferors' />
               <form id='reservationRequest'>
                 <input type='hidden' name='idOfferors' />
                 <div class='mb-3'>
@@ -225,22 +224,20 @@
               ></button>
             </div>
             <div class='modal-body'>
-              <input type='hidden' name='idOfferors' />
-              <form id='reservationRequest'>
-                <input type='hidden' name='idOfferors' />
+              <form id='resComplFrm'>
                 <div class='mb-3'>
                   <label
                     for='reservation'
                     class='col-form-label'
                   >Reservation:</label>
-                  <select name='reservation' class='form-control'></select>
+                  <select name='idReservations' class='form-control'></select>
                 </div>
                 <div class='mb-3'>
                   <label for='content' class='col-form-label'>Content:</label>
                   <textarea class="form-control" name='content'></textarea>
                 </div>
                 <button
-                  id='requestSubmit'
+                  id='complFrmSbmBtn'
                   class='btn btn-outline-dark'
                   type='submit'
                 >Complain</button>
