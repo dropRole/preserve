@@ -35,36 +35,42 @@ export class ReservationsRepository extends Repository<Reservation> {
     getReservationFilterDTO: GetReservationsFilterDTO,
   ): Promise<Reservation[]> {
     const { todaysDate } = getReservationFilterDTO;
-    const query = this.createQueryBuilder('reservations');
-    query.addSelect('requests.idRequests');
-    query.addSelect('offerors.name');
-    query.addSelect('requests.requestedFor');
-    query.addSelect('requests.seats');
-    query.addSelect('requests.cause');
-    query.addSelect('requests.note');
-    query.addSelect('complaints.idComplaints',);
-    query.addSelect('complaints.counteredComplaint',);
-    query.addSelect('complaintAuthors.username',);
-    query.addSelect('complaints.content',);
-    query.addSelect('complaints.written',);
-    query.addSelect('complaints.updated',);
-    query.innerJoin('reservations.request', 'requests');
-    query.innerJoin('reservations.complaints', 'complaints')
-    query.innerJoin('complaints.account', 'complaintAuthors');
-    query.innerJoin('requests.offeror', 'offerors');
-    query.innerJoin('requests.offeree', 'offerees');
-    query.innerJoin('offerors.account', 'offerorsAccounts');
-    query.innerJoin('offerees.account', 'offereesAccounts');
-    query.where('reservations."confirmedAt"::DATE = :todaysDate', {
+    const query = this.createQueryBuilder('reservation');
+    query.addSelect('request.idRequests');
+    query.addSelect('requestedOfferor.name');
+    query.addSelect('request.requestedFor');
+    query.addSelect('request.seats');
+    query.addSelect('request.cause');
+    query.addSelect('request.note');
+    query.addSelect('complaint.idComplaints');
+    query.addSelect('complaintAuthor.username');
+    query.addSelect('complaint.content');
+    query.addSelect('complaint.written');
+    query.addSelect('complaint.updated');
+    query.addSelect('counteredComplaint.idComplaints');
+    query.addSelect('counteredComplaintAuthor.username');
+    query.addSelect('counteredComplaint.content');
+    query.addSelect('counteredComplaint.written');
+    query.addSelect('counteredComplaint.updated');
+    query.innerJoin('reservation.request', 'request');
+    query.leftJoin('reservation.complaints', 'complaint');
+    query.leftJoin('complaint.account', 'complaintAuthor');
+    query.leftJoin('complaint.counteredComplaint', 'counteredComplaint');
+    query.leftJoin('counteredComplaint.account', 'counteredComplaintAuthor');
+    query.innerJoin('request.offeror', 'requestedOfferor');
+    query.innerJoin('request.offeree', 'requestantOfferee');
+    query.innerJoin('requestedOfferor.account', 'requestedOfferorAccount');
+    query.innerJoin('requestantOfferee.account', 'requestantOffereeAccount');
+    query.where('reservation."confirmedAt"::DATE = :todaysDate', {
       todaysDate,
     });
     query.andWhere(
       new Brackets((query) => {
         query
-          .where('offerors.username = :username', {
+          .where('requestedOfferorAccount.username = :username', {
             username: `${account.username}`,
           })
-          .orWhere('offerees.username = :username', {
+          .orWhere('requestantOffereeAccount.username = :username', {
             username: `${account.username}`,
           });
       }),
