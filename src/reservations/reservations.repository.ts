@@ -42,7 +42,15 @@ export class ReservationsRepository extends Repository<Reservation> {
     query.addSelect('requests.seats');
     query.addSelect('requests.cause');
     query.addSelect('requests.note');
+    query.addSelect('complaints.idComplaints',);
+    query.addSelect('complaints.counteredComplaint',);
+    query.addSelect('complaintAuthors.username',);
+    query.addSelect('complaints.content',);
+    query.addSelect('complaints.written',);
+    query.addSelect('complaints.updated',);
     query.innerJoin('reservations.request', 'requests');
+    query.innerJoin('reservations.complaints', 'complaints')
+    query.innerJoin('complaints.account', 'complaintAuthors');
     query.innerJoin('requests.offeror', 'offerors');
     query.innerJoin('requests.offeree', 'offerees');
     query.innerJoin('offerors.account', 'offerorsAccounts');
