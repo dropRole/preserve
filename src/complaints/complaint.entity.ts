@@ -29,7 +29,7 @@ export class Complaint {
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
 
-  @OneToOne((_type) => Complaint, (complaint) => complaint.counteredComplaint, {
+  @OneToOne((_type) => Complaint, (complaint) => complaint.idComplaints, {
     eager: false,
     nullable: true,
   })
