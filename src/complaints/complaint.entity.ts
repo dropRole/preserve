@@ -42,7 +42,7 @@ export class Complaint {
   @Column({ type: 'text' })
   content: string;
 
-  @Column({ type: 'timestamp', default: 'now' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   written: Date;
 
   @Column({ type: 'timestamp', nullable: true })
