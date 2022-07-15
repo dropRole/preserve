@@ -24,6 +24,7 @@ const signin = async (event) => {
   if (response.status === 201) {
     const { accessToken } = await response.json();
     sessionStorage.setItem('JWT', accessToken);
+    sessionStorage.setItem('username', formData.get('username'));
     signInRslt.textContent = 'Sign in was successful.';
     setTimeout(() => {
       window.location.replace('/offeree');
