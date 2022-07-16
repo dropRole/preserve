@@ -32,6 +32,7 @@ export class Complaint {
   @OneToOne((_type) => Complaint, (complaint) => complaint.idComplaints, {
     eager: false,
     nullable: true,
+    createForeignKeyConstraints: false
   })
   @JoinColumn({
     name: 'counteredComplaint',
