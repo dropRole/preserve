@@ -417,62 +417,8 @@ resReqInsBtn.addEventListener('click', async () => {
   return;
 });
 
-// create and return cards comprised of the todays reservations for the insight
-const renderReservationInsightCards = async (reservations) => {
-  const documentFragment = new DocumentFragment();
-  reservations.forEach((reservation) => {
-    const card = document.createElement('div'),
-      unorderedList = document.createElement('ul'),
-      lstItmOffr = document.createElement('li'),
-      lstItmReqAt = document.createElement('li'),
-      lstItmReqSeats = document.createElement('li'),
-      lstItmReqCause = document.createElement('li'),
-      lstItmReqNote = document.createElement('li'),
-      lstItmReqCnfrmAt = document.createElement('li'),
-      lstItmReqCode = document.createElement('li'),
-      lstItmComplaint = document.createElement('li'),
-      lstItmComplBtn = document.createElement('li');
-
-    card.classList = 'card';
-    unorderedList.classList = 'list-group list-group-flush';
-    lstItmOffr.classList = 'list-group-item';
-    lstItmReqAt.classList = 'list-group-item';
-    lstItmReqSeats.classList = 'list-group-item';
-    lstItmReqCause.classList = 'list-group-item';
-    lstItmReqNote.classList = 'list-group-item';
-    lstItmReqCnfrmAt.classList = 'list-group-item';
-    lstItmReqCode.classList = 'list-group-item';
-    lstItmComplaint.classList = 'list-group-item';
-    lstItmComplBtn.classList = 'btn btn-warning';
-
-    lstItmOffr.textContent = `Offeror: ${reservation.request.offeror.name}`;
-    lstItmReqAt.textContent = `Requested at: ${new Date(
-      reservation.request.requestedFor,
-    ).toLocaleTimeString()}`;
-    lstItmReqSeats.textContent = `Seats: ${reservation.request.seats}`;
-    lstItmReqCause.textContent = `Cause: ${reservation.request.cause}`;
-    lstItmReqNote.textContent = `Note: ${reservation.request.note}`;
-    lstItmReqCnfrmAt.textContent = `Confirmed at: ${new Date(
-      reservation.confirmedAt,
-    ).toLocaleTimeString()}`;
-    lstItmReqCode.textContent = `Code: ${reservation.code}`;
-
-    unorderedList.append(lstItmOffr);
-    unorderedList.append(lstItmReqAt);
-    unorderedList.append(lstItmReqSeats);
-    unorderedList.append(lstItmReqCause);
-    unorderedList.append(lstItmReqNote);
-    unorderedList.append(lstItmReqCnfrmAt);
-    unorderedList.append(lstItmReqCode);
-    card.append(unorderedList);
-    documentFragment.append(card);
-  });
-  insightModal.querySelector('.modal-body').innerHTML = '';
-  insightModal.querySelector('.modal-body').append(documentFragment);
-};
-
-const resInsBtn = document.getElementById('resInsBtn');
-resInsBtn.addEventListener('click', async () => {
+// fetch the reservations made on today's date by the currently signed in offeree account
+const getTodaysReservations = async () => {
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
 
@@ -486,12 +432,278 @@ resInsBtn.addEventListener('click', async () => {
     requestOptions,
   );
 
-  insightModal.querySelector('h5').textContent = 'Todays reservations';
+  // if request succeded
+  if (response.status === 200) return await response.json();
 
-  // if request failed
-  if (response.status !== 200) return;
+  return null;
+};
 
-  const reservations = await response.json();
+// submit a countercomplaint for the subject complaint
+const counterComplain = async (idReservations, counteredComplaint, content) => {
+  const urlencoded = new URLSearchParams();
+  urlencoded.append('idReservations', idReservations);
+  urlencoded.append('counteredComplaint', counteredComplaint);
+  urlencoded.append('content', content);
+
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: headers,
+    body: urlencoded,
+  };
+
+  const response = await fetch('/complaints', requestOptions);
+
+  // if request succeded
+  if (response.status === 201) return true;
+
+  return false;
+};
+
+// create and return cards comprised of the todays reservations for the insight
+const renderReservationInsightCards = async (reservations) => {
+  const documentFragment = new DocumentFragment(),
+    headCtrDiv = document.createElement('div'),
+    headCtrRowDiv = document.createElement('div');
+
+  headCtrDiv.classList = 'container';
+  headCtrRowDiv.classList = 'row';
+
+  reservations.forEach((reservation) => {
+    const reservationCard = document.createElement('div'),
+      unorderedList = document.createElement('ul'),
+      uLIOfferor = document.createElement('li'),
+      uLIOSpan = document.createElement('span'),
+      uLIONameSpan = document.createElement('span'),
+      uLIRequestedAt = document.createElement('li'),
+      uLIRASpan = document.createElement('span'),
+      uLIRATimeSpan = document.createElement('span'),
+      uLISeats = document.createElement('li'),
+      uLISSpan = document.createElement('span'),
+      uLISNumberSpan = document.createElement('span'),
+      uLICause = document.createElement('li'),
+      uLICSpan = document.createElement('span'),
+      uLICArgumentSpan = document.createElement('span'),
+      uLINote = document.createElement('li'),
+      uLINSpan = document.createElement('span'),
+      uLINArgumentSpan = document.createElement('span'),
+      uLIConfirmedAt = document.createElement('li'),
+      uLICASpan = document.createElement('span'),
+      uLICATimeSpan = document.createElement('span'),
+      uLICode = document.createElement('li'),
+      uLICodeSpan = document.createElement('span'),
+      uLICNumberSpan = document.createElement('span');
+
+    reservationCard.classList = 'card';
+    unorderedList.classList = 'list-group list-group-flush';
+    uLIOfferor.classList = 'list-group-item position-relative p-4';
+    uLIOSpan.classList = 'position-absolute top-0 start-0';
+    uLIONameSpan.classList = 'position-absolute top-0 end-0';
+    uLIRequestedAt.classList = 'list-group-item position-relative p-4';
+    uLIRASpan.classList = 'position-absolute top-0 start-0';
+    uLIRATimeSpan.classList = 'position-absolute top-0 end-0';
+    uLISeats.classList = 'list-group-item position-relative p-4';
+    uLISSpan.classList = 'position-absolute top-0 start-0';
+    uLISNumberSpan.classList = 'position-absolute top-0 end-0';
+    uLICause.classList = 'list-group-item position-relative p-4';
+    uLICSpan.classList = 'position-absolute top-0 start-0';
+    uLICArgumentSpan.classList = 'position-absolute top-0 end-0';
+    uLINote.classList = 'list-group-item position-relative p-4';
+    uLINSpan.classList = 'position-absolute top-0 start-0';
+    uLINArgumentSpan.classList = 'position-absolute top-0 end-0';
+    uLIConfirmedAt.classList = 'list-group-item position-relative p-4';
+    uLICASpan.classList = 'position-absolute top-0 start-0';
+    uLICATimeSpan.classList = 'position-absolute top-0 end-0';
+    uLICode.classList = 'list-group-item position-relative p-4';
+    uLICodeSpan.classList = 'position-absolute top-0 start-0';
+    uLICNumberSpan.classList = 'position-absolute top-0 end-0';
+
+    uLIOSpan.textContent = 'Offeror:';
+    uLIONameSpan.textContent = `${reservation.request.offeror.name}`;
+    uLIRASpan.textContent = 'Requested for:';
+    uLIRATimeSpan.textContent = `${new Date(
+      reservation.request.requestedFor,
+    ).toLocaleTimeString()}`;
+    uLISSpan.textContent = 'Seats:';
+    uLISNumberSpan.textContent = `${reservation.request.seats}`;
+    uLICSpan.textContent = 'Cause:';
+    uLICArgumentSpan.textContent = `${reservation.request.cause}`;
+    uLINSpan.textContent = 'Note';
+    uLINArgumentSpan.textContent = `${reservation.request.note}`;
+    uLICASpan.textContent = 'Confirmed at:';
+    uLICATimeSpan.textContent = `${reservation.confirmedAt}`;
+    uLICodeSpan.textContent = 'Confirmation code:';
+    uLICNumberSpan.textContent = `${reservation.code}`;
+
+    // if reservation has any complaints
+    if (reservation.complaints.length) {
+      reservationCard.classList.add('col-6');
+
+      const complCtrDiv = document.createElement('div');
+
+      complCtrDiv.classList = 'col-6 row';
+
+      let alignFlag = true;
+
+      reservation.complaints.forEach((complaint) => {
+        const complaintDivision = document.createElement('div'),
+          complHeadPara = document.createElement('p'),
+          complAuthName = document.createElement('span'),
+          complWrtDate = document.createElement('span'),
+          complaintContent = document.createElement('p');
+
+        complaintDivision.classList =
+          'offset-3 col-9 mb-3 position-relative border rounded border-dark';
+        // if right aligned
+        if (!alignFlag)
+          complaintDivision.classList =
+            'col-9 border mb-3 position-relative rounded border-light';
+        alignFlag = !alignFlag;
+
+        complHeadPara.classList = 'position-relative p-3';
+        complAuthName.classList = 'position-absolute start-0 top-0 fst-italic';
+        complWrtDate.classList =
+          'position-absolute top-0 end-0 text-muted small';
+
+        complAuthName.style.color = 'hsl(210deg 11% 15%)';
+        complaintContent.style.color = 'hsl(210deg 11% 15%)';
+        complaintContent.style.textAlign = 'left';
+
+        complAuthName.textContent = complaint.account.username;
+        complWrtDate.innerHTML = `${new Date(
+          complaint.written,
+        ).toLocaleString()} <br> - ${
+          complaint.updated ? complaint.updated : 'not'
+        } updated`;
+        complaintContent.textContent = complaint.content;
+
+        // if its a counter complaint
+        if (complaint.counteredComplaint) {
+          const cntrComplDiv = document.createElement('div'),
+            cntrComplRplTo = document.createElement('span'),
+            cntrComplContent = document.createElement('p');
+
+          cntrComplDiv.classList = 'small border rounded border-warning p-2';
+
+          cntrComplDiv.style.color = 'hsl(210deg 11% 15%)';
+          cntrComplDiv.style.textAlign = 'left';
+
+          cntrComplRplTo.textContent = 'Replied to: ';
+          cntrComplContent.textContent = complaint.counteredComplaint.content;
+
+          cntrComplDiv.append(cntrComplRplTo);
+          cntrComplDiv.append(cntrComplContent);
+          complaintDivision.append(cntrComplDiv);
+        }
+
+        complHeadPara.append(complAuthName);
+        complHeadPara.append(complWrtDate);
+        complaintDivision.append(complHeadPara);
+        complaintDivision.append(complaintContent);
+
+        // if complaint is not written by currently signed in account
+        if (complaint.account.username !== sessionStorage.getItem('username')) {
+          const complRplSpan = document.createElement('span');
+
+          complRplSpan.dataset.idReservations = reservation.request.idRequests;
+          complRplSpan.dataset.idComplaints = complaint.idComplaints;
+
+          complRplSpan.classList = 'position-absolute end-0 bottom-0';
+
+          complRplSpan.style.color = 'hsl(210deg 11% 15%)';
+
+          complRplSpan.innerHTML = '&#8630;';
+
+          complRplSpan.addEventListener('click', (event) => {
+            // if counter complaint input element wasn't already appended
+            if (!complaintDivision.querySelector('input')) {
+              const inputElement = document.createElement('input');
+
+              inputElement.dataset.idReservations = event.target.dataset.idReservations
+              inputElement.dataset.idComplaints =
+                event.target.dataset.idComplaints;
+
+              complaintDivision.append(inputElement);
+
+              inputElement.focus();
+
+              inputElement.addEventListener('focusout', (event) => {
+                event.target.parentNode.removeChild(event.target);
+              });
+
+              inputElement.addEventListener('keypress', async (event) => {
+                // if pressed key is ENTER
+                if (event.key === 'Enter') {
+                  if (
+                    !(await counterComplain(
+                      event.target.dataset.idReservations,
+                      event.target.dataset.idComplaints,
+                      event.target.value,
+                    ))
+                  )
+                    return;
+
+                  alert('Successfully countercomplained.');
+
+                  const reservations = await getTodaysReservations();
+
+                  observer.disconnect()
+
+                  renderReservationInsightCards(reservations);
+
+                  observer.observe(insightModal.querySelector('.modal-body'), {
+                    childList: true,
+                  });
+
+                }
+              });
+            }
+          });
+          complaintDivision.append(complRplSpan);
+        }
+        complCtrDiv.append(complaintDivision);
+        headCtrRowDiv.append(complCtrDiv);
+      });
+    }
+
+    uLIOfferor.append(uLIOSpan);
+    uLIOfferor.append(uLIONameSpan);
+    unorderedList.append(uLIOfferor);
+    uLIRequestedAt.append(uLIRASpan);
+    uLIRequestedAt.append(uLIRATimeSpan);
+    unorderedList.append(uLIRequestedAt);
+    uLISeats.append(uLISSpan);
+    uLISeats.append(uLISNumberSpan);
+    unorderedList.append(uLISeats);
+    uLICause.append(uLICSpan);
+    uLICause.append(uLICArgumentSpan);
+    unorderedList.append(uLICause);
+    uLINote.append(uLINSpan);
+    uLINote.append(uLINArgumentSpan);
+    unorderedList.append(uLINote);
+    uLIConfirmedAt.append(uLICASpan);
+    uLIConfirmedAt.append(uLICATimeSpan);
+    unorderedList.append(uLIConfirmedAt);
+    uLICode.append(uLICodeSpan);
+    uLICode.append(uLICNumberSpan);
+    unorderedList.append(uLICode);
+    reservationCard.append(unorderedList);
+    headCtrRowDiv.prepend(reservationCard);
+    documentFragment.prepend(headCtrRowDiv);
+  });
+  insightModal.querySelector('.modal-body').innerHTML = '';
+  insightModal.querySelector('.modal-body').append(documentFragment);
+};
+
+const resInsBtn = document.getElementById('resInsBtn');
+resInsBtn.addEventListener('click', async () => {
+  const reservations = await getTodaysReservations();
+
+  // if reservations weren't returned
+  if (!reservations) return;
 
   // if reservations for todays date were made
   if (Object.keys(reservations).length) {
@@ -499,6 +711,7 @@ resInsBtn.addEventListener('click', async () => {
     return;
   }
 
+  insightModal.querySelector('h5').textContent = 'Todays reservations';
   insightModal.querySelector('.modal-body').textContent =
     'Nought reservations were made today.';
   return;
