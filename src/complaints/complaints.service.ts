@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QueryFailedError } from 'typeorm';
 import { Account } from '../auth/account.entity';
 import { ReservationsService } from '../reservations/reservations.service';
 import { Complaint } from './complaint.entity';
@@ -54,7 +55,21 @@ export class ComplaintsService {
     reSubmitComplaintDTO: ReSubmitComplaintDTO,
   ): Promise<void> {
     const { idComplaints, content } = reSubmitComplaintDTO;
-    const complaint = await this.complaintsRepository.findOne({ idComplaints });
+    let complaint: Complaint;
+    const query = this.complaintsRepository.createQueryBuilder('complaints');
+    query.addSelect('author.username');
+    query.innerJoin('complaints.account', 'author');
+    query.where({ account: { username: account.username } });
+    try {
+      complaint = await query.getOne();
+    } catch (error) {
+      throw new QueryFailedError(
+        query.getSql(),
+        [account.username],
+        error.message,
+      );
+    }
+    console.log(complaint)
     // if account doesn't belong to the author
     if (complaint.account.username != account.username)
       throw new UnauthorizedException(
