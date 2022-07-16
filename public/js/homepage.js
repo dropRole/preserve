@@ -463,6 +463,30 @@ const counterComplain = async (idReservations, counteredComplaint, content) => {
   return false;
 };
 
+// update content of the subject complaint and determine its update timestamp
+const reComplain = async (idComplaints, content) => {
+  const urlencoded = new URLSearchParams();
+  urlencoded.append('idComplaints', idComplaints);
+  urlencoded.append('content', content);
+
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'PATCH',
+    headers: headers,
+    body: urlencoded,
+  };
+
+  const response = await fetch('/complaints', requestOptions);
+
+  // if request succeded
+  if (response.status === 204) return true;
+
+  return false;
+};
+
 // create and return cards comprised of the todays reservations for the insight
 const renderReservationInsightCards = async (reservations) => {
   const documentFragment = new DocumentFragment(),
@@ -622,7 +646,8 @@ const renderReservationInsightCards = async (reservations) => {
             if (!complaintDivision.querySelector('input')) {
               const inputElement = document.createElement('input');
 
-              inputElement.dataset.idReservations = event.target.dataset.idReservations
+              inputElement.dataset.idReservations =
+                event.target.dataset.idReservations;
               inputElement.dataset.idComplaints =
                 event.target.dataset.idComplaints;
 
@@ -650,20 +675,74 @@ const renderReservationInsightCards = async (reservations) => {
 
                   const reservations = await getTodaysReservations();
 
-                  observer.disconnect()
+                  observer.disconnect();
 
                   renderReservationInsightCards(reservations);
 
                   observer.observe(insightModal.querySelector('.modal-body'), {
                     childList: true,
                   });
-
                 }
               });
             }
           });
           complaintDivision.append(complRplSpan);
         }
+
+        // if complaint was written by the currently signed in account
+        if (complaint.account.username === sessionStorage.getItem('username')) {
+          const complUpdSpan = document.createElement('span');
+
+          complUpdSpan.classList = 'position-absolute end-0 bottom-0';
+
+          complUpdSpan.innerHTML = '&#9998;';
+
+          complUpdSpan.addEventListener('click', () => {
+            const inputElement = document.createElement('input');
+
+            inputElement.classList = 'form-control';
+
+            inputElement.dataset.idComplaints = complaint.idComplaints;
+
+            inputElement.type = 'text';
+
+            inputElement.addEventListener('focusout', (event) => {
+              complaintDivision.removeChild(event.target);
+            });
+
+            inputElement.addEventListener('keypress', async (event) => {
+              // if pressed key wasn't ENTER
+              if (event.key !== 'Enter') return;
+
+              // if successfully recomplained
+              if (
+                reComplain(
+                  event.target.dataset.idComplaints,
+                  event.target.value,
+                )
+              ) {
+                alert("You've successfully recomplained.");
+
+                const reservations = await getTodaysReservations();
+
+                observer.disconnect();
+
+                // if reservations returned
+                if (reservations) renderReservationInsightCards(reservations);
+
+                observer.observe(insightModal.querySelector('.modal-body'), {
+                  childList: true,
+                });
+              }
+            });
+
+            complaintDivision.append(inputElement);
+
+            inputElement.focus();
+          });
+          complaintDivision.append(complUpdSpan);
+        }
+
         complCtrDiv.append(complaintDivision);
         headCtrRowDiv.append(complCtrDiv);
       });
