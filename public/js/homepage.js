@@ -70,22 +70,10 @@ const createReservationSelectOptions = (reservations) => {
 
 const complFrmImg = document.getElementById('complFrmImg');
 complFrmImg.addEventListener('click', async () => {
-  const headers = new Headers();
-  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+  const reservations = await getTodaysReservations();
 
-  const requestOptions = {
-    method: 'GET',
-    headers: headers,
-  };
-
-  const response = await fetch(
-    `/reservations?todaysDate=${new Date().toLocaleDateString()}`,
-    requestOptions,
-  );
-
-  // if request succeded
-  if (response.status === 200)
-    createReservationSelectOptions(await response.json());
+  // if reservations returned
+  if (reservations) createReservationSelectOptions(reservations);
   return;
 });
 
