@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -69,7 +70,6 @@ export class ComplaintsService {
         error.message,
       );
     }
-    console.log(complaint)
     // if account doesn't belong to the author
     if (complaint.account.username != account.username)
       throw new UnauthorizedException(
@@ -85,15 +85,54 @@ export class ComplaintsService {
     account: Account,
     idComplaints: string,
   ): Promise<void> {
-    const complaint = await this.complaintsRepository.findOne({ idComplaints });
+    let complaint: Complaint;
+
+    const query = this.complaintsRepository.createQueryBuilder('complaints');
+
+    query.addSelect('author.username');
+    query.innerJoin('complaints.account', 'author');
+    query.where({ account: { username: account.username } });
+
+    try {
+      complaint = await query.getOne();
+    } catch (error) {
+      throw new QueryFailedError(
+        query.getSql(),
+        [account.username],
+        error.message,
+      );
+    }
+
     // if complaint doesn't exist
     if (!complaint)
       throw new NotFoundException('Subject complaint was not found');
+
     // if unathorized deletion attemp
     if (complaint.account.username !== account.username)
       throw new UnauthorizedException(
         'Unauthorized complaint deletion attempt. ',
       );
+
+    // if any counter complaint
+    if (this.getCounterComplaints(idComplaints))
+      throw new ConflictException(
+        `There are counter complaints for the subject ${complaint.idComplaints} complaint.`,
+      );
+
     return this.complaintsRepository.deleteComplaint(idComplaints);
+  }
+
+  private async getCounterComplaints(idComplaints: string): Promise<boolean> {
+    const query = this.complaintsRepository.createQueryBuilder('complaints');
+
+    query.where({ counteredComplaint: { idComplaints } });
+
+    try {
+      // if there is any counter complaint on the subject one
+      if (await query.getMany()) return true;
+    } catch (error) {
+      throw new QueryFailedError(query.getSql(), [idComplaints], error.message);
+    }
+    return false;
   }
 }
