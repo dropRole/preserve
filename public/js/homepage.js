@@ -1,3 +1,7 @@
+const accountButton = document.getElementById('accountButton');
+
+accountButton.textContent = sessionStorage.getItem('username');
+
 const insightModal = document.getElementById('insightModal');
 
 const insMdlTgglBtn = document.getElementById('insMdlTgglBtn');
