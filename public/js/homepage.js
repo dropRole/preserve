@@ -488,15 +488,237 @@ const reComplain = async (idComplaints, content) => {
   return false;
 };
 
-// create and return cards comprised of the todays reservations for the insight
-const renderReservationInsightCards = async (reservations) => {
-  const documentFragment = new DocumentFragment(),
-    headCtrDiv = document.createElement('div'),
-    headCtrRowDiv = document.createElement('div');
+/* 
+  prefix the complaint with the one that was replied to 
+  @Param Object complaint
+  @Param Node complaintDivision
+*/
+const prependRepliedToComplaint = (complaint, complaintDivision) => {
+  const cntrComplDiv = document.createElement('div'),
+    cntrComplRplTo = document.createElement('span'),
+    cntrComplContent = document.createElement('p');
 
-  headCtrDiv.classList = 'container';
-  headCtrRowDiv.classList = 'row';
+  cntrComplDiv.classList = 'small border rounded border-warning p-2';
 
+  cntrComplDiv.style.color = 'hsl(210deg 11% 15%)';
+  cntrComplDiv.style.textAlign = 'left';
+
+  cntrComplRplTo.textContent = 'Replied to: ';
+  cntrComplContent.textContent = complaint.counteredComplaint.content;
+
+  cntrComplDiv.append(cntrComplRplTo);
+  cntrComplDiv.append(cntrComplContent);
+  complaintDivision.append(cntrComplDiv);
+};
+
+/* 
+  append the sign for countercomplaint submission to the subject complaint  
+  @Param Object reservation
+  @Param Object complaint
+  @Param Node complaintDivision
+*/
+const appendCompliaintReplicationSign = (
+  reservation,
+  complaint,
+  complaintDivision,
+) => {
+  const complRplSpan = document.createElement('span');
+
+  complRplSpan.dataset.idReservations = reservation.request.idRequests;
+  complRplSpan.dataset.idComplaints = complaint.idComplaints;
+
+  complRplSpan.classList = 'position-absolute end-0 bottom-0';
+
+  complRplSpan.style.color = 'hsl(210deg 11% 15%)';
+
+  complRplSpan.innerHTML = '&#8630;';
+
+  complRplSpan.addEventListener('click', (event) => {
+    // if counter complaint input element wasn't already appended
+    if (!complaintDivision.querySelector('input')) {
+      const inputElement = document.createElement('input');
+
+      inputElement.dataset.idReservations = event.target.dataset.idReservations;
+      inputElement.dataset.idComplaints = event.target.dataset.idComplaints;
+
+      complaintDivision.append(inputElement);
+
+      inputElement.focus();
+
+      inputElement.addEventListener('focusout', (event) => {
+        event.target.parentNode.removeChild(event.target);
+      });
+
+      inputElement.addEventListener('keypress', async (event) => {
+        // if pressed key is ENTER
+        if (event.key === 'Enter') {
+          if (
+            !(await counterComplain(
+              event.target.dataset.idReservations,
+              event.target.dataset.idComplaints,
+              event.target.value,
+            ))
+          )
+            return;
+
+          alert('Successfully countercomplained.');
+
+          const reservations = await getTodaysReservations();
+
+          observer.disconnect();
+
+          renderReservationInsightCards(reservations);
+
+          observer.observe(insightModal.querySelector('.modal-body'), {
+            childList: true,
+          });
+        }
+      });
+    }
+  });
+  complaintDivision.append(complRplSpan);
+};
+
+/* 
+  append the sign for the subject complaint update 
+  @Param Object complaint   
+  @Param Object complaintDivision   
+*/
+const appendComplaintEditSign = (complaint, complaintDivision) => {
+  const complUpdSpan = document.createElement('span');
+
+  complUpdSpan.classList = 'position-absolute end-0 bottom-0';
+
+  complUpdSpan.innerHTML = '&#9998;';
+
+  complUpdSpan.addEventListener('click', () => {
+    const inputElement = document.createElement('input');
+
+    inputElement.classList = 'form-control';
+
+    inputElement.dataset.idComplaints = complaint.idComplaints;
+
+    inputElement.type = 'text';
+
+    inputElement.addEventListener('focusout', (event) => {
+      complaintDivision.removeChild(event.target);
+    });
+
+    inputElement.addEventListener('keypress', async (event) => {
+      // if pressed key wasn't ENTER
+      if (event.key !== 'Enter') return;
+
+      // if successfully recomplained
+      if (reComplain(event.target.dataset.idComplaints, event.target.value)) {
+        alert("You've successfully recomplained.");
+
+        const reservations = await getTodaysReservations();
+
+        observer.disconnect();
+
+        // if reservations returned
+        if (reservations) renderReservationInsightCards(reservations);
+
+        observer.observe(insightModal.querySelector('.modal-body'), {
+          childList: true,
+        });
+      }
+    });
+
+    complaintDivision.append(inputElement);
+
+    inputElement.focus();
+  });
+  complaintDivision.append(complUpdSpan);
+};
+
+/* 
+  create complaints section for the subject reservation (card) 
+  @Param Object reservation
+  @Param Node headCtrRowDiv
+  @Param Node reservationCard
+*/
+const createReservationComplaintsSection = (
+  reservation,
+  headCtrRowDiv,
+  reservationCard,
+) => {
+  reservationCard.classList.add('col-6');
+
+  const complCtrDiv = document.createElement('div');
+
+  complCtrDiv.classList = 'col-6 row';
+
+  let alignFlag = true;
+
+  reservation.complaints.forEach((complaint) => {
+    const complaintDivision = document.createElement('div'),
+      complHeadPara = document.createElement('p'),
+      complAuthName = document.createElement('span'),
+      complWrtDate = document.createElement('span'),
+      complaintContent = document.createElement('p');
+
+    complaintDivision.classList =
+      'offset-3 col-9 mb-3 position-relative border rounded border-dark';
+    // if right aligned
+    if (!alignFlag)
+      complaintDivision.classList =
+        'col-9 border mb-3 position-relative rounded border-light';
+    alignFlag = !alignFlag;
+
+    complHeadPara.classList = 'position-relative p-3';
+    complAuthName.classList = 'position-absolute start-0 top-0 fst-italic';
+    complWrtDate.classList = 'position-absolute top-0 end-0 text-muted small';
+
+    complAuthName.style.color = 'hsl(210deg 11% 15%)';
+    complaintContent.style.color = 'hsl(210deg 11% 15%)';
+    complaintContent.style.textAlign = 'left';
+
+    complAuthName.textContent = complaint.account.username;
+    complWrtDate.innerHTML = `${new Date(
+      complaint.written,
+    ).toLocaleString()} <br> - ${
+      complaint.updated ? new Date(complaint.updated).toLocaleString() : 'not'
+    } updated`;
+    complaintContent.textContent = complaint.content;
+
+    // if its a counter complaint
+    if (complaint.counteredComplaint)
+      prependRepliedToComplaint(complaint, complaintDivision);
+
+    complHeadPara.append(complAuthName);
+    complHeadPara.append(complWrtDate);
+    complaintDivision.append(complHeadPara);
+    complaintDivision.append(complaintContent);
+
+    // if complaint is not written by currently signed in account
+    if (complaint.account.username !== sessionStorage.getItem('username'))
+      appendCompliaintReplicationSign(
+        reservation,
+        complaint,
+        complaintDivision,
+      );
+
+    // if complaint was written by the currently signed in account
+    if (complaint.account.username === sessionStorage.getItem('username'))
+      appendComplaintEditSign(complaint, complaintDivision);
+
+    complCtrDiv.append(complaintDivision);
+    headCtrRowDiv.append(complCtrDiv);
+  });
+};
+
+/* 
+  create reservation insight cards 
+  @Param Object[] reservations
+  @Param DocumentFragment documentFragment
+  @Param Node headCtrRowDiv
+*/
+const createReservationInsightCards = (
+  reservations,
+  documentFragment,
+  headCtrRowDiv,
+) => {
   reservations.forEach((reservation) => {
     const reservationCard = document.createElement('div'),
       unorderedList = document.createElement('ul'),
@@ -564,190 +786,12 @@ const renderReservationInsightCards = async (reservations) => {
     uLICNumberSpan.textContent = `${reservation.code}`;
 
     // if reservation has any complaints
-    if (reservation.complaints.length) {
-      reservationCard.classList.add('col-6');
-
-      const complCtrDiv = document.createElement('div');
-
-      complCtrDiv.classList = 'col-6 row';
-
-      let alignFlag = true;
-
-      reservation.complaints.forEach((complaint) => {
-        const complaintDivision = document.createElement('div'),
-          complHeadPara = document.createElement('p'),
-          complAuthName = document.createElement('span'),
-          complWrtDate = document.createElement('span'),
-          complaintContent = document.createElement('p');
-
-        complaintDivision.classList =
-          'offset-3 col-9 mb-3 position-relative border rounded border-dark';
-        // if right aligned
-        if (!alignFlag)
-          complaintDivision.classList =
-            'col-9 border mb-3 position-relative rounded border-light';
-        alignFlag = !alignFlag;
-
-        complHeadPara.classList = 'position-relative p-3';
-        complAuthName.classList = 'position-absolute start-0 top-0 fst-italic';
-        complWrtDate.classList =
-          'position-absolute top-0 end-0 text-muted small';
-
-        complAuthName.style.color = 'hsl(210deg 11% 15%)';
-        complaintContent.style.color = 'hsl(210deg 11% 15%)';
-        complaintContent.style.textAlign = 'left';
-
-        complAuthName.textContent = complaint.account.username;
-        complWrtDate.innerHTML = `${new Date(
-          complaint.written,
-        ).toLocaleString()} <br> - ${
-          complaint.updated ? new Date(complaint.updated).toLocaleString() : 'not'
-        } updated`;
-        complaintContent.textContent = complaint.content;
-
-        // if its a counter complaint
-        if (complaint.counteredComplaint) {
-          const cntrComplDiv = document.createElement('div'),
-            cntrComplRplTo = document.createElement('span'),
-            cntrComplContent = document.createElement('p');
-
-          cntrComplDiv.classList = 'small border rounded border-warning p-2';
-
-          cntrComplDiv.style.color = 'hsl(210deg 11% 15%)';
-          cntrComplDiv.style.textAlign = 'left';
-
-          cntrComplRplTo.textContent = 'Replied to: ';
-          cntrComplContent.textContent = complaint.counteredComplaint.content;
-
-          cntrComplDiv.append(cntrComplRplTo);
-          cntrComplDiv.append(cntrComplContent);
-          complaintDivision.append(cntrComplDiv);
-        }
-
-        complHeadPara.append(complAuthName);
-        complHeadPara.append(complWrtDate);
-        complaintDivision.append(complHeadPara);
-        complaintDivision.append(complaintContent);
-
-        // if complaint is not written by currently signed in account
-        if (complaint.account.username !== sessionStorage.getItem('username')) {
-          const complRplSpan = document.createElement('span');
-
-          complRplSpan.dataset.idReservations = reservation.request.idRequests;
-          complRplSpan.dataset.idComplaints = complaint.idComplaints;
-
-          complRplSpan.classList = 'position-absolute end-0 bottom-0';
-
-          complRplSpan.style.color = 'hsl(210deg 11% 15%)';
-
-          complRplSpan.innerHTML = '&#8630;';
-
-          complRplSpan.addEventListener('click', (event) => {
-            // if counter complaint input element wasn't already appended
-            if (!complaintDivision.querySelector('input')) {
-              const inputElement = document.createElement('input');
-
-              inputElement.dataset.idReservations =
-                event.target.dataset.idReservations;
-              inputElement.dataset.idComplaints =
-                event.target.dataset.idComplaints;
-
-              complaintDivision.append(inputElement);
-
-              inputElement.focus();
-
-              inputElement.addEventListener('focusout', (event) => {
-                event.target.parentNode.removeChild(event.target);
-              });
-
-              inputElement.addEventListener('keypress', async (event) => {
-                // if pressed key is ENTER
-                if (event.key === 'Enter') {
-                  if (
-                    !(await counterComplain(
-                      event.target.dataset.idReservations,
-                      event.target.dataset.idComplaints,
-                      event.target.value,
-                    ))
-                  )
-                    return;
-
-                  alert('Successfully countercomplained.');
-
-                  const reservations = await getTodaysReservations();
-
-                  observer.disconnect();
-
-                  renderReservationInsightCards(reservations);
-
-                  observer.observe(insightModal.querySelector('.modal-body'), {
-                    childList: true,
-                  });
-                }
-              });
-            }
-          });
-          complaintDivision.append(complRplSpan);
-        }
-
-        // if complaint was written by the currently signed in account
-        if (complaint.account.username === sessionStorage.getItem('username')) {
-          const complUpdSpan = document.createElement('span');
-
-          complUpdSpan.classList = 'position-absolute end-0 bottom-0';
-
-          complUpdSpan.innerHTML = '&#9998;';
-
-          complUpdSpan.addEventListener('click', () => {
-            const inputElement = document.createElement('input');
-
-            inputElement.classList = 'form-control';
-
-            inputElement.dataset.idComplaints = complaint.idComplaints;
-
-            inputElement.type = 'text';
-
-            inputElement.addEventListener('focusout', (event) => {
-              complaintDivision.removeChild(event.target);
-            });
-
-            inputElement.addEventListener('keypress', async (event) => {
-              // if pressed key wasn't ENTER
-              if (event.key !== 'Enter') return;
-
-              // if successfully recomplained
-              if (
-                reComplain(
-                  event.target.dataset.idComplaints,
-                  event.target.value,
-                )
-              ) {
-                alert("You've successfully recomplained.");
-
-                const reservations = await getTodaysReservations();
-
-                observer.disconnect();
-
-                // if reservations returned
-                if (reservations) renderReservationInsightCards(reservations);
-
-                observer.observe(insightModal.querySelector('.modal-body'), {
-                  childList: true,
-                });
-              }
-            });
-
-            complaintDivision.append(inputElement);
-
-            inputElement.focus();
-          });
-          complaintDivision.append(complUpdSpan);
-        }
-
-        complCtrDiv.append(complaintDivision);
-        headCtrRowDiv.append(complCtrDiv);
-      });
-    }
+    if (reservation.complaints.length)
+      createReservationComplaintsSection(
+        reservation,
+        headCtrRowDiv,
+        reservationCard,
+      );
 
     uLIOfferor.append(uLIOSpan);
     uLIOfferor.append(uLIONameSpan);
@@ -776,6 +820,21 @@ const renderReservationInsightCards = async (reservations) => {
   });
   insightModal.querySelector('.modal-body').innerHTML = '';
   insightModal.querySelector('.modal-body').append(documentFragment);
+};
+
+/* 
+  render cards comprised of the todays reservations and their, potential, complaints for the insight 
+  @Param Object[] reservations
+*/
+const renderReservationInsightCards = (reservations) => {
+  const documentFragment = new DocumentFragment(),
+    headCtrDiv = document.createElement('div'),
+    headCtrRowDiv = document.createElement('div');
+
+  headCtrDiv.classList = 'container';
+  headCtrRowDiv.classList = 'row';
+
+  createReservationInsightCards(reservations, documentFragment, headCtrRowDiv);
 };
 
 const resInsBtn = document.getElementById('resInsBtn');
