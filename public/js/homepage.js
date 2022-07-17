@@ -632,6 +632,55 @@ const appendComplaintEditSign = (complaint, complaintDivision) => {
   complaintDivision.append(complUpdSpan);
 };
 
+// attempt deletion of the complaint with the corresponding identifier
+const deleteComplaint = async (idComplaints) => {
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'DELETE',
+    headers: headers,
+  };
+
+  const response = await fetch(`/complaints/${idComplaints}`, requestOptions);
+
+  // if request succeded
+  if (response.status === 200) return true;
+
+  // if there's a conflict
+  if(response.statuts === 409) return false
+
+  return false;
+};
+
+/* 
+  append the sign for the subject complaint removal
+  @Param string idComplaints
+  @Param Node complaintDivision
+*/
+const prependComplaintDeletionSign = (idComplaints, complaintDivision) => {
+  const complDelSpan = document.createElement('span');
+
+  complDelSpan.classList = 'position-absolute top-0 end-0';
+
+  complDelSpan.dataset.idComplaints = idComplaints;
+
+  complDelSpan.innerHTML = '&#9747;';
+
+  complDelSpan.addEventListener('click', async () => {
+    //if complaint successfully deleted
+    if (await deleteComplaint(idComplaints)){
+      alert("You've successfully deleted the complaint.");
+      return
+    }
+
+    alert('There\'s a conflict occurring upon the complaint deletion.')
+    return;
+  });
+
+  complaintDivision.prepend(complDelSpan);
+};
+
 /* 
   create complaints section for the subject reservation (card) 
   @Param Object reservation
@@ -700,8 +749,10 @@ const createReservationComplaintsSection = (
       );
 
     // if complaint was written by the currently signed in account
-    if (complaint.account.username === sessionStorage.getItem('username'))
+    if (complaint.account.username === sessionStorage.getItem('username')) {
       appendComplaintEditSign(complaint, complaintDivision);
+      prependComplaintDeletionSign(complaint.idComplaints, complaintDivision);
+    }
 
     complCtrDiv.append(complaintDivision);
     headCtrRowDiv.append(complCtrDiv);
