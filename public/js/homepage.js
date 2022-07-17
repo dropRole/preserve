@@ -674,7 +674,10 @@ const prependComplaintDeletionSign = (idComplaints, complaintDivision) => {
 
       observer.disconnect();
 
-      await getTodaysReservations();
+      const reservations = await getTodaysReservations();
+
+      // if reservations returned
+      if (reservations) renderReservationInsightCards(reservations);
 
       observer.observe(insightModal.querySelector('.modal-body'), {
         childList: true,
