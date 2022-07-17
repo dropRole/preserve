@@ -428,7 +428,8 @@ const getTodaysReservations = async () => {
   };
 
   const response = await fetch(
-    `/reservations?todaysDate=${new Date().toLocaleDateString()}`,
+    /* `/reservations?todaysDate=${new Date().toLocaleDateString()}`, */
+    '/reservations?todaysDate=16/7/2022',
     requestOptions,
   );
 
@@ -600,7 +601,7 @@ const renderReservationInsightCards = async (reservations) => {
         complWrtDate.innerHTML = `${new Date(
           complaint.written,
         ).toLocaleString()} <br> - ${
-          complaint.updated ? complaint.updated : 'not'
+          complaint.updated ? new Date(complaint.updated).toLocaleString() : 'not'
         } updated`;
         complaintContent.textContent = complaint.content;
 
