@@ -114,7 +114,7 @@ export class ComplaintsService {
       );
 
     // if any counter complaint
-    if (this.getCounterComplaints(idComplaints))
+    if (await this.getCounterComplaints(idComplaints))
       throw new ConflictException(
         `There are counter complaints for the subject ${complaint.idComplaints} complaint.`,
       );
@@ -129,7 +129,7 @@ export class ComplaintsService {
 
     try {
       // if there is any counter complaint on the subject one
-      if (await query.getMany()) return true;
+      if ((await query.getMany()).length > 0) return true;
     } catch (error) {
       throw new QueryFailedError(query.getSql(), [idComplaints], error.message);
     }
