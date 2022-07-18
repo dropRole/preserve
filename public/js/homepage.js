@@ -2,6 +2,84 @@ const accountButton = document.getElementById('accountButton');
 
 accountButton.textContent = sessionStorage.getItem('username');
 
+/* 
+  attempt account username update 
+  @Param string username
+*/
+const updateAccountUsername = async (username) => {
+  const urlencoded = new URLSearchParams();
+  urlencoded.append('username', username);
+
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'PATCH',
+    headers: headers,
+    body: urlencoded,
+  };
+
+  const response = await fetch('/auth/username', requestOptions);
+
+  // if request succeded
+  if (response.status === 200) return await response.json();
+
+  // if request faiiled
+  if (response.status === 409) alert('Username already exists.');
+
+  return false;
+};
+
+const accUsrUpdSpan = document.getElementById('usernameUpdate');
+accUsrUpdSpan.addEventListener('click', async (event) => {
+  event.stopPropagation();
+  const parentAnchor = event.target.parentNode;
+
+  // remove text node(Username) and undisplay span element of the anchor
+  parentAnchor.removeChild(parentAnchor.firstChild);
+  parentAnchor.firstChild.style.display = 'none';
+
+  const inputElement = document.createElement('input');
+
+  inputElement.classList = 'form-control';
+
+  inputElement.value = sessionStorage.getItem('username');
+
+  inputElement.addEventListener('focusout', (event) => {
+    parentAnchor.removeChild(event.target);
+
+    // interpolate the text node and reappear span element node of the anchor
+    parentAnchor.firstChild.style.display = 'inline';
+    parentAnchor.prepend(document.createTextNode('Username '));
+  });
+
+  inputElement.addEventListener('keypress', async (event) => {
+    // if the key pressed is not ENTER
+    if (event.key !== 'Enter') return;
+
+    const { accessToken } = await updateAccountUsername(event.target.value);
+
+    // if username wasn't successfully updated
+    if (!accessToken) return;
+
+    alert(
+      `You've updated username ${sessionStorage.getItem('username')} to ${
+        event.target.value
+      }.`,
+    );
+
+    sessionStorage.setItem('username', event.target.value);
+    sessionStorage.setItem('JWT', accessToken);
+
+    accountButton.textContent = event.target.value;
+  });
+
+  await parentAnchor.prepend(inputElement);
+
+  inputElement.focus();
+});
+
 const insightModal = document.getElementById('insightModal');
 
 const insMdlTgglBtn = document.getElementById('insMdlTgglBtn');
