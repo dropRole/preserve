@@ -1,6 +1,6 @@
 import {
+  ConflictException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { OffereesService } from '../offerees/offerees.service';
@@ -98,13 +98,13 @@ export class AuthService {
     updateAccountUsername: UpdateUsernameDTO,
   ): Promise<{ accessToken: string }> {
     const { username } = updateAccountUsername;
-    // if account doesn't exist
+    // if account username already exists
     if (
-      !(await this.accountsRepository.findOne({
-        where: { username: account.username },
-      }))
+      await this.accountsRepository.findOne({
+        where: { username },
+      })
     )
-      throw new NotFoundException(`Account with ${username} was not found.`);
+      throw new ConflictException(`${username} already exists.`);
     if (this.accountsRepository.updateAccountUsername(account, username)) {
       const payload: JWTPayload = { username };
       const accessToken: string = this.jwtService.sign(payload);
