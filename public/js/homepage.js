@@ -91,6 +91,14 @@ observer.observe(insightModal.querySelector('.modal-body'), {
   childList: true,
 });
 
+const logoutAnchor = document.getElementById('logout');
+console.log(logoutAnchor);
+logoutAnchor.addEventListener('click', (event) => {
+  event.stopPropagation();
+  sessionStorage.clear();
+  window.location.replace('/signin');
+});
+
 const complFrmSbmBtn = document.getElementById('complFrmSbmBtn');
 complFrmSbmBtn.addEventListener('click', async (event) => {
   event.preventDefault();
