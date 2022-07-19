@@ -92,7 +92,6 @@ observer.observe(insightModal.querySelector('.modal-body'), {
 });
 
 const logoutAnchor = document.getElementById('logout');
-console.log(logoutAnchor);
 logoutAnchor.addEventListener('click', (event) => {
   event.stopPropagation();
   sessionStorage.clear();
