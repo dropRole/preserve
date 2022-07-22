@@ -22,9 +22,9 @@ export class Complaint {
   })
   reservation: Reservation;
 
-  @OneToOne((_type) => Account, (account) => account.complaints, {
+  @ManyToOne((_type) => Account, (account) => account.complaints, {
     eager: false,
-    createForeignKeyConstraints: false,
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'username', referencedColumnName: 'username' })
   account: Account;
@@ -32,7 +32,7 @@ export class Complaint {
   @OneToOne((_type) => Complaint, (complaint) => complaint.idComplaints, {
     eager: false,
     nullable: true,
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
   @JoinColumn({
     name: 'counteredComplaint',
