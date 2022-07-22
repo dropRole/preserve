@@ -5,10 +5,11 @@ accountButton.textContent = sessionStorage.getItem('username');
 /* 
   attempt account username update 
   @Param string username
+  @return boolean | JSON
 */
 const updateAccountUsername = async (username) => {
-  const urlencoded = new URLSearchParams();
-  urlencoded.append('username', username);
+  const body = new URLSearchParams();
+  body.append('username', username);
 
   const headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -17,7 +18,7 @@ const updateAccountUsername = async (username) => {
   const requestOptions = {
     method: 'PATCH',
     headers: headers,
-    body: urlencoded,
+    body: body,
   };
 
   const response = await fetch('/auth/username', requestOptions);
@@ -106,9 +107,9 @@ complFrmSbmBtn.addEventListener('click', async (event) => {
 
   const formData = new FormData(resComplFrm);
 
-  const urlencoded = new URLSearchParams();
-  urlencoded.append('idReservations', formData.get('idReservations'));
-  urlencoded.append('content', formData.get('content'));
+  const body = new URLSearchParams();
+  body.append('idReservations', formData.get('idReservations'));
+  body.append('content', formData.get('content'));
 
   const headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -117,28 +118,32 @@ complFrmSbmBtn.addEventListener('click', async (event) => {
   const requestOptions = {
     method: 'POST',
     headers: headers,
-    body: urlencoded,
+    body: body,
   };
 
   const response = await fetch('/complaints', requestOptions);
 
-  // if request succeded
-  if (response.status === 201) {
-    alert('Complaint was successfully submitted.');
-    resComplFrm.querySelectorAll('input, textarea').forEach((element) => {
-      element.value = '';
-    });
-    complFrmImg.click();
-    // empty the complaint forms inputs and close the modal dialog
-  }
+  // if request hasn't succeded
+  if (response.status !== 201) return;
+
+  alert('Complaint was successfully submitted.');
+
+  // empty the complaint forms inputs and close the modal dialog
+  resComplFrm.querySelectorAll('input, textarea').forEach((element) => {
+    element.value = '';
+  });
+  complFrmImg.click();
 
   // if request was bad
-  if (response.status === 400) alert('Complaint was unsuccessful.');
 
   return;
 });
 
-// create option elements, populate them with todays reservations data, interpolate them into the target select element
+/*  
+  create option elements, populate them with todays reservations data, interpolate them into the target select element 
+  @Param Object[] reservations
+  @return null
+*/
 const createReservationSelectOptions = (reservations) => {
   // if no reservations
   if (reservations.length === 0) return;
@@ -149,7 +154,9 @@ const createReservationSelectOptions = (reservations) => {
 
   reservations.forEach((reservation) => {
     const option = document.createElement('option');
+
     option.value = reservation.request.idRequests;
+
     option.textContent = `${reservation.request.offeror.name} | ${reservation.code} `;
 
     selectElement.append(option);
@@ -166,10 +173,14 @@ complFrmImg.addEventListener('click', async () => {
   return;
 });
 
-// establish clients geolocation and expose it on the template
+/* 
+    establish clients geolocation and expose it on the template 
+    @return null
+  */
 const establishGeolocation = () => {
   // if Geolocation API is present
   if (!('geolocation' in navigator)) return;
+
   navigator.geolocation.getCurrentPosition(
     async (geolocation) => {
       const requestOptions = {
@@ -182,19 +193,25 @@ const establishGeolocation = () => {
       );
 
       // if response successfully returned
-      if (response.status === 200) {
-        const geocoding = await response.json();
-        const estGeoMun = document.getElementById('estGeoMun');
-        const srchOffrBtn = document.getElementById('srchOffrBtn');
-        estGeoMun.textContent = `Search offerors for ${geocoding.address.town}`;
-        srchOffrBtn.disabled = false;
-        srchOffrBtn.dataset.municipality = geocoding.address.town;
-        srchOffrBtn.addEventListener('click', (event) => {
-          getOfferorsByGeolocation(event);
-        });
-      }
+      if (response.status !== 200) return;
+
+      const geocoding = await response.json();
+
+      const estGeoMun = document.getElementById('estGeoMun');
+
+      const srchOffrBtn = document.getElementById('srchOffrBtn');
+
+      estGeoMun.textContent = `Search offerors for ${geocoding.address.town}`;
+
+      srchOffrBtn.disabled = false;
+
+      srchOffrBtn.dataset.municipality = geocoding.address.town;
+
+      srchOffrBtn.addEventListener('click', (event) => {
+        getOfferorsByGeolocation(event);
+      });
     },
-    () => console.warn('Geolocation API is not present.'),
+    () => alert("Geolocation can't be established."),
     {
       enableHighAccuracy: true,
     },
@@ -202,36 +219,68 @@ const establishGeolocation = () => {
 };
 establishGeolocation();
 
-// create and return cards populated with reservation requests data for the subject offeror
-const renderRequestInsightCards = (requests) => {
-  const documentFragment = new DocumentFragment();
+/* 
+  retreat the submitted reservation request
+  @Param string idRequests
+  @return null
+*/
+const retreatSubmittedReservationRequest = async (idRequests) => {
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
+
+  const requestOptions = {
+    method: 'DELETE',
+    headers: headers,
+  };
+
+  const response = await fetch(`/requests/${idRequests}`, requestOptions);
+
+  // if request was already confirmed as a reservation
+  if (response.status === 409) alert('Request was already confirmed!');
+
+  // if deletion wasn't successful
+  if (response.status !== 200) alert("Request wasn't successfully deleted.");
+
+  alert('Request was ssuccessfully deleted.');
+
+  return;
+};
+
+/* 
+  create reservation requests insight cards
+  @Param Object[] requests
+  @return Node[] cards
+ */
+const createReservationRequestInsightCards = (requests) => {
+  let cards = [];
+
   requests.forEach((request) => {
     const card = document.createElement('div'),
       unorderedList = document.createElement('ul'),
-      lstItmOffr = document.createElement('li'),
-      lstItmAddr = document.createElement('li'),
+      lstItmOfferor = document.createElement('li'),
+      lstItemAddress = document.createElement('li'),
       lstItmReqAt = document.createElement('li'),
       lstItmReqFor = document.createElement('li'),
       lstItmReqSeats = document.createElement('li'),
       lstItmReqCause = document.createElement('li'),
       lstItmReqNote = document.createElement('li'),
-      lstItmReqRt = document.createElement('li'),
-      lstItmReqRtBtn = document.createElement('button');
+      lstItmRetreat = document.createElement('li'),
+      lstItmReBtn = document.createElement('button');
 
     card.classList = 'card';
     unorderedList.classList = 'list-group list-group-flush';
-    lstItmOffr.classList = 'list-group-item';
-    lstItmAddr.classList = 'list-group-item';
+    lstItmOfferor.classList = 'list-group-item';
+    lstItemAddress.classList = 'list-group-item';
     lstItmReqAt.classList = 'list-group-item';
     lstItmReqFor.classList = 'list-group-item';
     lstItmReqSeats.classList = 'list-group-item';
     lstItmReqCause.classList = 'list-group-item';
     lstItmReqNote.classList = 'list-group-item';
-    lstItmReqRt.classList = 'list-group-item';
-    lstItmReqRtBtn.classList = 'btn btn-warning';
+    lstItmRetreat.classList = 'list-group-item';
+    lstItmReBtn.classList = 'btn btn-warning';
 
-    lstItmOffr.textContent = `Offeror: ${request.offeror.name}`;
-    lstItmAddr.textContent = `Address: ${request.offeror.address}`;
+    lstItmOfferor.textContent = `Offeror: ${request.offeror.name}`;
+    lstItemAddress.textContent = `Address: ${request.offeror.address}`;
     lstItmReqAt.textContent = `Requested at: ${new Date(
       request.requestedAt,
     ).toLocaleTimeString()}`;
@@ -242,91 +291,60 @@ const renderRequestInsightCards = (requests) => {
     lstItmReqCause.textContent = `Cause: ${request.cause}`;
     lstItmReqNote.textContent = `Note: ${request.note}`;
 
-    lstItmReqRtBtn.textContent = `Retreat`;
+    lstItmReBtn.textContent = `Retreat`;
 
-    lstItmReqRtBtn.dataset.idRequests = request.idRequests;
+    lstItmReBtn.dataset.idRequests = request.idRequests;
 
-    lstItmReqRtBtn.addEventListener('click', async (event) => {
-      const headers = new Headers();
-      headers.append(
-        'Authorization',
-        `Bearer ${sessionStorage.getItem('JWT')}`,
-      );
-
-      const requestOptions = {
-        method: 'DELETE',
-        headers: headers,
-      };
-
+    lstItmReBtn.addEventListener('click', async (event) => {
       const idRequests = event.target.dataset.idRequests;
+      await retreatSubmittedReservationRequest(idRequests);
+      // resign from observing modal dialogs mutatons and eradicate the card holding deleted reservation data
+      observer.disconnect();
+      const card = event.target.closest('.card');
+      card.parentNode.removeChild(card);
 
-      const response = await fetch(`/requests/${idRequests}`, requestOptions);
-
-      // if deletion was successful
-      if (response.status === 200) {
-        alert('Request was successfully deleted.');
-
-        // resign from observing modal dialogs mutatons and eradicate the card holding deleted reservation data
-        observer.disconnect();
-        const card = event.target.closest('.card');
-        card.parentNode.removeChild(card);
-
-        // continue with mutatuon observation
-        observer.observe(insightModal.querySelector('.modal-body'), {
-          childList: true,
-        });
-      }
-
-      if (response.status === 409) alert('Request was already confirmed!');
-      return;
+      // continue with mutatuon observation
+      observer.observe(insightModal.querySelector('.modal-body'), {
+        childList: true,
+      });
     });
 
-    unorderedList.append(lstItmOffr);
-    unorderedList.append(lstItmAddr);
+    unorderedList.append(lstItmOfferor);
+    unorderedList.append(lstItemAddress);
     unorderedList.append(lstItmReqAt);
     unorderedList.append(lstItmReqFor);
     unorderedList.append(lstItmReqSeats);
     unorderedList.append(lstItmReqCause);
     unorderedList.append(lstItmReqNote);
-    lstItmReqRt.append(lstItmReqRtBtn);
-    unorderedList.append(lstItmReqRt);
+    lstItmRetreat.append(lstItmReBtn);
+    unorderedList.append(lstItmRetreat);
     card.append(unorderedList);
-    documentFragment.append(card);
+    cards.push(card);
   });
+  return cards;
+};
+
+/* 
+  render cards populated with data regarding reservation requests for todays date 
+  @Param Object[] requests
+*/
+const renderRequestsInsightCards = (requests) => {
+  const documentFragment = new DocumentFragment();
+
+  let cards = createReservationRequestInsightCards(requests);
+
+  cards.forEach((card) => documentFragment.append(card));
+
   insightModal.querySelector('.modal-body').innerHTML = '';
   insightModal.querySelector('.modal-body').append(documentFragment);
 };
 
-// create and return table element populated with offeror data
-const createOfferorTable = (offerors) => {
-  const table = document.createElement('table'),
-    tHead = document.createElement('thead'),
-    tHdRow = document.createElement('tr'),
-    tHdCellName = document.createElement('th'),
-    tHdCellAddress = document.createElement('th'),
-    tHdCellBusinessHours = document.createElement('th'),
-    tHdCellResponsiveness = document.createElement('th'),
-    tHdCellCompliance = document.createElement('th'),
-    tHdCellTimeliness = document.createElement('th'),
-    tBody = document.createElement('tbody');
-
-  table.classList = 'table table-borderless';
-
-  tHdCellName.textContent = 'Name';
-  tHdCellAddress.textContent = 'Address';
-  tHdCellBusinessHours.textContent = 'Business hours';
-  tHdCellResponsiveness.textContent = 'Responsiveness(mark)';
-  tHdCellCompliance.textContent = 'Compliance(mark)';
-  tHdCellTimeliness.textContent = 'Timeliness(mark)';
-
-  tHdRow.append(tHdCellName);
-  tHdRow.append(tHdCellAddress);
-  tHdRow.append(tHdCellBusinessHours);
-  tHdRow.append(tHdCellResponsiveness);
-  tHdRow.append(tHdCellCompliance);
-  tHdRow.append(tHdCellTimeliness);
-  tHead.append(tHdRow);
-
+/* 
+  create rows populated with offeror data cells and append them to the offeror table 
+  @Param Object[] offerors
+  @Param Node tableBody
+*/
+const createOfferorsTableRows = (offerors, tableBody) => {
   offerors.forEach((offeror) => {
     const tBRow = document.createElement('tr'),
       tBCellName = document.createElement('td'),
@@ -350,8 +368,8 @@ const createOfferorTable = (offerors) => {
 
     tBOReqFrmBtn.classList = 'btn btn-warning';
 
-    tBOReqFrmBtn.dataset.toggle = 'modal';
-    tBOReqFrmBtn.dataset.target = '#resReqMdl';
+    tBOReqFrmBtn.dataset.bsToggle = 'modal';
+    tBOReqFrmBtn.dataset.bsTarget = '#resReqMdl';
     tBOReqFrmBtn.dataset.offeror = offeror.name;
     tBOReqFrmBtn.dataset.idOfferors = offeror.idOfferors;
     tBOReqFrmBtn.addEventListener('click', (event) => {
@@ -370,16 +388,56 @@ const createOfferorTable = (offerors) => {
     tBRow.append(tBCellTimeliness);
     tBCellOptions.append(tBOReqFrmBtn);
     tBRow.append(tBCellOptions);
-    tBody.append(tBRow);
+    tableBody.append(tBRow);
   });
+};
 
-  table.append(tHead);
-  table.append(tBody);
+/* 
+  create and return table element populated with offeror data 
+  @Param Object[] offerors
+  @return Node table
+*/
+const createOfferorTable = (offerors) => {
+  const table = document.createElement('table'),
+    tableHead = document.createElement('thead'),
+    tHRow = document.createElement('tr'),
+    tHCellName = document.createElement('th'),
+    tHCellAddress = document.createElement('th'),
+    tHdCellBusinessHours = document.createElement('th'),
+    tHdCellResponsiveness = document.createElement('th'),
+    tHdCellCompliance = document.createElement('th'),
+    tHdCellTimeliness = document.createElement('th'),
+    tableBody = document.createElement('tbody');
+
+  table.classList = 'table table-borderless';
+
+  tHCellName.textContent = 'Name';
+  tHCellAddress.textContent = 'Address';
+  tHdCellBusinessHours.textContent = 'Business hours';
+  tHdCellResponsiveness.textContent = 'Responsiveness(mark)';
+  tHdCellCompliance.textContent = 'Compliance(mark)';
+  tHdCellTimeliness.textContent = 'Timeliness(mark)';
+
+  tHRow.append(tHCellName);
+  tHRow.append(tHCellAddress);
+  tHRow.append(tHdCellBusinessHours);
+  tHRow.append(tHdCellResponsiveness);
+  tHRow.append(tHdCellCompliance);
+  tHRow.append(tHdCellTimeliness);
+  tableHead.append(tHRow);
+  table.append(tableHead);
+
+  createOfferorsTableRows(offerors, tableBody);
+
+  table.append(tableBody);
 
   return table;
 };
 
-// fetch an offeror list based on the offeree geolocation and render the DocumentFragment
+/* 
+  fetch an offeror list based on the offeree geolocation and render the DocumentFragment 
+  @Param Event event
+*/
 const getOfferorsByGeolocation = async (event) => {
   const municipality = event.target.dataset.municipality;
 
@@ -412,7 +470,11 @@ const getOfferorsByGeolocation = async (event) => {
   insightModal.querySelector('.modal-body').append(documentFragment);
 };
 
-// submit the reservation request for the subject offeror
+/* 
+    submit the reservation request for the subject offeror 
+    @Param Event event
+    @return null
+*/
 const submitReservationRequest = async (event) => {
   event.preventDefault();
 
@@ -422,38 +484,39 @@ const submitReservationRequest = async (event) => {
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
   headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
 
-  const urlencoded = new URLSearchParams();
-  urlencoded.append('idOfferors', formData.get('idOfferors'));
-  urlencoded.append('requestedAt', `${new Date().toLocaleString()}`);
-  urlencoded.append(
+  const body = new URLSearchParams();
+  body.append('idOfferors', formData.get('idOfferors'));
+  body.append('requestedAt', `${new Date().toLocaleString()}`);
+  body.append(
     'requestedFor',
     `${formData.get('date')} ${formData.get('time')}`,
   );
-  urlencoded.append('seats', formData.get('seats'));
-  urlencoded.append('cause', formData.get('cause'));
-  urlencoded.append('note', formData.get('note'));
+  body.append('seats', formData.get('seats'));
+  body.append('cause', formData.get('cause'));
+  body.append('note', formData.get('note'));
 
   const requestOptions = {
     method: 'POST',
     headers: headers,
-    body: urlencoded,
+    body: body,
   };
 
   const response = await fetch('/requests', requestOptions);
 
-  // if request was made
-  if (response && response.status === 201) {
-    alert('Request was sucessfully made.');
-    document
-      .getElementById('reservationRequest')
-      .querySelectorAll('input, textarea')
-      .forEach((element) => (element.value = ''));
-    document
-      .querySelector('button[data-target="#resReqMdl"][data-dismiss="modal"]')
-      .click();
-    return;
-  }
-  alert("Request wasn't successfully made.");
+  // if request hasn't succeded
+  if (response.status !== 201) return;
+
+  alert('Request was sucessfully made.');
+  document
+    .getElementById('reservationRequest')
+    .querySelectorAll('input, textarea')
+    .forEach((element) => (element.value = ''));
+  document
+    .querySelector(
+      'button[data-bs-target="#resReqMdl"][data-bs-dismiss="modal"]',
+    )
+    .click();
+
   return;
 };
 
@@ -483,9 +546,9 @@ resReqInsBtn.addEventListener('click', async () => {
 
   const requests = await response.json();
 
-  // if reservations for today's date weren't made
+  // if reservations for today's date were made
   if (Object.keys(requests).length) {
-    renderRequestInsightCards(requests);
+    renderRequestsInsightCards(requests);
     return;
   }
 
@@ -494,7 +557,10 @@ resReqInsBtn.addEventListener('click', async () => {
   return;
 });
 
-// fetch the reservations made on today's date by the currently signed in offeree account
+/* 
+  fetch the reservations made on today's date by the currently signed in offeree account 
+  @return null | JSON
+*/
 const getTodaysReservations = async () => {
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
@@ -505,8 +571,7 @@ const getTodaysReservations = async () => {
   };
 
   const response = await fetch(
-    /* `/reservations?todaysDate=${new Date().toLocaleDateString()}`, */
-    '/reservations?todaysDate=16/7/2022',
+    `/reservations?todaysDate=${new Date().toLocaleDateString()}`,
     requestOptions,
   );
 
@@ -516,12 +581,18 @@ const getTodaysReservations = async () => {
   return null;
 };
 
-// submit a countercomplaint for the subject complaint
+/* 
+  submit a countercomplaint for the subject complaint 
+  @Param string idReservations
+  @Param string counteredComplaint
+  @Param string content
+  @return boolean
+*/
 const counterComplain = async (idReservations, counteredComplaint, content) => {
-  const urlencoded = new URLSearchParams();
-  urlencoded.append('idReservations', idReservations);
-  urlencoded.append('counteredComplaint', counteredComplaint);
-  urlencoded.append('content', content);
+  const body = new URLSearchParams();
+  body.append('idReservations', idReservations);
+  body.append('counteredComplaint', counteredComplaint);
+  body.append('content', content);
 
   const headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -530,7 +601,7 @@ const counterComplain = async (idReservations, counteredComplaint, content) => {
   const requestOptions = {
     method: 'POST',
     headers: headers,
-    body: urlencoded,
+    body: body,
   };
 
   const response = await fetch('/complaints', requestOptions);
@@ -541,11 +612,16 @@ const counterComplain = async (idReservations, counteredComplaint, content) => {
   return false;
 };
 
-// update content of the subject complaint and determine its update timestamp
+/* 
+  update content of the subject complaint and determine its update timestamp 
+  @Param string idComplaints
+  @Param string content
+  @return boolean 
+  */
 const reComplain = async (idComplaints, content) => {
-  const urlencoded = new URLSearchParams();
-  urlencoded.append('idComplaints', idComplaints);
-  urlencoded.append('content', content);
+  const body = new URLSearchParams();
+  body.append('idComplaints', idComplaints);
+  body.append('content', content);
 
   const headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -554,13 +630,13 @@ const reComplain = async (idComplaints, content) => {
   const requestOptions = {
     method: 'PATCH',
     headers: headers,
-    body: urlencoded,
+    body: body,
   };
 
   const response = await fetch('/complaints', requestOptions);
 
   // if request succeded
-  if (response.status === 204) return true;
+  if (response.status === 200) return true;
 
   return false;
 };
@@ -593,6 +669,7 @@ const prependRepliedToComplaint = (complaint, complaintDivision) => {
   @Param Object reservation
   @Param Object complaint
   @Param Node complaintDivision
+  @return null
 */
 const appendCompliaintReplicationSign = (
   reservation,
@@ -628,28 +705,29 @@ const appendCompliaintReplicationSign = (
 
       inputElement.addEventListener('keypress', async (event) => {
         // if pressed key is ENTER
-        if (event.key === 'Enter') {
-          if (
-            !(await counterComplain(
-              event.target.dataset.idReservations,
-              event.target.dataset.idComplaints,
-              event.target.value,
-            ))
-          )
-            return;
+        if (event.key !== 'Enter') return;
 
-          alert('Successfully countercomplained.');
+        // if unsuccessfully countered
+        if (
+          !(await counterComplain(
+            event.target.dataset.idReservations,
+            event.target.dataset.idComplaints,
+            event.target.value,
+          ))
+        )
+          return;
 
-          const reservations = await getTodaysReservations();
+        alert('Successfully countercomplained.');
 
-          observer.disconnect();
+        const reservations = await getTodaysReservations();
 
-          renderReservationInsightCards(reservations);
+        observer.disconnect();
 
-          observer.observe(insightModal.querySelector('.modal-body'), {
-            childList: true,
-          });
-        }
+        renderReservationInsightCards(reservations);
+
+        observer.observe(insightModal.querySelector('.modal-body'), {
+          childList: true,
+        });
       });
     }
   });
@@ -660,6 +738,7 @@ const appendCompliaintReplicationSign = (
   append the sign for the subject complaint update 
   @Param Object complaint   
   @Param Object complaintDivision   
+  @return null
 */
 const appendComplaintEditSign = (complaint, complaintDivision) => {
   const complUpdSpan = document.createElement('span');
@@ -685,21 +764,26 @@ const appendComplaintEditSign = (complaint, complaintDivision) => {
       // if pressed key wasn't ENTER
       if (event.key !== 'Enter') return;
 
-      // if successfully recomplained
-      if (reComplain(event.target.dataset.idComplaints, event.target.value)) {
-        alert("You've successfully recomplained.");
+      // if unsuccessfully recomplained
+      if (
+        !(await reComplain(
+          event.target.dataset.idComplaints,
+          event.target.value,
+        ))
+      )
+        return;
+      alert("You've successfully recomplained.");
 
-        const reservations = await getTodaysReservations();
+      const reservations = await getTodaysReservations();
 
-        observer.disconnect();
+      observer.disconnect();
 
-        // if reservations returned
-        if (reservations) renderReservationInsightCards(reservations);
+      // if reservations returned
+      if (reservations) renderReservationInsightCards(reservations);
 
-        observer.observe(insightModal.querySelector('.modal-body'), {
-          childList: true,
-        });
-      }
+      observer.observe(insightModal.querySelector('.modal-body'), {
+        childList: true,
+      });
     });
 
     complaintDivision.append(inputElement);
@@ -709,7 +793,11 @@ const appendComplaintEditSign = (complaint, complaintDivision) => {
   complaintDivision.append(complUpdSpan);
 };
 
-// attempt deletion of the complaint with the corresponding identifier
+/* 
+  attempt deletion of the complaint with the corresponding identifier 
+  @Param string idComplaints
+  @return boolean
+*/
 const deleteComplaint = async (idComplaints) => {
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${sessionStorage.getItem('JWT')}`);
@@ -725,7 +813,8 @@ const deleteComplaint = async (idComplaints) => {
   if (response.status === 200) return true;
 
   // if there's a conflict
-  if (response.statuts === 409) return false;
+  if (response.statuts === 409)
+    alert("There's a conflict occurring upon the complaint deletion.");
 
   return false;
 };
@@ -745,26 +834,21 @@ const prependComplaintDeletionSign = (idComplaints, complaintDivision) => {
   complDelSpan.innerHTML = '&#9747;';
 
   complDelSpan.addEventListener('click', async () => {
-    //if complaint successfully deleted
-    if (await deleteComplaint(idComplaints)) {
-      alert("You've successfully deleted the complaint.");
+    //if complaint unsuccessfully deleted
+    if (!(await deleteComplaint(idComplaints))) return;
 
-      observer.disconnect();
+    alert("You've successfully deleted the complaint.");
 
-      const reservations = await getTodaysReservations();
+    observer.disconnect();
 
-      // if reservations returned
-      if (reservations) renderReservationInsightCards(reservations);
+    const reservations = await getTodaysReservations();
 
-      observer.observe(insightModal.querySelector('.modal-body'), {
-        childList: true,
-      });
+    // if reservations returned
+    if (reservations) renderReservationInsightCards(reservations);
 
-      return;
-    }
-
-    alert("There's a conflict occurring upon the complaint deletion.");
-    return;
+    observer.observe(insightModal.querySelector('.modal-body'), {
+      childList: true,
+    });
   });
 
   complaintDivision.prepend(complDelSpan);
@@ -921,7 +1005,9 @@ const createReservationInsightCards = (
     uLINSpan.textContent = 'Note';
     uLINArgumentSpan.textContent = `${reservation.request.note}`;
     uLICASpan.textContent = 'Confirmed at:';
-    uLICATimeSpan.textContent = `${reservation.confirmedAt}`;
+    uLICATimeSpan.textContent = `${new Date(
+      reservation.confirmedAt,
+    ).toLocaleString()}`;
     uLICodeSpan.textContent = 'Confirmation code:';
     uLICNumberSpan.textContent = `${reservation.code}`;
 
