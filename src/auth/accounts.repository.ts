@@ -41,7 +41,7 @@ export class AccountsRepository extends Repository<Account> {
       if (result.affected === 1) return true;
     } catch (error) {
       throw new QueryFailedError(
-        'UPDATE accounts SER username = :newUsername WHERE username = :lastUsername ',
+        'UPDATE accounts SET username = :newUsername WHERE username = :lastUsername ',
         [username, account.username],
         error.message,
       );
